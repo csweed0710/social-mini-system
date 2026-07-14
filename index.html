@@ -760,6 +760,11 @@
   a.platbtn{text-decoration:none;display:inline-block}
 
   /* ---------- diagnosis card ---------- */
+  .estnote{
+    font-size:12.5px;color:var(--muted);background:var(--paper);border:1px dashed var(--line);
+    border-radius:10px;padding:9px 14px;margin:0 0 18px;max-width:60em;
+  }
+  .estnote strong{color:var(--ink)}
   .diagcard{
     border-radius:16px;padding:16px 20px;margin:0 0 20px;box-shadow:var(--shadow);
     display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px solid var(--line);
@@ -990,6 +995,7 @@
       點一張卡，系統生成該主題的完整計畫：定位、格式、鉤子、賺錢順序與行情。
       選不出來？<strong>挑你講得出 50 個題目的那個</strong>。選完記得去做「人設」。
     </p>
+    <p class="estnote">卡片上的行情數字是概略估算，不是查證過的市場統計——用來排優先順序，簽約報價前請自己核實。</p>
     <div class="trackgrid" id="trackGrid" role="group" aria-label="選擇賽道"></div>
   </div>
 </section>
@@ -1499,6 +1505,7 @@
       藍線是預期，橘線是你的紀錄，每週記一筆就好。
       差距是<strong>導航</strong>不是成績單——系統會自動判斷要不要檢討。
     </p>
+    <p class="estnote">藍線是我依台灣公開行情概略抓出的<strong>假設曲線</strong>，不是驗證過的統計、也不是保證。它的用途只有一個：給你一條線去對照，落後或超前<strong>都只是提醒你去想原因</strong>，不代表你做得好不好。</p>
 
     <div class="diagcard neutral" id="diagCard"><b>還沒有數據</b><span>記下第一筆實際成效後，這裡會自動幫你比對進度、判斷要不要檢討。</span></div>
 
@@ -2347,7 +2354,7 @@
     }
     return "階段肆之後（100,000 粉以上）";
   }
-  var PRO_SUFFIX = "\n\n【品質要求】輸出前先在內部用三個標準自評：專業度（有沒有行內才知道的細節）、具體度（有沒有數字與可直接使用的句子）、可執行度（我今天就能照做嗎）。任何一項不到位就自行修正後再輸出，只給我修正後的最終版。如果我提供的資料太少會影響品質，先問我關鍵問題再開始，不要硬編。";
+  var PRO_SUFFIX = "\n\n【品質要求】輸出前先在內部用三個標準自評：專業度（有沒有行內才知道的細節）、具體度（有沒有數字與可直接使用的句子）、可執行度（我今天就能照做嗎）。任何一項不到位就自行修正後再輸出，只給我修正後的最終版。如果我提供的資料太少會影響品質，先問我關鍵問題再開始，不要硬編。\n\n【誠實分級——這條最重要】把你的每個結論標成三種之一，不要混著講得一樣篤定：① 可驗證＝直接算自我提供的數據；② 通用經驗＝業界常見模式，但不是這個帳號的實測結果；③ 推測＝你的合理猜測，可能錯。任何「這樣做會紅／會賺多少／多久會怎樣」的預測，一律標「推測」並附上「怎麼用最小成本驗證這個推測」的具體做法——不要給我一個聽起來篤定但其實沒人驗證過的答案。";
   function fillTpl(s){
     var tp = trackPlain();
     var pp = personaPlain();
@@ -3108,16 +3115,16 @@
     var cls, headline, body;
     if(worst < 60){
       cls = "warn";
-      headline = "落後預期，建議做一次檢討";
-      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%（第 "+(Math.round(d.m*10)/10)+" 個月基準）。差距不代表失敗，但值得花 10 分鐘找出卡在哪一層。";
+      headline = "低於假設曲線，值得花 10 分鐘看一下";
+      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%（第 "+(Math.round(d.m*10)/10)+" 個月的假設值，不是硬指標）。不代表你做得不好，可能只是這條主題原本就比較慢熱——找原因比對照數字重要。";
     } else if(worst < 90){
       cls = "neutral";
-      headline = "略低於預期，繼續觀察";
-      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%。在正常波動範圍內，先照計畫走；連續兩次都偏低再檢討。";
+      headline = "略低於假設曲線，先別急著下結論";
+      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%。在合理波動內，先照計畫走；連續兩次都偏低再深入看。";
     } else {
       cls = "good";
-      headline = "跟上或超前預期 🎉";
-      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%。保持這個節奏，別急著加碼變動。";
+      headline = "跟上或超前假設曲線 🎉";
+      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%。這只代表比假設快，實際好不好還是看你自己的目標——保持節奏就好。";
     }
     host.className = "diagcard " + cls;
     host.innerHTML = "<b>"+headline+"</b><span>"+body+"</span>"
