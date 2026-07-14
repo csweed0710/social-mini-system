@@ -707,6 +707,40 @@
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .icsbtn{color:#262A2E} }
   .icsbtn:hover{opacity:.85}
 
+  /* ---------- view tabs & today card ---------- */
+  .viewbtn{
+    background:transparent;border:1.5px solid transparent;color:var(--muted);
+    border-radius:999px;padding:7px 18px;font-family:inherit;font-size:14px;font-weight:700;
+    cursor:pointer;white-space:nowrap;
+  }
+  .viewbtn:hover{color:var(--ink);border-color:var(--line)}
+  .viewbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--btn-ink)}
+  .viewbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .todaycard{
+    background:var(--card);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);
+    padding:40px 40px 36px;max-width:640px;margin:0 auto;text-align:center;
+  }
+  .todaycard .greet{font-size:15px;color:var(--muted);margin:0 0 6px;letter-spacing:.04em}
+  .todaycard .dayline{
+    font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
+    font-weight:900;margin:0 0 14px;
+  }
+  .todaycard .task{font-size:clamp(20px,3vw,26px);font-weight:800;line-height:1.5;margin:0 0 22px;text-wrap:balance}
+  .todaycard .task.done{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(128,128,128,.5)}
+  .todaycard .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .todaycard .donebtn{
+    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    padding:12px 34px;font-family:inherit;font-size:15.5px;font-weight:900;cursor:pointer;
+  }
+  :root[data-theme="dark"] .todaycard .donebtn{color:#262A2E}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .todaycard .donebtn{color:#262A2E} }
+  .todaycard .donebtn:hover{opacity:.85}
+  .todaycard .donebtn.isdone{background:var(--card);color:var(--growth);border:1.5px solid var(--growth)}
+  .todaycard .note{font-size:13px;color:var(--muted);margin:18px 0 0}
+  .todaycard .note a{color:var(--accent);font-weight:700;text-decoration:none;border-bottom:1.5px solid var(--accent)}
+  #today{padding-top:34px}
+  a.platbtn{text-decoration:none;display:inline-block}
+
   /* ---------- diagnosis card ---------- */
   .diagcard{
     border-radius:16px;padding:16px 20px;margin:0 0 20px;box-shadow:var(--shadow);
@@ -845,17 +879,11 @@
 <nav class="stagenav" aria-label="階段導覽">
   <div class="wrap">
     <span class="brand">社群<b>小系統</b></span>
-    <a href="#position">選主題</a>
-    <a href="#strategy">我的計畫</a>
-    <a href="#persona">打造人設</a>
-    <a href="#money">賺錢方法</a>
-    <a href="#stages">成長地圖</a>
-    <a href="#sop">每週做內容</a>
-    <a href="#platforms">各平台發法</a>
-    <a href="#ai">AI 幫手</a>
-    <a href="#calc">算算收入</a>
-    <a href="#results">成效追蹤</a>
-    <a href="#plan90">90 天行事曆</a>
+    <button type="button" class="viewbtn" data-view="home" aria-pressed="true">🏠 今天</button>
+    <button type="button" class="viewbtn" data-view="direction" aria-pressed="false">🧭 方向</button>
+    <button type="button" class="viewbtn" data-view="learn" aria-pressed="false">📚 知識庫</button>
+    <button type="button" class="viewbtn" data-view="tools" aria-pressed="false">🤖 AI 幫手</button>
+    <button type="button" class="viewbtn" data-view="progress" aria-pressed="false">📈 進度</button>
   </div>
 </nav>
 
@@ -888,6 +916,31 @@
 </header>
 
 <main>
+
+<!-- ============ 今天 ============ -->
+<section id="today">
+  <div class="wrap">
+    <div class="todaycard" id="todayCard"></div>
+  </div>
+</section>
+
+<!-- ============ 知識庫導覽 ============ -->
+<section id="learnNav">
+  <div class="wrap">
+    <p class="kicker">知識庫</p>
+    <h2 class="serif">要用的時候再翻，不用一次讀完</h2>
+    <div class="platbar" style="margin-top:18px">
+      <a href="#logic" class="platbtn">錢的邏輯</a>
+      <a href="#stages" class="platbtn">成長地圖</a>
+      <a href="#money" class="platbtn">16 種賺錢方法</a>
+      <a href="#sop" class="platbtn">每週做內容</a>
+      <a href="#platforms" class="platbtn">各平台發法</a>
+      <a href="#seo" class="platbtn">讓人搜到你</a>
+      <a href="#ads" class="platbtn">花錢買流量</a>
+      <a href="#pitfalls" class="platbtn">別踩的坑</a>
+    </div>
+  </div>
+</section>
 
 <!-- ============ 系統邏輯 ============ -->
 <section id="logic">
@@ -1298,14 +1351,9 @@
     <p class="kicker">每一步都有人帶</p>
     <h2 class="serif">AI 幫手：19 個步驟，三種做法任你選</h2>
     <p class="sub">
-      從定位到帳號健檢共 19 站，<strong>每一站都有三條路</strong>：「📋 複製給 AI」給你一條專家級指令，貼到 Claude 或 ChatGPT 對話視窗；
-      「⚡ 直接生成」用你自己的 API 金鑰，按一下在這個頁面裡直接跑出結果；「✋ 手動做法」給你不靠 AI 也能完成的具體步驟與免費工具。三條路做完都算完成，隨時可切換。
-      別被數量嚇到：<strong>新手每週真正要跑的只有標「★ 每週核心」的那幾條</strong>，其餘是到了那個階段才打開的工具箱。
-      每條指令內建五層設計：<strong>行內方法論</strong>（留存點節奏、漏斗診斷、報價係數公式）、<strong>三重情境注入</strong>（你的賽道 × 人設 × 目前階段，隨勾選進度即時更新）、
-      <strong>訪談模式</strong>（資料不足時 AI 先問你再產出）、<strong>自評修正</strong>（AI 用專業度／具體度／可執行度自檢後才交稿）、<strong>交付自查</strong>（滑走點模擬、並排查重）。
-      你負責決策與出鏡，AI 負責到專業水準的初稿與分析。
-      這 19 步是一條<strong>指令鏈</strong>：每一步的產出尾端會自動附「交棒區」，複製貼進下一步即可——你的賽道、人設、階段在整條流水線上不斷鏈，
-      所以同一條指令，美妝×閨蜜型和理財×毒舌型跑出來的文字口氣完全不同。
+      每一站都有三條路：<strong>📋 複製給 AI</strong>（貼到 Claude／ChatGPT）、<strong>⚡ 直接生成</strong>（用自己的金鑰，頁面內一鍵產出）、<strong>✋ 手動做法</strong>（不靠 AI 也能完成）。
+      別被數量嚇到——<strong>每週真正要跑的只有標「★ 每週核心」的那幾條</strong>，其餘是到了那個階段才打開的工具箱。
+      每條指令都會自動代入你的賽道、人設、目標與階段，產出的尾端附「交棒區」，複製貼進下一步就能接力。
     </p>
 
     <div class="apisettings" id="apiSettings">
@@ -2363,6 +2411,7 @@
   updateApiStatus();
 
   function focusApiSettings(){
+    if(typeof applyView === "function") applyView("tools");
     var box = $("apiSettings");
     if(box){ box.scrollIntoView({behavior:"smooth", block:"center"}); }
     var input = $("apiKeyInput");
@@ -2990,12 +3039,15 @@
     var btn = $("diagGo");
     if(btn){
       btn.addEventListener("click", function(){
+        if(typeof applyView === "function") applyView("tools");
         var target = document.querySelector('.pstep[data-pi="16"]');
         if(target){
           target.open = true;
-          target.scrollIntoView({behavior:"smooth", block:"start"});
+          setTimeout(function(){ target.scrollIntoView({behavior:"smooth", block:"start"}); }, 60);
           var pre = target.querySelector(".mwrap pre");
           if(pre) pre.textContent = buildPrompt(16);
+          var ta = target.querySelector(".apiwrap textarea");
+          if(ta) ta.value = buildPrompt(16);
         }
       });
     }
@@ -3207,5 +3259,111 @@
   } else {
     calc();
   }
+
+  /* ================= 分頁視圖：一次只看一件事 ================= */
+  var LS_VIEW = "creator-os-view";
+  var VIEW_OF = {
+    today:"home", goalRow:"home",
+    position:"direction", strategy:"direction", persona:"direction",
+    learnNav:"learn", logic:"learn", money:"learn", stages:"learn", sop:"learn",
+    platforms:"learn", seo:"learn", ads:"learn", pitfalls:"learn",
+    ai:"tools",
+    calc:"progress", results:"progress", plan90:"progress"
+  };
+  var currentView = "home";
+  function applyView(v){
+    currentView = v;
+    var hero = document.querySelector("header.hero");
+    if(hero) hero.hidden = (v !== "home");
+    document.querySelectorAll("main > section").forEach(function(sec){
+      var owner = VIEW_OF[sec.id] || "home";
+      sec.hidden = (owner !== v);
+    });
+    document.querySelectorAll(".viewbtn").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-view") === v ? "true" : "false");
+    });
+    try{ localStorage.setItem(LS_VIEW, v); }catch(e){}
+  }
+  document.querySelectorAll(".viewbtn").forEach(function(b){
+    b.addEventListener("click", function(){
+      applyView(b.getAttribute("data-view"));
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+  /* 站內連結：先切到正確分頁，再捲到目標 */
+  document.addEventListener("click", function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if(!a) return;
+    var id = a.getAttribute("href").slice(1);
+    if(!id) return;
+    var el = document.getElementById(id);
+    if(!el) return;
+    e.preventDefault();
+    var v = VIEW_OF[id] || "home";
+    if(v !== currentView) applyView(v);
+    setTimeout(function(){ el.scrollIntoView({behavior:"smooth", block:"start"}); }, 60);
+  });
+
+  /* ================= 今天卡片 ================= */
+  function renderToday(){
+    var host = $("todayCard"); if(!host) return;
+    var h = new Date().getHours();
+    var greet = h < 11 ? "早安" : (h < 18 ? "午安" : "晚安");
+    if(!calStart.value){
+      host.innerHTML = "<p class='greet'>"+greet+"，歡迎回來。</p>"
+        + "<p class='task'>先設定你的 Day 1 日期，<br>之後每天打開，這裡只會告訴你一件事。</p>"
+        + "<div class='actions'><a class='donebtn' style='text-decoration:none' href='#plan90'>去設定 Day 1 →</a></div>"
+        + "<p class='note'>還沒選主題？先到 <a href='#position'>方向</a> 選一個。</p>";
+      return;
+    }
+    var start = new Date(calStart.value + "T00:00:00");
+    var now = new Date(); now.setHours(0,0,0,0);
+    var idx = Math.floor((now - start)/86400000) + 1;
+    if(idx < 1){
+      host.innerHTML = "<p class='greet'>"+greet+"。</p>"
+        + "<p class='dayline'>距離 Day 1 還有 "+(1-idx)+" 天</p>"
+        + "<p class='task'>先把定位一句話想好，<br>開跑那天就不用想了。</p>"
+        + "<p class='note'>想提前暖身？去 <a href='#ai'>AI 幫手</a> 跑 STEP 01。</p>";
+      return;
+    }
+    if(idx > 90){
+      host.innerHTML = "<p class='greet'>"+greet+"。</p>"
+        + "<p class='dayline'>90 天已完成 🎉</p>"
+        + "<p class='task'>接下來比的是經營。<br>照著成長地圖，往下一階走。</p>"
+        + "<p class='note'>看看 <a href='#results'>成效追蹤</a>，或回 <a href='#stages'>成長地圖</a> 確認位置。</p>";
+      return;
+    }
+    var input = document.querySelector('input[data-key="d'+idx+'"]');
+    var isDone = !!(input && input.checked);
+    var week = Math.ceil(idx/7);
+    var ai = dayAI(idx);
+    host.innerHTML = "<p class='greet'>"+greet+"，今天只需要做好一件事。</p>"
+      + "<p class='dayline'>DAY "+idx+"／90 · 第 "+week+" 週 · "+CAL_WK[week-1]+"</p>"
+      + "<p class='task"+(isDone?" done":"")+"'>"+dayTask(idx)+"</p>"
+      + "<div class='actions'>"
+      +   "<button type='button' class='donebtn"+(isDone?" isdone":"")+"' id='todayDone'>"+(isDone?"✓ 今天完成了":"完成了！")+"</button>"
+      +   (ai !== null && ai !== undefined ? "<button type='button' class='aichip' style='position:static;margin:0;padding:10px 20px;font-size:13px' id='todayAI'>AI 代勞</button>" : "")
+      + "</div>"
+      + "<p class='note'>做完這件就夠了。想多做？<a href='#plan90'>看整份行事曆</a>。</p>";
+    var doneBtn = $("todayDone");
+    if(doneBtn) doneBtn.addEventListener("click", function(){
+      if(input){
+        input.checked = !input.checked;
+        input.dispatchEvent(new Event("change"));
+      }
+      renderToday();
+    });
+    var aiBtn = $("todayAI");
+    if(aiBtn) aiBtn.addEventListener("click", function(){ copyPrompt(ai, aiBtn); });
+  }
+  renderToday();
+  calStart.addEventListener("change", renderToday);
+  document.addEventListener("change", function(e){
+    if(e.target && e.target.matches && e.target.matches('input[data-key^="d"]')) renderToday();
+  });
+
+  var savedView = null;
+  try{ savedView = localStorage.getItem(LS_VIEW); }catch(e){}
+  applyView(savedView && ["home","direction","learn","tools","progress"].indexOf(savedView) >= 0 ? savedView : "home");
 })();
 </script>
