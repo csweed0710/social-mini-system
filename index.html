@@ -480,6 +480,67 @@
   .adstep p strong{color:var(--ink)}
   .adstep .money{color:var(--accent);font-weight:900}
 
+  /* ---------- API settings & direct-generate ---------- */
+  .apisettings{
+    background:var(--card);border:1px solid var(--accent);border-radius:18px;
+    padding:20px 24px;margin:0 0 26px;box-shadow:var(--shadow);
+  }
+  .apisettings h3{margin:0 0 6px;font-size:16px;font-weight:900}
+  .apisettings > p{margin:0 0 14px;font-size:13.5px;color:var(--muted);max-width:60em}
+  .apiform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+  .apiform input[type=password],.apiform input[type=text]{
+    flex:1 1 240px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;
+    background:var(--paper);color:var(--ink);font-family:inherit;font-size:14px;
+  }
+  .apiform select{
+    padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--paper);
+    color:var(--ink);font-family:inherit;font-size:13.5px;
+  }
+  .apiform input:focus-visible,.apiform select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .apisettings .status{font-size:13px;margin:0 0 6px}
+  .apisettings .help{font-size:12.5px;color:var(--muted);margin:0}
+  .apisettings .help b{color:var(--ink)}
+  .keyshake{animation:keyshake .4s}
+  @keyframes keyshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  .apiwrap{padding:4px 0 2px}
+  .apiwrap textarea{
+    width:100%;min-height:150px;box-sizing:border-box;padding:14px 16px;border:1px solid var(--line);
+    border-radius:10px;background:var(--paper);color:var(--ink);font-family:inherit;font-size:13.5px;
+    line-height:1.75;resize:vertical;
+  }
+  .apiwrap textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .apibar{display:flex;gap:10px;align-items:center;margin:10px 0 0;flex-wrap:wrap}
+  .gobtn{
+    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    padding:9px 20px;font-family:inherit;font-size:13.5px;font-weight:900;cursor:pointer;
+  }
+  .gobtn:hover{opacity:.85}
+  .gobtn:disabled{opacity:.55;cursor:default}
+  .apihint{font-size:12.5px;color:var(--muted)}
+  .spinner{
+    display:inline-block;width:14px;height:14px;border-radius:50%;
+    border:2px solid var(--line);border-top-color:var(--growth);
+    animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){ .spinner{animation:none} .keyshake{animation:none} }
+  .apiout{
+    margin-top:14px;padding:16px 18px;border:1px solid var(--growth);border-radius:10px;
+    background:var(--growth-soft);white-space:pre-wrap;font-size:13.5px;line-height:1.85;color:var(--ink);
+    max-height:520px;overflow-y:auto;
+  }
+  .apierr{
+    margin-top:14px;padding:12px 16px;border:1px solid var(--risk);border-radius:10px;
+    background:var(--risk-soft);color:var(--risk);font-size:13px;line-height:1.7;
+  }
+  .apiresultbar{display:flex;gap:8px;margin-top:10px}
+  .inlinegen{
+    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    padding:6px 16px;font-family:inherit;font-size:12.5px;font-weight:900;cursor:pointer;
+  }
+  .inlinegen:hover{opacity:.85}
+
   /* ---------- custom track ---------- */
   .customcard{cursor:default}
   .customcard input[type=text],.customcard select{
@@ -645,6 +706,25 @@
   :root[data-theme="dark"] .icsbtn{color:#262A2E}
   @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .icsbtn{color:#262A2E} }
   .icsbtn:hover{opacity:.85}
+
+  /* ---------- diagnosis card ---------- */
+  .diagcard{
+    border-radius:16px;padding:16px 20px;margin:0 0 20px;box-shadow:var(--shadow);
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px solid var(--line);
+  }
+  .diagcard b{font-size:14.5px;white-space:nowrap}
+  .diagcard span{font-size:13.5px;color:var(--muted);flex:1 1 260px}
+  .diagcard.neutral{background:var(--card)}
+  .diagcard.warn{background:var(--risk-soft);border-color:var(--risk)}
+  .diagcard.warn b{color:var(--risk)}
+  .diagcard.good{background:var(--growth-soft);border-color:var(--growth)}
+  .diagcard.good b{color:var(--growth)}
+  .diagbtn{
+    background:var(--risk);color:#fff;border:none;border-radius:999px;
+    padding:8px 18px;font-family:inherit;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;
+  }
+  .diagbtn:hover{opacity:.85}
+  .diagbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 
   /* ---------- step groups / setup / range ---------- */
   .pgroup{
@@ -889,9 +969,11 @@
       </div>
       <div class="personacard" id="personaCard" hidden></div>
       <div class="pprompt" id="pfPromptWrap">
-        <h4 style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 30px;font-weight:700">AI 幫我打磨（複製貼給 Claude／ChatGPT）</h4>
+        <h4 style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;font-weight:700">AI 幫我打磨（複製貼給 Claude／ChatGPT，或直接生成）</h4>
         <button type="button" class="copybtn" id="pfCopy">複製指令</button>
         <pre id="pfPre"></pre>
+        <div class="apiresultbar"><button type="button" class="inlinegen" id="pfGen">⚡ 直接生成</button></div>
+        <div id="pfApiOut"></div>
       </div>
     </div>
   </div>
@@ -1214,17 +1296,35 @@
 <section id="ai">
   <div class="wrap">
     <p class="kicker">每一步都有人帶</p>
-    <h2 class="serif">AI 幫手：14 個步驟，可自動也可手動</h2>
+    <h2 class="serif">AI 幫手：19 個步驟，三種做法任你選</h2>
     <p class="sub">
-      從定位到廣告共 14 站，<strong>每一站都有兩條路</strong>：「🤖 AI 自動」給你一條專家級指令——打開 Claude 或 ChatGPT，複製、把「＿＿」填上、送出；
-      「✋ 手動做法」給你不靠 AI 也能完成的具體步驟與免費工具。兩條路做完都算完成，隨時可切換。
+      從定位到帳號健檢共 19 站，<strong>每一站都有三條路</strong>：「📋 複製給 AI」給你一條專家級指令，貼到 Claude 或 ChatGPT 對話視窗；
+      「⚡ 直接生成」用你自己的 API 金鑰，按一下在這個頁面裡直接跑出結果；「✋ 手動做法」給你不靠 AI 也能完成的具體步驟與免費工具。三條路做完都算完成，隨時可切換。
       別被數量嚇到：<strong>新手每週真正要跑的只有標「★ 每週核心」的那幾條</strong>，其餘是到了那個階段才打開的工具箱。
       每條指令內建五層設計：<strong>行內方法論</strong>（留存點節奏、漏斗診斷、報價係數公式）、<strong>三重情境注入</strong>（你的賽道 × 人設 × 目前階段，隨勾選進度即時更新）、
       <strong>訪談模式</strong>（資料不足時 AI 先問你再產出）、<strong>自評修正</strong>（AI 用專業度／具體度／可執行度自檢後才交稿）、<strong>交付自查</strong>（滑走點模擬、並排查重）。
       你負責決策與出鏡，AI 負責到專業水準的初稿與分析。
-      這 14 步是一條<strong>指令鏈</strong>：每一步的產出尾端會自動附「交棒區」，複製貼進下一步即可——你的賽道、人設、階段在整條流水線上不斷鏈，
+      這 19 步是一條<strong>指令鏈</strong>：每一步的產出尾端會自動附「交棒區」，複製貼進下一步即可——你的賽道、人設、階段在整條流水線上不斷鏈，
       所以同一條指令，美妝×閨蜜型和理財×毒舌型跑出來的文字口氣完全不同。
     </p>
+
+    <div class="apisettings" id="apiSettings">
+      <h3>🔌 想要按一下就生成，不用複製貼上？</h3>
+      <p>預設是「複製給 AI」（零成本、零風險）。想要「⚡ 直接生成」，貼上你自己的 <b>Anthropic（Claude）API 金鑰</b>即可——金鑰只存在<strong>這台瀏覽器</strong>，不會送到我的任何伺服器，直接呼叫 Anthropic 官方網址，費用算在你自己的帳戶。</p>
+      <div class="apiform">
+        <input type="password" id="apiKeyInput" placeholder="貼上金鑰：sk-ant-...">
+        <select id="apiModelSelect">
+          <option value="claude-sonnet-5">Claude Sonnet 5（平衡，推薦）</option>
+          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5（快、便宜）</option>
+          <option value="claude-opus-4-8">Claude Opus 4.8（最強、較貴）</option>
+        </select>
+        <button type="button" class="pbtn" id="apiKeySave">儲存</button>
+        <button type="button" class="reset" id="apiKeyClear">清除金鑰</button>
+      </div>
+      <p class="status" id="apiKeyStatus">尚未設定金鑰——目前所有步驟都是複製貼上模式。</p>
+      <p class="help">還沒有金鑰？到 <b>console.anthropic.com</b> 註冊，在 API Keys 頁面建立一組，並建議設定用量上限。只想用複製貼上模式的話，這一區完全可以忽略。</p>
+    </div>
+
     <div class="aibanner" id="aiBanner"><b>提示</b>　尚未選擇賽道——指令會用通用版。回到上方選定賽道後，所有指令會自動代入你的賽道與定位。</div>
     <div id="promptList"></div>
   </div>
@@ -1337,8 +1437,10 @@
     <h2 class="serif">預期 vs 實際：成效追蹤</h2>
     <p class="sub">
       藍線是系統依你選的主題推算的<strong>預期軌跡</strong>（中位數，不是保證）；橘線是<strong>你的實際紀錄</strong>——每週或每月記一筆就好。
-      兩條線的差距不是成績單，是<strong>導航</strong>：落後找原因（用 AI 幫手的「卡關急診室」），超前就加碼。
+      兩條線的差距不是成績單，是<strong>導航</strong>：落後找原因，超前就加碼。系統會自動幫你比對、判斷要不要檢討。
     </p>
+
+    <div class="diagcard neutral" id="diagCard"><b>還沒有數據</b><span>記下第一筆實際成效後，這裡會自動幫你比對進度、判斷要不要檢討。</span></div>
 
     <div class="modetabs rangetabs" role="group" aria-label="時間範圍">
       <button type="button" class="modebtn rangebtn" data-r="3" aria-pressed="true">前 90 天（衝刺期）</button>
@@ -2071,6 +2173,7 @@
   $("pfCopy").addEventListener("click", function(){
     copyText($("pfPre").textContent, $("pfCopy"), "複製指令");
   });
+  wireInlineGenerate($("pfGen"), $("pfApiOut"), function(){ return $("pfPre").textContent; });
   refreshArch();
   renderPersonaCard();
 
@@ -2109,7 +2212,7 @@
     {t:"熱門貼文拆解", d:"拆自己或對手的爆款：可複製的結構＋改編方案",
      tpl:"你是爆款內容分析師，原則：拆結構不拆運氣——同樣的結構可以複製，同樣的時機不能。\n\n【素材】貼上 5–10 則熱門貼文或影片的資料（自己的或同賽道對手的），每則含：標題或開場、形式、數據（觀看／互動／轉發）、內文摘要：\n＿＿\n【背景】賽道：{賽道}；人設：{人設}\n\n請輸出：\n1. 逐則拆解表：鉤子類型｜結構（敘事線）｜情緒觸發點｜CTA 設計｜「可複製的元素」vs「不可複製的時機運氣」\n2. 共同模式：這批爆款的公因數（題材角度、形式、節奏、發布時段）\n3. 遷移方案：每一則給一個「換成我的人設與主題」的改編版（標題＋開場 3 秒逐字稿）\n4. 反面清單：哪些手法不適合我的人設，硬學會翻車，為什麼\n5. 排序：所有改編版按「成功率 × 製作成本」排出先拍順序"},
     {t:"卡關急診室", d:"成效不如預期：分診→病灶→兩週實驗處方",
-     tpl:"你是創作者急診醫師：先判斷是不是真的生病（樣本量夠不夠），再找病灶（漏斗斷點），最後開藥（兩週實驗）。禁止說「繼續堅持就好」這種安慰話。\n\n【現況】卡關描述：＿＿（例：連續 3 週數據下滑／發滿 30 支沒起色／粉絲有漲但沒收入）；最近的數據：＿＿；已經試過的方法：＿＿；想放棄程度（1–10）：＿＿\n【背景】賽道：{賽道}；人設：{人設}；我目前在：{階段}\n\n請輸出：\n1. 分診：這是「正常波動」「執行問題」「策略問題」還是「市場問題」？判斷依據是什麼\n2. 病灶定位：用漏斗五層找最可能的斷點，並列出「還要看哪個數據才能確診」\n3. 兩週實驗處方：2–3 個單一變因實驗，每個寫清楚——改什麼、其他保持什麼、成功指標數字、失敗的話下一步\n4. 止損線：什麼條件該調整定位、什麼條件該換主題、什麼條件其實該原地加碼——給明確條件，不給雞湯\n5. 心理面：以我的狀態，本週的「最低可行產出量」是多少（保住習慣比保住數據重要）\n6. 計畫連動：如果採納你的調整，我的 90 天行事曆哪幾類任務要暫停、哪些要新增"},
+     tpl:"你是創作者急診醫師：先判斷是不是真的生病（樣本量夠不夠），再找病灶（漏斗斷點），最後開藥（兩週實驗）。禁止說「繼續堅持就好」這種安慰話。\n{診斷數據}\n【現況】卡關描述：＿＿（例：連續 3 週數據下滑／發滿 30 支沒起色／粉絲有漲但沒收入）；最近的數據：＿＿；已經試過的方法：＿＿；想放棄程度（1–10）：＿＿\n【背景】賽道：{賽道}；人設：{人設}；我目前在：{階段}\n\n請輸出：\n1. 分診：這是「正常波動」「執行問題」「策略問題」還是「市場問題」？判斷依據是什麼\n2. 病灶定位：用漏斗五層找最可能的斷點，並列出「還要看哪個數據才能確診」\n3. 兩週實驗處方：2–3 個單一變因實驗，每個寫清楚——改什麼、其他保持什麼、成功指標數字、失敗的話下一步\n4. 止損線：什麼條件該調整定位、什麼條件該換主題、什麼條件其實該原地加碼——給明確條件，不給雞湯\n5. 心理面：以我的狀態，本週的「最低可行產出量」是多少（保住習慣比保住數據重要）\n6. 計畫連動：如果採納你的調整，我的 90 天行事曆哪幾類任務要暫停、哪些要新增"},
     {t:"自有照片美化編排", d:"你自己拍的照片：統一調色＋裁切構圖＋輪播九宮格編排",
      tpl:"你是社群修圖與版面指導，原則：修圖是統一氣質，不是變成別人；排版是說故事，不是排整齊。\n\n【素材】描述我手上的照片（拍了什麼、光線、場景、張數，可以分組描述）：＿＿；拍攝工具：＿＿；要用在：＿＿（單張貼文／輪播／九宮格／封面）\n【背景】賽道：{賽道}；人設：{人設}（照片要放大人設的記憶點）\n\n請輸出：\n1. 統一調色配方：一組可重複套用的修圖參數（曝光／對比／色溫／飽和／HSL 重點色方向），用 Lightroom Mobile 或美圖類 App 的免費功能就能完成\n2. 逐組處置：每組照片怎麼裁（構圖法則）、怎麼修、哪張當主圖、哪張放棄\n3. 排版方案：輪播的敘事順序（首圖鉤子→中段內容→尾圖 CTA）；九宮格的視覺節奏規則\n4. 文字上圖規範：字型風格、字級、位置、跟我的品牌色怎麼搭\n5. 補拍清單：現有素材缺什麼，下次拍照補哪 5 張（具體到構圖與光線）"},
     {t:"自有影片美化", d:"你自己拍的影片：結構手術→節奏→調色→字幕",
@@ -2193,7 +2296,15 @@
       .replace(/\{賽道\}/g, tp ? tp.name : "＿＿（你的賽道）")
       .replace(/\{定位\}/g, tp ? tp.pos : "＿＿（你的定位一句話）")
       .replace(/\{人設\}/g, pp || "＿＿（你的人設：到「人設」區建好後會自動代入）")
-      .replace(/\{階段\}/g, stagePlain());
+      .replace(/\{階段\}/g, stagePlain())
+      .replace(/\{診斷數據\}/g, diagPlain());
+  }
+  function diagPlain(){
+    var d = computeDiagnosis();
+    if(!d) return "【系統偵測】目前還沒有任何實際紀錄，無法自動比對——請先到「成效追蹤」記至少一筆數據，或直接口頭描述現況。";
+    return "【系統偵測到的數據】粉絲數：預期約 "+fmtNum(d.fansExp)+"，實際 "+fmtNum(d.fansAct)+"（"+d.fansPct+"%）；"
+      + "月收入：預期約 NT$"+fmtNum(d.incExp)+"，實際 NT$"+fmtNum(d.incAct)+"（"+d.incPct+"%）。"
+      + "請把這組數據納入你的分診判斷，不要只靠下面我填的文字描述。";
   }
   function copyText(text, btn, restore){
     function ok(){ btn.textContent = "已複製 ✓"; setTimeout(function(){ btn.textContent = restore; }, 1600); }
@@ -2201,6 +2312,124 @@
       navigator.clipboard.writeText(text).then(ok, function(){ fallbackCopy(text); ok(); });
     } else { fallbackCopy(text); ok(); }
   }
+
+  /* ================= 直接生成（自帶 API 金鑰） ================= */
+  var LS_APIKEY = "creator-os-apikey";
+  var LS_MODEL = "creator-os-model";
+  var apiKey = null, apiModel = "claude-sonnet-5";
+  try{ apiKey = localStorage.getItem(LS_APIKEY) || null; }catch(e){}
+  try{ apiModel = localStorage.getItem(LS_MODEL) || "claude-sonnet-5"; }catch(e){}
+  var apiModelSelect = $("apiModelSelect");
+  if(apiModelSelect) apiModelSelect.value = apiModel;
+  var apiKeyInput = $("apiKeyInput");
+  if(apiKeyInput && apiKey) apiKeyInput.value = apiKey;
+
+  function modelLabel(v){
+    var opt = apiModelSelect && apiModelSelect.querySelector("option[value='"+v+"']");
+    return opt ? opt.textContent : v;
+  }
+  function updateApiStatus(){
+    var el = $("apiKeyStatus"); if(!el) return;
+    if(apiKey){
+      el.innerHTML = "✓ 已設定金鑰（"+modelLabel(apiModel)+"）——每一站可以選「⚡ 直接生成」。";
+      el.style.color = "var(--growth)";
+    } else {
+      el.textContent = "尚未設定金鑰——目前所有步驟都是複製貼上模式。";
+      el.style.color = "";
+    }
+  }
+  if($("apiKeySave")) $("apiKeySave").addEventListener("click", function(){
+    var v = ($("apiKeyInput").value || "").trim();
+    if(!v){ $("apiKeyInput").focus(); return; }
+    apiKey = v;
+    apiModel = $("apiModelSelect").value;
+    try{ localStorage.setItem(LS_APIKEY, apiKey); localStorage.setItem(LS_MODEL, apiModel); }catch(e){}
+    updateApiStatus();
+    var btn = $("apiKeySave");
+    btn.textContent = "已儲存 ✓"; setTimeout(function(){ btn.textContent = "儲存"; }, 1600);
+  });
+  if($("apiKeyClear")) $("apiKeyClear").addEventListener("click", function(){
+    if(!confirm("確定要清除已儲存的 API 金鑰嗎？")) return;
+    apiKey = null;
+    try{ localStorage.removeItem(LS_APIKEY); }catch(e){}
+    $("apiKeyInput").value = "";
+    updateApiStatus();
+  });
+  if($("apiModelSelect")) $("apiModelSelect").addEventListener("change", function(){
+    apiModel = this.value;
+    try{ localStorage.setItem(LS_MODEL, apiModel); }catch(e){}
+    updateApiStatus();
+  });
+  updateApiStatus();
+
+  function focusApiSettings(){
+    var box = $("apiSettings");
+    if(box){ box.scrollIntoView({behavior:"smooth", block:"center"}); }
+    var input = $("apiKeyInput");
+    if(input){ input.classList.add("keyshake"); input.focus(); setTimeout(function(){ input.classList.remove("keyshake"); }, 500); }
+  }
+
+  async function callClaudeAPI(promptText){
+    var resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: apiModel,
+        max_tokens: 4096,
+        messages: [{ role: "user", content: promptText }]
+      })
+    });
+    var data = null;
+    try{ data = await resp.json(); }catch(e){}
+    if(!resp.ok){
+      var msg = (data && data.error && data.error.message) ? data.error.message : ("HTTP " + resp.status);
+      throw new Error(msg);
+    }
+    var text = "";
+    if(data && Array.isArray(data.content)){
+      text = data.content.map(function(b){ return b.text || ""; }).join("\n");
+    }
+    return text || "（沒有收到內容）";
+  }
+
+  /* 掛一個「⚡ 直接生成」按鈕在任意位置：按下去呼叫 API，結果顯示在 outEl 裡 */
+  function wireInlineGenerate(btn, outEl, getText){
+    if(!btn || !outEl) return;
+    btn.addEventListener("click", function(){
+      if(!apiKey){ focusApiSettings(); return; }
+      var text = getText();
+      btn.disabled = true;
+      var origLabel = btn.textContent;
+      btn.innerHTML = "<span class='spinner'></span>生成中…";
+      outEl.innerHTML = "";
+      callClaudeAPI(text).then(function(result){
+        var out = document.createElement("div");
+        out.className = "apiout";
+        out.textContent = result;
+        outEl.appendChild(out);
+        var bar = document.createElement("div");
+        bar.className = "apiresultbar";
+        var cp = document.createElement("button");
+        cp.type = "button"; cp.className = "inlinegen"; cp.textContent = "複製結果";
+        cp.addEventListener("click", function(){ copyText(result, cp, "複製結果"); });
+        bar.appendChild(cp);
+        outEl.appendChild(bar);
+      }).catch(function(err){
+        var box = document.createElement("div");
+        box.className = "apierr";
+        box.textContent = "生成失敗：" + err.message + "。請確認金鑰是否正確、額度是否足夠，或改用複製貼上模式。";
+        outEl.appendChild(box);
+      }).finally(function(){
+        btn.disabled = false; btn.textContent = origLabel;
+      });
+    });
+  }
+
   function updateSetup(){
     var el = $("setupSteps"); if(!el) return;
     var cs = $("calStart");
@@ -2243,27 +2472,38 @@
           +"<span class='desc'>"+p.d+"</span></summary>"
           +"<div class='pbody'>"
           +   "<div class='modetabs'>"
-          +     "<button type='button' class='modebtn' data-m='ai' aria-pressed='true'>🤖 AI 自動</button>"
+          +     "<button type='button' class='modebtn' data-m='ai' aria-pressed='true'>📋 複製給 AI</button>"
+          +     "<button type='button' class='modebtn' data-m='api' aria-pressed='false'>⚡ 直接生成</button>"
           +     "<button type='button' class='modebtn' data-m='hand' aria-pressed='false'>✋ 手動做法</button>"
           +   "</div>"
           +   "<div class='mwrap'><button type='button' class='copybtn'>複製指令</button><pre></pre></div>"
+          +   "<div class='apiwrap' hidden><textarea></textarea><div class='apibar'>"
+          +     "<button type='button' class='gobtn'>▶ 產生結果</button><span class='apihint'>會送出上方文字給 Claude API，你可以先編輯再產生</span>"
+          +   "</div><div class='apiout-host'></div></div>"
           +   "<div class='handbox' hidden></div>"
           + "</div>";
-        det.querySelector("pre").textContent = buildPrompt(i);
+        var promptText = buildPrompt(i);
+        det.querySelector(".mwrap pre").textContent = promptText;
+        det.querySelector(".apiwrap textarea").value = promptText;
         det.querySelector(".handbox").textContent = MANUALS[i] || "";
-        var mwrap = det.querySelector(".mwrap"), handbox = det.querySelector(".handbox");
+        var mwrap = det.querySelector(".mwrap"), apiwrap = det.querySelector(".apiwrap"), handbox = det.querySelector(".handbox");
         det.querySelectorAll(".modebtn").forEach(function(mb){
           mb.addEventListener("click", function(){
-            var isAI = mb.getAttribute("data-m") === "ai";
+            var mode = mb.getAttribute("data-m");
+            if(mode === "api" && !apiKey){ focusApiSettings(); return; }
             det.querySelectorAll(".modebtn").forEach(function(x){
               x.setAttribute("aria-pressed", x === mb ? "true" : "false");
             });
-            mwrap.hidden = !isAI;
-            handbox.hidden = isAI;
+            mwrap.hidden = mode !== "ai";
+            apiwrap.hidden = mode !== "api";
+            handbox.hidden = mode !== "hand";
           });
         });
         det.querySelector(".copybtn").addEventListener("click", function(ev){
-          copyText(buildPrompt(i), ev.currentTarget, "複製指令");
+          copyText(det.querySelector(".mwrap pre").textContent, ev.currentTarget, "複製指令");
+        });
+        wireInlineGenerate(det.querySelector(".gobtn"), det.querySelector(".apiout-host"), function(){
+          return det.querySelector(".apiwrap textarea").value;
         });
         list.appendChild(det);
       });
@@ -2404,17 +2644,21 @@
       +   "<div class='stratcell'><h4>怎麼拿到完整策略</h4><ul>"
       +     "<li><strong>複製下方指令</strong>，貼給 Claude 或 ChatGPT</li>"
       +     "<li>把 AI 給的定位、鉤子、賺錢順序抄回來，照五階段執行</li>"
-      +     "<li>下方 AI 幫手的 14 條指令已自動代入「"+name+"」，直接可用</li>"
+      +     "<li>下方 AI 幫手的 19 條指令已自動代入「"+name+"」，直接可用</li>"
       +     "<li>"+calcLine+"</li>"
       +   "</ul></div>"
       + "</div>"
-      + "<div class='ctprompt'><button type='button' class='copybtn' id='ctCopy'>複製指令</button><pre id='ctPre'></pre></div>"
+      + "<div class='ctprompt'><button type='button' class='copybtn' id='ctCopy'>複製指令</button><pre id='ctPre'></pre>"
+      +   "<div class='apiresultbar'><button type='button' class='inlinegen' id='ctGen'>⚡ 直接生成</button></div>"
+      +   "<div id='ctApiOut'></div>"
+      + "</div>"
       + meta
       + "</div>";
     $("ctPre").textContent = prompt;
     $("ctCopy").addEventListener("click", function(){
       copyText(prompt, $("ctCopy"), "複製指令");
     });
+    wireInlineGenerate($("ctGen"), $("ctApiOut"), function(){ return $("ctPre").textContent; });
     $("stratSub").innerHTML = "系統依你的自訂賽道「<strong>"+name+"</strong>」運作中（行情參考："+(r ? r.name : "通用參數，由 AI 配置變現組合")+"）。";
   }
   function selectCustom(name, ref, silent){
@@ -2695,6 +2939,66 @@
     var incAct = logData.map(function(e){ return {m:monthOf(e.d), y:+e.i, d:e.d}; });
     drawChart("chartFans", EXPECT_FANS, fansAct, "");
     drawChart("chartIncome", expIncomeArr(), incAct, "$");
+    renderDiagCard();
+  }
+
+  /* ================= 成效不彰自動檢討 ================= */
+  function computeDiagnosis(){
+    if(typeof logData === "undefined" || !logData || !logData.length) return null;
+    var last = logData[logData.length-1];
+    var m = monthOf(last.d);
+    var fansExp = Math.max(expAt(m, EXPECT_FANS), 1);
+    var incExp = Math.max(expAt(m, expIncomeArr()), 1);
+    var fansAct = +last.f, incAct = +last.i;
+    return {
+      fansExp: fansExp, fansAct: fansAct, fansPct: Math.round(fansAct/fansExp*100),
+      incExp: incExp, incAct: incAct, incPct: Math.round(incAct/incExp*100),
+      m: m
+    };
+  }
+  function renderDiagCard(){
+    var host = $("diagCard"); if(!host) return;
+    var d = computeDiagnosis();
+    if(!d){
+      host.className = "diagcard neutral";
+      host.innerHTML = "<b>還沒有數據</b><span>記下第一筆實際成效後，這裡會自動幫你比對進度、判斷要不要檢討。</span>";
+      return;
+    }
+    if(d.m < 0.5){
+      host.className = "diagcard neutral";
+      host.innerHTML = "<b>剛起步，太早比較</b><span>設定「我的 Day 1 日期」後，滿半個月再回來看比對——現在的數字還不夠參考。</span>";
+      return;
+    }
+    var worst = Math.min(d.fansPct, d.incPct);
+    var cls, headline, body;
+    if(worst < 60){
+      cls = "warn";
+      headline = "落後預期，建議做一次檢討";
+      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%（第 "+(Math.round(d.m*10)/10)+" 個月基準）。差距不代表失敗，但值得花 10 分鐘找出卡在哪一層。";
+    } else if(worst < 90){
+      cls = "neutral";
+      headline = "略低於預期，繼續觀察";
+      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%。在正常波動範圍內，先照計畫走；連續兩次都偏低再檢討。";
+    } else {
+      cls = "good";
+      headline = "跟上或超前預期 🎉";
+      body = "粉絲達成 "+d.fansPct+"%、收入達成 "+d.incPct+"%。保持這個節奏，別急著加碼變動。";
+    }
+    host.className = "diagcard " + cls;
+    host.innerHTML = "<b>"+headline+"</b><span>"+body+"</span>"
+      + (worst < 90 ? "<button type='button' class='diagbtn' id='diagGo'>做一次卡關急診 →</button>" : "");
+    var btn = $("diagGo");
+    if(btn){
+      btn.addEventListener("click", function(){
+        var target = document.querySelector('.pstep[data-pi="16"]');
+        if(target){
+          target.open = true;
+          target.scrollIntoView({behavior:"smooth", block:"start"});
+          var pre = target.querySelector(".mwrap pre");
+          if(pre) pre.textContent = buildPrompt(16);
+        }
+      });
+    }
   }
   function renderLogTable(){
     var tb = $("logBody");
