@@ -1,0 +1,2907 @@
+<title>社群小系統</title>
+<style>
+  /* 視覺語彙：療癒系晨光——暖象牙紙、柔杏、鼠尾草綠、霧藍、淡奶油黃，低對比柔光 */
+  :root{
+    --paper:#FAF7F1;
+    --card:#FFFFFF;
+    --ink:#4A4237;
+    --muted:#9A8D7D;
+    --line:rgba(74,66,55,.10);
+    --accent:#C17049;
+    --accent-soft:rgba(193,112,73,.10);
+    --growth:#5F8672;
+    --growth-soft:rgba(127,160,140,.14);
+    --risk:#A65E77;
+    --risk-soft:rgba(193,121,143,.10);
+    --sky:#B4CCDE;
+    --butter:#F1D8A3;
+    --btn-ink:#FFFFFF;
+    --shadow:0 12px 32px rgba(74,66,55,.07);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#262A2E;
+      --card:#30353B;
+      --ink:#EDE7DC;
+      --muted:#A9A093;
+      --line:rgba(237,231,220,.12);
+      --accent:#E5A97F;
+      --accent-soft:rgba(229,169,127,.13);
+      --growth:#96BFA6;
+      --growth-soft:rgba(150,191,166,.15);
+      --risk:#D999AC;
+      --risk-soft:rgba(217,153,172,.12);
+      --sky:#8FAEC6;
+      --butter:#E0C793;
+      --btn-ink:#262A2E;
+      --shadow:0 12px 32px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#FAF7F1; --card:#FFFFFF; --ink:#4A4237; --muted:#9A8D7D;
+    --line:rgba(74,66,55,.10); --accent:#C17049; --accent-soft:rgba(193,112,73,.10);
+    --growth:#5F8672; --growth-soft:rgba(127,160,140,.14);
+    --risk:#A65E77; --risk-soft:rgba(193,121,143,.10);
+    --sky:#B4CCDE; --butter:#F1D8A3; --btn-ink:#FFFFFF;
+    --shadow:0 12px 32px rgba(74,66,55,.07);
+  }
+  :root[data-theme="dark"]{
+    --paper:#262A2E; --card:#30353B; --ink:#EDE7DC; --muted:#A9A093;
+    --line:rgba(237,231,220,.12); --accent:#E5A97F; --accent-soft:rgba(229,169,127,.13);
+    --growth:#96BFA6; --growth-soft:rgba(150,191,166,.15);
+    --risk:#D999AC; --risk-soft:rgba(217,153,172,.12);
+    --sky:#8FAEC6; --butter:#E0C793; --btn-ink:#262A2E;
+    --shadow:0 12px 32px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    line-height:1.75; margin:0; font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:inherit;letter-spacing:.015em}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  main section{padding:56px 0 8px}
+
+  /* ---------- sticky stage nav ---------- */
+  nav.stagenav{
+    position:sticky;top:0;z-index:50;background:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  nav.stagenav .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px;align-items:center}
+  nav.stagenav a{
+    white-space:nowrap;text-decoration:none;color:var(--muted);
+    font-size:13.5px;padding:6px 13px;border-radius:999px;border:1px solid transparent;
+    letter-spacing:.02em;
+  }
+  nav.stagenav a:hover{color:var(--ink);border-color:var(--line)}
+  nav.stagenav a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  nav.stagenav .brand{font-weight:900;color:var(--ink);font-size:14px;margin-right:8px;letter-spacing:.05em;white-space:nowrap}
+  nav.stagenav .brand b{color:var(--accent)}
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 48px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+  .heroart{position:absolute;right:4%;top:48px;width:330px;height:310px;pointer-events:none}
+  .heroart span{display:block;position:absolute}
+  .heroart .sun{width:140px;height:140px;border-radius:50%;background:var(--butter);top:0;right:36px}
+  .heroart .archshape{bottom:0;right:104px;width:150px;height:196px;background:var(--accent);border-radius:75px 75px 0 0}
+  .heroart .archshape::after{content:"";position:absolute;left:50%;top:40px;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:var(--paper)}
+  .heroart .stairs{right:8px;bottom:0;width:84px;height:40px;background:var(--sky)}
+  .heroart .stairs::before{content:"";position:absolute;bottom:40px;right:0;width:56px;height:40px;background:var(--sky)}
+  .heroart .stairs::after{content:"";position:absolute;bottom:80px;right:0;width:28px;height:40px;background:var(--sky)}
+  .hero .wrap{position:relative;z-index:1}
+  @media (max-width:1180px){ .heroart{opacity:.35} }
+  @media (max-width:860px){ .heroart{display:none} }
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.22em;font-size:12px;color:var(--accent);
+    font-weight:700;margin:0 0 18px;
+  }
+  h1{
+    font-size:clamp(34px,5.6vw,58px);line-height:1.22;margin:0 0 20px;font-weight:900;
+    letter-spacing:.01em;text-wrap:balance;
+  }
+  h1 .gold{color:var(--accent)}
+  .hero p.lede{max-width:34em;font-size:17.5px;color:var(--muted);margin:0 0 34px}
+  .hero p.lede strong{color:var(--ink)}
+
+  .progressbox{
+    border:1px solid var(--line);border-radius:14px;background:var(--card);
+    padding:18px 22px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;
+  }
+  .progressbox .label{font-size:13px;color:var(--muted);letter-spacing:.08em}
+  .progressbox .pct{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--accent);min-width:3.2em}
+  .bar{flex:1 1 220px;height:10px;border-radius:999px;background:var(--accent-soft);overflow:hidden}
+  .bar i{display:block;height:100%;width:0%;background:var(--accent);border-radius:999px;transition:width .4s ease}
+  @media (prefers-reduced-motion: reduce){ .bar i{transition:none} }
+  .progressbox .hint{flex-basis:100%;font-size:13px;color:var(--muted);margin:0}
+
+  /* ---------- generic ---------- */
+  h2{
+    font-size:clamp(24px,3.4vw,34px);margin:0 0 8px;font-weight:900;letter-spacing:.02em;
+    text-wrap:balance;
+  }
+  .kicker{
+    display:inline-block;background:var(--accent-soft);color:var(--accent);
+    font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:900;
+    padding:5px 16px;border-radius:999px;margin:0 0 14px;
+  }
+  .sub{color:var(--muted);max-width:40em;margin:0 0 30px;font-size:15.5px}
+  .sub strong{color:var(--ink)}
+
+  .cards{display:grid;gap:14px}
+  .cards.c3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+  }
+  .card h3{margin:0 0 8px;font-size:16.5px;font-weight:700}
+  .card p{margin:0;font-size:14.5px;color:var(--muted)}
+  .card p strong{color:var(--ink)}
+
+  /* funnel */
+  .funnel{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin:26px 0 6px}
+  .funnel .step{
+    flex:1 1 190px;background:var(--card);border:1px solid var(--line);
+    padding:16px 18px;position:relative;
+  }
+  .funnel .step:first-child{border-radius:14px 0 0 14px}
+  .funnel .step:last-child{border-radius:0 14px 14px 0;background:var(--accent-soft);border-color:var(--accent)}
+  .funnel .step+.step{border-left:none}
+  .funnel .n{font-size:12px;color:var(--accent);letter-spacing:.15em;font-weight:700}
+  .funnel h3{margin:2px 0 4px;font-size:16px}
+  .funnel p{margin:0;font-size:13px;color:var(--muted)}
+  @media (max-width:720px){
+    .funnel{flex-direction:column}
+    .funnel .step:first-child{border-radius:14px 14px 0 0}
+    .funnel .step:last-child{border-radius:0 0 14px 14px}
+    .funnel .step+.step{border-left:1px solid var(--line);border-top:none}
+  }
+
+  /* ---------- track picker ---------- */
+  .trackgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .trackcard{
+    background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+    padding:18px 20px;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);
+    font-size:14px;line-height:1.6;position:relative;transition:border-color .15s ease;
+  }
+  .trackcard:hover{border-color:var(--accent)}
+  .trackcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .trackcard[aria-pressed="true"]{
+    border-color:var(--accent);background:var(--accent-soft);
+    box-shadow:0 0 0 1px var(--accent);
+  }
+  .trackcard[aria-pressed="true"]::after{
+    content:"✓ 已選擇";position:absolute;top:14px;right:16px;color:var(--accent);
+    font-size:12px;font-weight:900;letter-spacing:.08em;
+  }
+  .trackcard h3{margin:0 0 2px;font-size:17px;font-weight:900}
+  .trackcard .dots{letter-spacing:2px;color:var(--accent);font-size:13px}
+  .trackcard .dots span{opacity:.22}
+  .trackcard .rate{display:block;margin-top:8px;font-size:13px;color:var(--muted)}
+  .trackcard .rate b{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:700}
+  .trackcard .src{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+
+  /* ---------- strategy panel ---------- */
+  #strategy .empty{
+    border:1.5px dashed var(--line);border-radius:16px;padding:44px 28px;text-align:center;
+    color:var(--muted);font-size:15px;
+  }
+  .stratwrap{border:1px solid var(--accent);border-radius:18px;overflow:hidden;background:var(--card)}
+  .strathead{
+    background:var(--accent-soft);padding:26px 30px;border-bottom:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:8px 24px;align-items:baseline;
+  }
+  .strathead .tname{font-size:clamp(22px,3vw,30px);font-weight:900;margin:0}
+  .strathead .tname small{color:var(--accent);font-size:13px;letter-spacing:.18em;display:block;text-transform:uppercase;font-weight:700}
+  .strathead .tag{color:var(--muted);font-size:14.5px;margin:0;flex:1 1 300px}
+  .stratgrid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  @media (max-width:820px){ .stratgrid{grid-template-columns:1fr} }
+  .stratcell{padding:22px 30px;border-bottom:1px solid var(--line)}
+  .stratcell:nth-child(odd){border-right:1px solid var(--line)}
+  @media (max-width:820px){ .stratcell:nth-child(odd){border-right:none} }
+  .stratcell h4{
+    font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    margin:0 0 10px;font-weight:700;
+  }
+  .stratcell h4.warn{color:var(--risk)}
+  .stratcell p{margin:0 0 8px;font-size:14.5px;color:var(--muted)}
+  .stratcell p strong{color:var(--ink)}
+  .stratcell p.postmpl{
+    background:var(--accent-soft);border-radius:10px;padding:12px 16px;font-size:15px;
+    color:var(--ink);line-height:1.9;
+  }
+  .stratcell p.postmpl b{color:var(--accent);border-bottom:2px solid var(--accent);padding:0 2px;font-weight:900}
+  .stratcell ul{list-style:none;margin:0;padding:0;font-size:14px;color:var(--muted)}
+  .stratcell ul li{padding:6px 0 6px 18px;position:relative}
+  .stratcell ul li::before{content:"—";position:absolute;left:0;color:var(--accent)}
+  .stratcell ul li strong{color:var(--ink)}
+  .stratcell ul.hookslist li{font-size:14.5px;color:var(--ink)}
+  .stratcell ul.hookslist li::before{content:"「";color:var(--accent);font-weight:900}
+
+  .moneypath{padding:22px 30px 26px}
+  .moneypath h4{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px;font-weight:700}
+  .msteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .mstep{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--paper)}
+  .mstep .k{font-size:11.5px;letter-spacing:.14em;color:var(--growth);font-weight:900;text-transform:uppercase}
+  .mstep h5{margin:3px 0 5px;font-size:15px;font-weight:900}
+  .mstep p{margin:0;font-size:13px;color:var(--muted)}
+  .stratmeta{
+    display:flex;flex-wrap:wrap;gap:8px 28px;padding:16px 30px;border-top:1px solid var(--line);
+    font-size:13.5px;color:var(--muted);background:var(--accent-soft);
+  }
+  .stratmeta b{color:var(--ink)}
+
+  /* ---------- niche table ---------- */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+  th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{
+    font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    font-weight:700;background:var(--accent-soft);
+  }
+  tr:last-child td{border-bottom:none}
+
+  /* ---------- stages ---------- */
+  .stage{
+    border:1px solid var(--line);border-radius:18px;background:var(--card);
+    margin:0 0 26px;overflow:hidden;
+  }
+  .stage>header{
+    display:flex;gap:22px;align-items:flex-start;padding:26px 28px 8px;
+    border-bottom:none;flex-wrap:wrap;
+  }
+  .stage .glyph{
+    width:82px;height:82px;line-height:82px;flex:0 0 82px;
+    font-size:38px;font-weight:900;color:var(--accent);
+    background:var(--accent-soft);border-radius:50%;text-align:center;user-select:none;
+  }
+  .stage .headtext{flex:1 1 320px;min-width:0}
+  .stage h3.title{margin:4px 0 4px;font-size:22px;font-weight:900;letter-spacing:.01em}
+  .stage .range{font-size:13px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:700}
+  .stage .goal{margin:6px 0 0;font-size:14.5px;color:var(--muted)}
+  .stage .goal strong{color:var(--ink)}
+  .stage .tracktip{
+    margin:10px 0 0;font-size:14px;color:var(--ink);
+    background:var(--growth-soft);border:1px solid var(--growth);border-radius:10px;
+    padding:8px 14px;display:inline-block;
+  }
+  .stage .tracktip b{color:var(--growth);letter-spacing:.06em;font-size:12px;text-transform:uppercase;margin-right:6px}
+  .stage .earn{
+    flex:0 1 auto;background:var(--accent-soft);border:1px solid var(--accent);
+    border-radius:12px;padding:10px 16px;font-size:13.5px;max-width:280px;
+  }
+  .stage .earn b{display:block;color:var(--accent);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2px}
+  .stage .earn .amt{font-weight:900;font-variant-numeric:tabular-nums;font-size:16px}
+  .stage .earn .note{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .stage .body{display:grid;grid-template-columns:1.25fr .9fr;gap:0}
+  @media (max-width:820px){ .stage .body{grid-template-columns:1fr} }
+  .stage .tasks{padding:14px 28px 24px}
+  .stage .side{padding:14px 28px 24px;border-left:1px solid var(--line)}
+  @media (max-width:820px){ .stage .side{border-left:none;border-top:1px solid var(--line)} }
+  .stage h4{
+    font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+    margin:14px 0 10px;font-weight:700;
+  }
+  .stage h4.do{color:var(--growth)}
+  .stage h4.dont{color:var(--risk)}
+
+  ul.checklist{list-style:none;margin:0;padding:0}
+  ul.checklist li{margin:0 0 2px}
+  ul.checklist label{
+    display:flex;gap:11px;align-items:flex-start;padding:8px 10px;border-radius:9px;
+    cursor:pointer;font-size:14.5px;
+  }
+  ul.checklist label:hover{background:var(--accent-soft)}
+  ul.checklist input{
+    appearance:none;-webkit-appearance:none;width:19px;height:19px;flex:0 0 19px;margin-top:4px;
+    border:2px solid var(--muted);border-radius:5px;cursor:pointer;position:relative;background:transparent;
+  }
+  ul.checklist input:checked{background:var(--growth);border-color:var(--growth)}
+  ul.checklist input:checked::after{
+    content:"";position:absolute;left:4px;top:0px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg);
+  }
+  ul.checklist input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  ul.checklist input:checked+span{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(128,128,128,.5)}
+  ul.checklist span b{color:var(--ink);font-weight:700}
+
+  ul.plain{list-style:none;margin:0;padding:0;font-size:14px;color:var(--muted)}
+  ul.plain li{padding:5px 0 5px 18px;position:relative}
+  ul.plain li::before{content:"—";position:absolute;left:0;color:var(--accent)}
+  ul.plain.bad li::before{content:"✕";color:var(--risk);font-size:12px;top:8px}
+  ul.plain li strong{color:var(--ink)}
+
+  /* ---------- weekly SOP ---------- */
+  .sop{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .sop .day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .sop .d{font-size:11.5px;letter-spacing:.18em;color:var(--accent);font-weight:700;text-transform:uppercase}
+  .sop h3{font-size:15px;margin:4px 0 4px}
+  .sop p{font-size:13px;color:var(--muted);margin:0}
+
+  .hookbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-top:14px}
+  .hookbox h3{margin:0 0 12px;font-size:16px}
+  .hooks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px 26px;font-size:14px}
+  .hooks p{margin:0;padding:7px 0;border-bottom:1px dashed var(--line);color:var(--muted)}
+  .hooks p b{color:var(--ink);display:block;font-size:13px}
+  .hooks p em{color:var(--accent);font-style:normal}
+
+  /* ---------- calculator ---------- */
+  .calc{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    display:grid;grid-template-columns:1.1fr 1fr;overflow:hidden;
+  }
+  @media (max-width:820px){ .calc{grid-template-columns:1fr} }
+  .calc .inputs{padding:26px 28px}
+  .calc .results{padding:26px 28px;background:var(--accent-soft);border-left:1px solid var(--line)}
+  @media (max-width:820px){ .calc .results{border-left:none;border-top:1px solid var(--line)} }
+  .calc .trackline{
+    margin:0 0 18px;font-size:13.5px;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:6px 14px;display:inline-block;
+  }
+  .calc .trackline b{color:var(--accent)}
+  .field{margin:0 0 20px}
+  .field label{display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:6px;gap:12px}
+  .field label output{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:900;white-space:nowrap}
+  .field input[type=range]{width:100%;accent-color:var(--accent)}
+  .field .note{font-size:12.5px;color:var(--muted);margin:3px 0 0}
+  .field.check label{justify-content:flex-start;align-items:center;cursor:pointer;font-weight:400;font-size:14.5px}
+  .field.check input{width:18px;height:18px;accent-color:var(--growth);cursor:pointer}
+
+  .results .total{margin:0 0 4px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .results .big{font-size:clamp(28px,4vw,40px);font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.2;margin:0 0 2px}
+  .results .range{font-size:13.5px;color:var(--muted);margin:0 0 22px;font-variant-numeric:tabular-nums}
+  .breakrow{margin:0 0 12px}
+  .breakrow .t{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px}
+  .breakrow .t b{font-weight:700}
+  .breakrow .t .v{font-variant-numeric:tabular-nums;color:var(--muted)}
+  .breakrow .track{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+  .breakrow .track i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .3s ease}
+  @media (prefers-reduced-motion: reduce){ .breakrow .track i{transition:none} }
+  .results .disclaimer{font-size:12px;color:var(--muted);margin:20px 0 0;line-height:1.6}
+
+  /* ---------- 90 day ---------- */
+  .phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .phase{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .phase .ph{font-size:12px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;font-weight:700}
+  .phase h3{margin:4px 0 12px;font-size:17px;font-weight:900}
+
+  /* pitfalls */
+  .pitfalls{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .pit{background:var(--risk-soft);border:1px solid var(--risk);border-radius:14px;padding:18px 22px}
+  .pit h3{margin:0 0 6px;font-size:15.5px;color:var(--risk)}
+  .pit p{margin:0;font-size:14px;color:var(--muted)}
+  .pit p strong{color:var(--ink)}
+
+  footer{
+    border-top:1px solid var(--line);margin-top:70px;padding:34px 0 46px;
+    font-size:13px;color:var(--muted);
+  }
+  footer p{max-width:44em;margin:0 0 8px}
+
+  .reset{
+    background:none;border:1px solid var(--line);color:var(--muted);font-size:12.5px;
+    padding:5px 12px;border-radius:999px;cursor:pointer;font-family:inherit;
+  }
+  .reset:hover{color:var(--risk);border-color:var(--risk)}
+  .reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---------- platform playbook ---------- */
+  .platbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+  .platbtn{
+    background:var(--card);border:1.5px solid var(--line);border-radius:999px;
+    padding:8px 18px;font-family:inherit;font-size:14.5px;font-weight:700;color:var(--muted);
+    cursor:pointer;transition:border-color .15s ease;
+  }
+  .platbtn:hover{border-color:var(--accent);color:var(--ink)}
+  .platbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .platbtn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink);box-shadow:0 0 0 1px var(--accent)}
+  .platpanel{border:1px solid var(--accent);border-radius:18px;background:var(--card);overflow:hidden}
+  .plathead{background:var(--accent-soft);padding:20px 30px;border-bottom:1px solid var(--line)}
+  .plathead h3{margin:0 0 2px;font-size:22px;font-weight:900}
+  .plathead p{margin:0;font-size:14px;color:var(--muted)}
+  .plathead p b{color:var(--accent)}
+  .platgrid{display:grid;grid-template-columns:1fr 1fr}
+  @media (max-width:820px){ .platgrid{grid-template-columns:1fr} }
+
+  /* ---------- AI copilot ---------- */
+  .pstep{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    margin:0 0 12px;overflow:hidden;
+  }
+  .pstep summary{
+    cursor:pointer;padding:16px 22px;display:flex;gap:14px;align-items:baseline;
+    list-style:none;font-size:15.5px;font-weight:700;flex-wrap:wrap;
+  }
+  .pstep summary::-webkit-details-marker{display:none}
+  .pstep summary:hover{background:var(--accent-soft)}
+  .pstep summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  .pstep summary .no{
+    color:var(--accent);font-weight:900;font-variant-numeric:tabular-nums;
+    font-size:13px;letter-spacing:.1em;min-width:3.4em;
+  }
+  .pstep summary .desc{flex-basis:100%;font-weight:400;font-size:13.5px;color:var(--muted);padding-left:calc(3.4em + 14px)}
+  @media (max-width:640px){ .pstep summary .desc{padding-left:0} }
+  .pstep .pbody{border-top:1px solid var(--line);padding:16px 22px 20px;position:relative}
+  .pstep pre{
+    margin:0;white-space:pre-wrap;word-break:break-word;font-size:13.5px;line-height:1.8;
+    font-family:inherit;color:var(--muted);background:var(--paper);
+    border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+  }
+  .pstep pre b{color:var(--accent);font-weight:700}
+  .copybtn{
+    position:absolute;top:24px;right:30px;
+    background:var(--accent);color:var(--btn-ink);border:none;border-radius:999px;
+    padding:6px 16px;font-family:inherit;font-size:12.5px;font-weight:900;cursor:pointer;
+  }
+  .copybtn:hover{opacity:.85}
+  .copybtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .modetabs{display:flex;gap:8px;margin:0 0 14px}
+  .modebtn{
+    background:var(--paper);border:1.5px solid var(--line);color:var(--muted);
+    border-radius:999px;padding:6px 18px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;
+  }
+  .modebtn:hover{border-color:var(--accent);color:var(--ink)}
+  .modebtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--btn-ink)}
+  .modebtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .mwrap{position:relative}
+  .mwrap .copybtn{top:10px;right:10px}
+  .handbox{
+    font-size:14px;color:var(--muted);background:var(--paper);
+    border:1px solid var(--line);border-radius:12px;padding:16px 18px;line-height:1.9;
+  }
+  .handbox b{color:var(--ink)}
+  .aibanner{
+    background:var(--growth-soft);border:1px solid var(--growth);border-radius:12px;
+    padding:12px 18px;font-size:14px;color:var(--ink);margin:0 0 20px;
+  }
+  .aibanner b{color:var(--growth)}
+
+  /* ---------- SEO / ads ---------- */
+  .seocards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .seocard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .seocard .lv{font-size:11.5px;letter-spacing:.18em;color:var(--accent);font-weight:900;text-transform:uppercase}
+  .seocard h3{margin:3px 0 8px;font-size:17px;font-weight:900}
+  .seocard p{margin:0 0 8px;font-size:14px;color:var(--muted)}
+  .seocard p strong{color:var(--ink)}
+  .seocard ul{list-style:none;margin:0;padding:0;font-size:13.5px;color:var(--muted)}
+  .seocard ul li{padding:5px 0 5px 18px;position:relative}
+  .seocard ul li::before{content:"—";position:absolute;left:0;color:var(--accent)}
+  .seocard ul li strong{color:var(--ink)}
+
+  .adsteps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:18px}
+  .adstep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .adstep .k{font-size:11.5px;letter-spacing:.16em;color:var(--growth);font-weight:900;text-transform:uppercase}
+  .adstep h3{margin:3px 0 6px;font-size:16px;font-weight:900}
+  .adstep p{margin:0;font-size:13.5px;color:var(--muted)}
+  .adstep p strong{color:var(--ink)}
+  .adstep .money{color:var(--accent);font-weight:900}
+
+  /* ---------- custom track ---------- */
+  .customcard{cursor:default}
+  .customcard input[type=text],.customcard select{
+    width:100%;margin:0 0 8px;padding:8px 10px;border:1px solid var(--line);
+    border-radius:8px;background:var(--paper);color:var(--ink);
+    font-family:inherit;font-size:13.5px;
+  }
+  .customcard input:focus-visible,.customcard select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .ctgo{
+    width:100%;background:var(--accent);border:none;color:var(--btn-ink);border-radius:999px;
+    padding:9px;font-weight:900;font-family:inherit;font-size:14px;cursor:pointer;
+  }
+  .ctgo:hover{opacity:.85}
+  .ctgo:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .ctprompt{position:relative;padding:20px 30px 26px}
+  .ctprompt pre{
+    margin:0;white-space:pre-wrap;word-break:break-word;font-size:13.5px;line-height:1.8;
+    font-family:inherit;color:var(--muted);background:var(--paper);
+    border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+  }
+  .ctprompt .copybtn{top:28px}
+
+  /* ---------- 90-day calendar ---------- */
+  .calctrl{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin:0 0 20px;font-size:14px}
+  .calctrl label{font-weight:700}
+  .calctrl input[type=date]{
+    background:var(--card);border:1px solid var(--line);border-radius:8px;
+    padding:7px 10px;font-family:inherit;color:var(--ink);font-size:14px;
+  }
+  .calctrl input[type=date]:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .calctrl .dayinfo{color:var(--accent);font-weight:900}
+  .calweek{border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:14px;overflow:hidden}
+  .calweek>header{
+    display:flex;justify-content:space-between;gap:12px;padding:10px 18px;
+    border-bottom:1px solid var(--line);background:var(--accent-soft);font-size:13px;
+  }
+  .calweek>header .wl{font-weight:900;letter-spacing:.06em}
+  .calweek>header .wc{color:var(--muted);font-variant-numeric:tabular-nums}
+  .caldays{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .calday{
+    display:block;padding:10px 12px 12px;border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);cursor:pointer;font-size:12.5px;line-height:1.55;
+    position:relative;margin:0;
+  }
+  .calday:hover{background:var(--accent-soft)}
+  .calday input{position:absolute;opacity:0;pointer-events:none}
+  .calday .dn{display:block;font-size:11px;letter-spacing:.12em;color:var(--accent);font-weight:900;margin-bottom:2px}
+  .calday .dt{color:var(--ink)}
+  .calday input:checked ~ .dt{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(128,128,128,.5)}
+  .calday input:checked ~ .dn::after{content:" ✓";color:var(--growth)}
+  .calday input:focus-visible ~ .dn{outline:2px solid var(--accent);outline-offset:2px}
+  .calday.today{box-shadow:inset 0 0 0 2px var(--accent);background:var(--accent-soft)}
+  .calday.today .dn::before{content:"今天 · ";color:var(--growth)}
+
+  /* ---------- 療癒皮膚：柔光、呼吸感、慢動作 ---------- */
+  h1{font-weight:800}
+  h2{font-weight:800}
+  body{line-height:1.85}
+  main section{padding:64px 0 12px}
+  .card,.trackcard,.arch,.mm,.seocard,.adstep,.phase,.sop .day,.pstep,.hookbox,
+  .stage,.calc,.platpanel,.stratwrap,.pbuilder,.tablewrap,.calweek,.progressbox{
+    box-shadow:var(--shadow);
+  }
+  .card,.trackcard,.arch,.mm,.seocard,.adstep,.phase,.sop .day,.hookbox{border-radius:20px}
+  .stage,.calc,.platpanel,.stratwrap,.pbuilder,.calweek{border-radius:22px}
+  .pstep{border-radius:18px}
+  .progressbox{border-radius:20px}
+  @media (prefers-reduced-motion: no-preference){
+    .trackcard,.arch,.mm,.card,.seocard,.adstep{transition:transform .25s ease, box-shadow .25s ease, border-color .2s ease}
+    .trackcard:hover,.arch:hover,.mm:hover{transform:translateY(-3px)}
+  }
+  header.hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(640px 420px at 88% 8%, color-mix(in srgb, var(--butter) 40%, transparent), transparent 70%),
+      radial-gradient(600px 480px at -4% 100%, color-mix(in srgb, var(--sky) 32%, transparent), transparent 70%),
+      radial-gradient(400px 300px at 55% 110%, color-mix(in srgb, var(--growth) 14%, transparent), transparent 70%);
+  }
+  .heroart .sun{
+    background:radial-gradient(circle at 38% 34%, color-mix(in srgb, var(--butter) 100%, white 12%), var(--butter));
+    box-shadow:0 0 90px 34px color-mix(in srgb, var(--butter) 55%, transparent);
+  }
+  .heroart .archshape{
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, white 14%), var(--accent));
+    box-shadow:var(--shadow);
+  }
+  .heroart .stairs, .heroart .stairs::before, .heroart .stairs::after{
+    background:var(--sky);border-radius:6px 6px 0 0;
+    box-shadow:0 8px 24px color-mix(in srgb, var(--sky) 40%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference){
+    @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .heroart .sun{animation:floaty 9s ease-in-out infinite}
+    .heroart .archshape{animation:floaty 13s ease-in-out infinite}
+    .heroart .stairs{animation:floaty 11s ease-in-out infinite}
+  }
+  nav.stagenav{background:color-mix(in srgb, var(--paper) 88%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+
+  /* ---------- goal chips ---------- */
+  .goalrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 30px}
+  .goallabel{font-size:14px;color:var(--muted);font-weight:700}
+  .goalchip{
+    background:var(--card);border:1.5px solid var(--line);color:var(--muted);
+    border-radius:999px;padding:8px 20px;font-family:inherit;font-size:14.5px;font-weight:700;
+    cursor:pointer;box-shadow:var(--shadow);
+  }
+  .goalchip:hover{border-color:var(--accent);color:var(--ink)}
+  .goalchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--btn-ink)}
+  .goalchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---------- results / charts ---------- */
+  :root{--ch-exp:#3E7CB8;--ch-act:#C17049}
+  @media (prefers-color-scheme: dark){ :root{--ch-exp:#4E8FCC;--ch-act:#CE7038} }
+  :root[data-theme="light"]{--ch-exp:#3E7CB8;--ch-act:#C17049}
+  :root[data-theme="dark"]{--ch-exp:#4E8FCC;--ch-act:#CE7038}
+  .chartcard{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .chartcard h3{margin:0 0 2px;font-size:16.5px;font-weight:800}
+  .chartcard .chsub{margin:0 0 14px;font-size:13px;color:var(--muted)}
+  .chlegend{display:flex;gap:18px;font-size:13px;color:var(--muted);margin:0 0 8px;flex-wrap:wrap}
+  .chlegend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .chlegend .exp i{background:var(--ch-exp)}
+  .chlegend .act i{background:var(--ch-act)}
+  .chartwrap{position:relative;width:100%}
+  .chartwrap svg{width:100%;height:auto;display:block}
+  .chartwrap text{font-family:inherit;font-size:11px;fill:var(--muted)}
+  .chartwrap .grid{stroke:var(--line);stroke-width:1}
+  .chartwrap .axis{stroke:var(--line);stroke-width:1.5}
+  .chtip{
+    position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);
+    font-size:12px;line-height:1.6;padding:7px 12px;border-radius:9px;white-space:nowrap;
+    transform:translate(-50%,-115%);display:none;z-index:5;font-variant-numeric:tabular-nums;
+  }
+  .logform{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:0 0 14px}
+  .logform .lf{display:flex;flex-direction:column;gap:3px}
+  .logform label{font-size:12.5px;font-weight:700;color:var(--muted)}
+  .logform input{
+    padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);
+    color:var(--ink);font-family:inherit;font-size:14px;width:150px;font-variant-numeric:tabular-nums;
+  }
+  .logform input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  table.logtable{min-width:0;font-variant-numeric:tabular-nums}
+  table.logtable td button{
+    background:none;border:1px solid var(--line);border-radius:999px;color:var(--muted);
+    font-size:12px;padding:2px 10px;cursor:pointer;font-family:inherit;
+  }
+  table.logtable td button:hover{color:var(--risk);border-color:var(--risk)}
+
+  /* ---------- plan sync note ---------- */
+  .syncnote{
+    display:none;background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:14px;
+    padding:14px 18px;font-size:14px;margin:0 0 18px;
+  }
+  .syncnote.show{display:block}
+  .syncnote b{color:var(--accent)}
+  .syncnote button{
+    background:var(--accent);color:var(--btn-ink);border:none;border-radius:999px;
+    padding:6px 16px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-left:10px;
+  }
+  .icsbtn{
+    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    padding:8px 18px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;
+  }
+  :root[data-theme="dark"] .icsbtn{color:#262A2E}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .icsbtn{color:#262A2E} }
+  .icsbtn:hover{opacity:.85}
+
+  /* ---------- step groups / setup / range ---------- */
+  .pgroup{
+    margin:30px 0 12px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);font-weight:900;display:flex;align-items:center;gap:12px;
+  }
+  .pgroup::after{content:"";flex:1;height:1px;background:var(--line)}
+  .corebadge{
+    background:var(--growth-soft);color:var(--growth);border:1px solid var(--growth);
+    border-radius:999px;font-size:11px;font-weight:900;padding:1px 10px;letter-spacing:.05em;
+  }
+  .setupsteps{flex-basis:100%;display:flex;gap:8px;flex-wrap:wrap}
+  .setupstep{
+    font-size:12.5px;border:1.5px solid var(--line);border-radius:999px;
+    padding:4px 14px;color:var(--muted);text-decoration:none;font-weight:700;
+  }
+  .setupstep:hover{border-color:var(--accent);color:var(--ink)}
+  .setupstep.done{background:var(--growth-soft);border-color:var(--growth);color:var(--growth)}
+  .rangetabs{margin:0 0 14px}
+  .bar{height:12px;background:var(--accent-soft)}
+  .bar i{background:linear-gradient(90deg, var(--growth), var(--accent))}
+  .nextstep{border-radius:14px}
+  .pit{border-radius:20px;box-shadow:var(--shadow)}
+  .funnel .step{box-shadow:none}
+
+  /* ---------- next step indicator ---------- */
+  .nextstep{
+    flex-basis:100%;background:var(--growth-soft);border:1px solid var(--growth);
+    border-radius:10px;padding:10px 16px;font-size:14.5px;margin:2px 0 0;
+  }
+  .nextstep b{color:var(--growth);letter-spacing:.08em;font-size:12px;text-transform:uppercase;margin-right:8px}
+  .nextstep a{color:var(--ink);font-weight:700;text-decoration:none;border-bottom:1.5px solid var(--growth)}
+  .nextstep a:hover{color:var(--growth)}
+
+  /* ---------- persona ---------- */
+  .archgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:26px}
+  .arch{
+    background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+    padding:18px 20px;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);
+    font-size:13.5px;line-height:1.65;position:relative;transition:border-color .15s ease;
+  }
+  .arch:hover{border-color:var(--accent)}
+  .arch:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .arch[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent)}
+  .arch[aria-pressed="true"]::after{
+    content:"✓ 我的原型";position:absolute;top:14px;right:16px;color:var(--accent);
+    font-size:11.5px;font-weight:900;letter-spacing:.06em;
+  }
+  .arch h3{margin:0 0 4px;font-size:16.5px;font-weight:900}
+  .arch .eg{display:block;color:var(--muted);margin:4px 0 6px}
+  .arch .fit{display:block;font-size:12.5px;color:var(--accent);font-weight:700}
+
+  .pbuilder{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  }
+  .pbuilder .pbhead{background:var(--accent-soft);padding:18px 28px;border-bottom:1px solid var(--line)}
+  .pbuilder .pbhead h3{margin:0;font-size:18px;font-weight:900}
+  .pbuilder .pbhead p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+  .pbform{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;padding:22px 28px}
+  @media (max-width:720px){ .pbform{grid-template-columns:1fr} }
+  .pbf label{display:block;font-size:13px;font-weight:700;margin-bottom:4px}
+  .pbf label small{color:var(--muted);font-weight:400;margin-left:6px}
+  .pbf input{
+    width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;
+    background:var(--paper);color:var(--ink);font-family:inherit;font-size:14px;box-sizing:border-box;
+  }
+  .pbf input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .pbactions{padding:0 28px 22px;display:flex;gap:10px;flex-wrap:wrap}
+  .pbtn{
+    background:var(--accent);border:none;color:var(--btn-ink);border-radius:999px;
+    padding:10px 26px;font-weight:900;font-family:inherit;font-size:14.5px;cursor:pointer;
+  }
+  .pbtn:hover{opacity:.85}
+  .pbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .personacard{
+    margin:0 28px 24px;border:1.5px solid var(--accent);border-radius:14px;
+    background:var(--accent-soft);padding:20px 24px;
+  }
+  .personacard .pc-line{font-size:17px;font-weight:900;margin:0 0 10px;line-height:1.6}
+  .personacard .pc-line b{color:var(--accent)}
+  .personacard dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:13.5px}
+  .personacard dt{color:var(--accent);font-weight:700;white-space:nowrap}
+  .personacard dd{margin:0;color:var(--ink)}
+  .personacard .pc-note{font-size:12.5px;color:var(--muted);margin:12px 0 0}
+  .pprompt{position:relative;padding:0 28px 26px}
+  .pprompt pre{
+    margin:0;white-space:pre-wrap;word-break:break-word;font-size:13.5px;line-height:1.8;
+    font-family:inherit;color:var(--muted);background:var(--paper);
+    border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+  }
+  .pprompt .copybtn{top:8px;right:28px;position:absolute}
+
+  /* ---------- money map ---------- */
+  .mmapcat{margin:0 0 8px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .mmapcat h3{margin:18px 0 2px;font-size:16px;font-weight:900;color:var(--accent);letter-spacing:.04em}
+  .mmapcat p{margin:0;font-size:13px;color:var(--muted)}
+  .mmapgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:8px}
+  .mm{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 18px;font-size:13px}
+  .mm h4{margin:0 0 4px;font-size:15px;font-weight:900;color:var(--ink);letter-spacing:0;text-transform:none}
+  .mm .meta{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 6px;font-size:12px;color:var(--muted)}
+  .mm .meta b{color:var(--accent);font-weight:700}
+  .mm p{margin:0;color:var(--muted);line-height:1.65}
+  .mm.hot{border-color:var(--growth)}
+  .mm.hot h4::after{content:" · 0 粉可做";color:var(--growth);font-size:11.5px;font-weight:900}
+
+  /* ---------- AI chip ---------- */
+  .aichip{
+    display:inline-block;background:var(--growth-soft);border:1px solid var(--growth);
+    color:var(--growth);border-radius:999px;padding:1px 9px;font-size:11px;font-weight:900;
+    font-family:inherit;cursor:pointer;margin-left:8px;vertical-align:middle;letter-spacing:.04em;
+    line-height:1.7;
+  }
+  .aichip:hover{background:var(--growth);color:#fff}
+  .aichip:focus-visible{outline:2px solid var(--growth);outline-offset:2px}
+  .calday .aichip{position:absolute;top:8px;right:8px;margin:0}
+</style>
+
+<nav class="stagenav" aria-label="階段導覽">
+  <div class="wrap">
+    <span class="brand">社群<b>小系統</b></span>
+    <a href="#position">選主題</a>
+    <a href="#strategy">我的計畫</a>
+    <a href="#persona">打造人設</a>
+    <a href="#money">賺錢方法</a>
+    <a href="#stages">成長地圖</a>
+    <a href="#sop">每週做內容</a>
+    <a href="#platforms">各平台發法</a>
+    <a href="#ai">AI 幫手</a>
+    <a href="#calc">算算收入</a>
+    <a href="#results">成效追蹤</a>
+    <a href="#plan90">90 天行事曆</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="heroart" aria-hidden="true"><span class="sun"></span><span class="archshape"></span><span class="stairs"></span></div>
+  <div class="wrap">
+    <p class="eyebrow">社群小系統 · 陪你從 0 開始賺錢的社群工作台</p>
+    <h1 class="serif">被看見不是運氣，<br>是<span class="gold">照流程做出來</span>的。</h1>
+    <p class="lede">
+      這套系統帶一個 <strong>0 粉絲、0 經驗</strong> 的新手，走到<strong>你自己定義的目標</strong>——穩定收入、被更多人看見，或把理念傳出去。
+      用法很簡單：<strong>① 選主題、定目標 → ② 系統生成你的專屬計畫 → ③ 照階段執行、做完勾掉</strong>。
+      每個平台有各自的發文方法，流程的每一步都可以<strong>選 AI 自動或自己手動</strong>——你負責決策與出鏡，系統帶著你走。
+    </p>
+    <div class="goalrow" id="goalRow" role="group" aria-label="我的目標（可複選）">
+      <span class="goallabel">我做這件事是為了（可複選）：</span>
+      <button type="button" class="goalchip" data-goal="money" aria-pressed="false">💰 穩定收入</button>
+      <button type="button" class="goalchip" data-goal="fame" aria-pressed="false">⭐ 被看見</button>
+      <button type="button" class="goalchip" data-goal="idea" aria-pressed="false">💡 傳達理念</button>
+    </div>
+    <div class="progressbox">
+      <span class="label">我的系統執行進度</span>
+      <div class="bar" role="progressbar" aria-label="整體執行進度"><i id="pbar"></i></div>
+      <span class="pct" id="ppct">0%</span>
+      <button class="reset" id="resetAll" type="button">清空所有勾選</button>
+      <div class="setupsteps" id="setupSteps" aria-label="開始前的四個設定"></div>
+      <div class="nextstep" id="nextStep"><b>下一步</b><span>選一個主題，系統會開始帶你走。</span></div>
+      <p class="hint">所有設定與進度自動存在這台裝置（頁尾可匯出備份）。標有 <span class="aichip" style="cursor:default">AI 代勞</span> 的任務點一下就複製指令——你不用全部自己做。</p>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 系統邏輯 ============ -->
+<section id="logic">
+  <div class="wrap">
+    <p class="kicker">系統邏輯</p>
+    <h2 class="serif">錢的路徑只有一條</h2>
+    <p class="sub">不管你的目標是收入、影響力還是理念擴散，成果都走同一條漏斗。搞懂它，你就知道每個階段該優化哪一環，而不是瞎忙。</p>
+
+    <div class="funnel">
+      <div class="step"><span class="n">01</span><h3>內容</h3><p>可複製的內容格式，一週穩定產出 3–5 支</p></div>
+      <div class="step"><span class="n">02</span><h3>流量</h3><p>演算法把內容推給陌生人，前 3 秒決定生死</p></div>
+      <div class="step"><span class="n">03</span><h3>信任</h3><p>粉絲追蹤、回訪、留言——信任才能換成錢</p></div>
+      <div class="step"><span class="n">04</span><h3>變現</h3><p>業配、聯盟、分潤、商品——多管道疊加</p></div>
+    </div>
+
+    <div class="cards c3" style="margin-top:18px">
+      <div class="card"><h3>原則一：先量後質</h3><p>前 30 支影片是學費，不是作品。新手最大的錯是拍 3 支就開始「打磨」。<strong>發布頻率 &gt; 單支品質</strong>，數據會告訴你什麼值得打磨。</p></div>
+      <div class="card"><h3>原則二：一個帳號只做一件事</h3><p>演算法靠「這個帳號在講什麼」決定推給誰。今天美食明天健身，系統就無法標記你。<strong>定位越窄，漲粉越快，業配單價越高。</strong></p></div>
+      <div class="card"><h3>原則三：變現不等大</h3><p>不用等 10 萬粉才賺錢。<strong>1,000 粉就有第一筆收入</strong>（聯盟行銷、小型業配）。每個階段都有對應的賺錢方式，路線圖在下面。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 選賽道 ============ -->
+<section id="position">
+  <div class="wrap">
+    <p class="kicker">第 1 步 · 由你決定</p>
+    <h2 class="serif">選一個主題（賽道）</h2>
+    <p class="sub">
+      點選一個賽道，系統會生成該賽道的<strong>完整變現策略</strong>：定位模板、主打格式、開場鉤子、賺錢順序、行情價格、法規紅線，
+      並同步更新下方的五階段收入與試算器參數。挑選原則：<strong>你講得出 50 個題目的領域 × 有人願意花錢的市場</strong>。
+      記住：賽道只決定「市場在哪」，<strong>選完賽道要接著做「人設」</strong>——那才是別人搶不走的部分。
+    </p>
+    <div class="trackgrid" id="trackGrid" role="group" aria-label="選擇賽道"></div>
+  </div>
+</section>
+
+<!-- ============ 專屬策略 ============ -->
+<section id="strategy">
+  <div class="wrap">
+    <p class="kicker">系統幫你生成</p>
+    <h2 class="serif">你的賺錢計畫</h2>
+    <p class="sub" id="stratSub">選好賽道後，這裡會生成專屬於該賽道的完整打法。</p>
+    <div id="stratBody">
+      <div class="empty">還沒選賽道。在上方點一張賽道卡，這裡會立刻生成該賽道的變現策略。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 人設 ============ -->
+<section id="persona">
+  <div class="wrap">
+    <p class="kicker">第 2 步 · 別人搶不走的</p>
+    <h2 class="serif">打造人設：主題可以重複，人設不能</h2>
+    <p class="sub">
+      同一條賽道有一萬個帳號，觀眾為什麼追蹤<strong>你</strong>？答案不是內容（內容會被抄），是人設——
+      <strong>身分 × 反差 × 立場 × 記憶點</strong>的組合，這個組合全世界只有一個。
+      先選一個原型當骨架，再用下面的六要素建構器把血肉填上；完成的人設會自動注入所有 AI 指令，讓每支腳本、每則文案都是「你的口氣」。
+    </p>
+
+    <div class="archgrid" id="archGrid"></div>
+
+    <div class="pbuilder">
+      <div class="pbhead">
+        <h3>人設六要素建構器</h3>
+        <p>寫不出來就先亂填，按「AI 幫我打磨」讓 AI 給你三個版本再回來改。填好按「儲存人設」。</p>
+      </div>
+      <div class="pbform">
+        <div class="pbf"><label for="pf1">① 我是誰<small>身分與背景，越具體越好</small></label><input type="text" id="pf1" placeholder="例：工程師爸爸／護理師／欠債 50 萬的上班族" maxlength="30"></div>
+        <div class="pbf"><label for="pf2">② 我的反差點<small>人設的鉤子：A 身分卻做 B 的事</small></label><input type="text" id="pf2" placeholder="例：不會做菜的營養師／怕生的業務" maxlength="30"></div>
+        <div class="pbf"><label for="pf3">③ 我永遠站在誰那邊<small>立場，讓受眾覺得「他是自己人」</small></label><input type="text" id="pf3" placeholder="例：小資族／新手媽媽／月薪 3 萬的人" maxlength="30"></div>
+        <div class="pbf"><label for="pf4">④ 我的記憶點<small>固定穿著、口頭禪、開場動作、場景</small></label><input type="text" id="pf4" placeholder="例：永遠戴漁夫帽／開場先嘆氣／廚房白磁磚" maxlength="30"></div>
+        <div class="pbf"><label for="pf5">⑤ 我的語氣<small>說話的感覺，兩三個形容詞</small></label><input type="text" id="pf5" placeholder="例：直白毒舌但暖／慢條斯理像老師" maxlength="30"></div>
+        <div class="pbf"><label for="pf6">⑥ 我絕不做的事<small>禁區讓人設立體，也保護你</small></label><input type="text" id="pf6" placeholder="例：不推自己沒用過的東西／不聊政治" maxlength="30"></div>
+      </div>
+      <div class="pbactions">
+        <button type="button" class="pbtn" id="pfSave">儲存人設</button>
+        <button type="button" class="reset" id="pfClear">清除人設</button>
+      </div>
+      <div class="personacard" id="personaCard" hidden></div>
+      <div class="pprompt" id="pfPromptWrap">
+        <h4 style="font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 30px;font-weight:700">AI 幫我打磨（複製貼給 Claude／ChatGPT）</h4>
+        <button type="button" class="copybtn" id="pfCopy">複製指令</button>
+        <pre id="pfPre"></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 變現全景圖 ============ -->
+<section id="money">
+  <div class="wrap">
+    <p class="kicker">錢從哪裡來</p>
+    <h2 class="serif">16 種賺錢方法：業配只是其中一種</h2>
+    <p class="sub">
+      這套系統前面常拿業配和團購舉例，因為它們最早能上手——但它們只是入口，不是全部。
+      收入模式共六大類 16 種，<strong>成熟的創作者通常同時開 3–5 種</strong>。
+      標了「0 粉可做」的，是連粉絲都還沒有就能開始賺的模式——新手完全可以邊漲粉邊接。
+    </p>
+
+    <div class="mmapcat"><h3>流量財</h3><p>平台直接付你錢——按觀看計費，睡覺也在賺，但單價低、看平台臉色</p></div>
+    <div class="mmapgrid">
+      <div class="mm"><h4>廣告分潤</h4><div class="meta"><span>門檻 <b>YT 千訂閱</b></span><span>毛利 <b>100%</b></span><span>穩定度 <b>中</b></span></div><p>YouTube／FB 影片廣告分成。中文區 RPM 約 NT$20–40，長片高於短片，理財 3C 類最高。</p></div>
+      <div class="mm"><h4>創作者基金／獎勵</h4><div class="meta"><span>門檻 <b>各平台不一</b></span><span>毛利 <b>100%</b></span><span>穩定度 <b>低</b></span></div><p>TikTok 等平台的流量獎勵金。當零用錢，不要當收入計畫。</p></div>
+    </div>
+
+    <div class="mmapcat"><h3>信任財</h3><p>品牌借你的信任賣東西——上手最快，但收入跟著演算法與檔期波動</p></div>
+    <div class="mmapgrid">
+      <div class="mm"><h4>業配（品牌合作）</h4><div class="meta"><span>門檻 <b>約 3 千粉</b></span><span>毛利 <b>~100%</b></span><span>穩定度 <b>中</b></span></div><p>單價看賽道與互動率。報價方法見 AI 幫手 STEP 10。</p></div>
+      <div class="mm hot"><h4>聯盟行銷</h4><div class="meta"><span>門檻 <b>0–1 千粉</b></span><span>毛利 <b>100%</b></span><span>穩定度 <b>中</b></span></div><p>蝦皮分潤／聯盟網／通路王，掛連結抽 5–15%。內容在，連結就一直賺。</p></div>
+      <div class="mm"><h4>團購</h4><div class="meta"><span>門檻 <b>約 1 萬粉</b></span><span>毛利 <b>抽 15–30%</b></span><span>穩定度 <b>中高</b></span></div><p>親子、美食、美妝的主力。一檔成功團購常勝過整月業配。</p></div>
+    </div>
+
+    <div class="mmapcat"><h3>產品財</h3><p>賣自己的東西——毛利與主導權最高，是從「創作者」變「生意」的分水嶺</p></div>
+    <div class="mmapgrid">
+      <div class="mm"><h4>數位產品</h4><div class="meta"><span>門檻 <b>約 1 千粉</b></span><span>毛利 <b>85%+</b></span><span>穩定度 <b>高</b></span></div><p>模板、電子書、懶人包，NT$300–990。做一次賣一萬次。</p></div>
+      <div class="mm"><h4>線上課程</h4><div class="meta"><span>門檻 <b>約 2 萬粉</b></span><span>毛利 <b>70%+</b></span><span>穩定度 <b>高</b></span></div><p>NT$1,500–9,900。先預售、達標才開錄，零庫存風險。</p></div>
+      <div class="mm"><h4>自有商品／選物</h4><div class="meta"><span>門檻 <b>約 5 萬粉</b></span><span>毛利 <b>40–60%</b></span><span>穩定度 <b>高</b></span></div><p>自有品牌或選品店。粉絲經濟的終局之一，要管庫存與客服。</p></div>
+    </div>
+
+    <div class="mmapcat"><h3>服務財</h3><p>賣你的時間與專業——單價高、上手早，但不可規模化</p></div>
+    <div class="mmapgrid">
+      <div class="mm hot"><h4>接案溢價</h4><div class="meta"><span>門檻 <b>0 粉</b></span><span>毛利 <b>~100%</b></span><span>穩定度 <b>中</b></span></div><p>你的帳號就是作品集：設計、剪輯、文案的案子會自己找上門，報價比沒帳號時高 2–5 倍。</p></div>
+      <div class="mm"><h4>諮詢／教練服務</h4><div class="meta"><span>門檻 <b>約 5 千粉</b></span><span>毛利 <b>~100%</b></span><span>穩定度 <b>中高</b></span></div><p>一對一諮詢、客製課表、陪跑服務。知識與健身賽道的變現王。</p></div>
+      <div class="mm"><h4>企業內訓／演講</h4><div class="meta"><span>門檻 <b>約 5 萬粉</b></span><span>毛利 <b>~100%</b></span><span>穩定度 <b>中</b></span></div><p>單場 NT$3 萬起。B 端單價是 C 端的 10 倍，知識型人設的隱藏天花板。</p></div>
+    </div>
+
+    <div class="mmapcat"><h3>粉絲財</h3><p>鐵粉直接支持你——收入最穩定，靠的是人設而不是流量</p></div>
+    <div class="mmapgrid">
+      <div class="mm"><h4>訂閱制會員</h4><div class="meta"><span>門檻 <b>約 3 萬粉</b></span><span>毛利 <b>90%+</b></span><span>穩定度 <b>最高</b></span></div><p>YT 頻道會員、Patreon、方格子。經常性收入，估值最高的變現形態。</p></div>
+      <div class="mm"><h4>直播斗內／禮物</h4><div class="meta"><span>門檻 <b>約 1 萬粉</b></span><span>毛利 <b>拆帳 30–70%</b></span><span>穩定度 <b>中</b></span></div><p>陪伴型與角色型人設的主場——看的是「關係」，不是內容品質。</p></div>
+      <div class="mm"><h4>贊助／抖內</h4><div class="meta"><span>門檻 <b>約 5 千粉</b></span><span>毛利 <b>90%+</b></span><span>穩定度 <b>低</b></span></div><p>「請我喝咖啡」型單次支持。掛著不虧，別指望它養家。</p></div>
+    </div>
+
+    <div class="mmapcat"><h3>IP 財</h3><p>你的內容與形象本身變成資產——最慢，但最值錢</p></div>
+    <div class="mmapgrid">
+      <div class="mm hot"><h4>UGC 創作者</h4><div class="meta"><span>門檻 <b>0 粉</b></span><span>毛利 <b>~100%</b></span><span>穩定度 <b>中高</b></span></div><p>幫品牌拍短影音素材給「品牌自己的帳號」用——不需要你的流量，一支 NT$1,500–5,000。新手練功兼賺錢的最佳副線。</p></div>
+      <div class="mm"><h4>授權／版稅／聯名</h4><div class="meta"><span>門檻 <b>看 IP 強度</b></span><span>毛利 <b>90%+</b></span><span>穩定度 <b>高</b></span></div><p>圖文角色授權、聯名商品、音樂與素材版稅。角色型人設的終局。</p></div>
+      <div class="mm"><h4>經紀他人／孵化</h4><div class="meta"><span>門檻 <b>你先成功</b></span><span>毛利 <b>抽 20–40%</b></span><span>穩定度 <b>高</b></span></div><p>把你這套方法論變成公司，簽新人抽成——階段肆之後的選項。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 五階段 ============ -->
+<section id="stages">
+  <div class="wrap">
+    <p class="kicker">成長地圖</p>
+    <h2 class="serif">五個階段，每一階都有錢拿</h2>
+    <p class="sub">
+      階段用<strong>粉絲數</strong>劃分，不是時間——做得快 3 個月走完前三階，做得慢就照自己的節奏。
+      規則只有一條：<strong>不要做超過你當前階段的事</strong>（例如 500 粉就想開課），也不要漏掉該階段的變現動作。
+      選了賽道後，每個階段會多出一條<strong>賽道戰術</strong>與該賽道的收入區間。
+    </p>
+
+    <!-- 階段零 -->
+    <article class="stage">
+      <header>
+        <span class="glyph serif" aria-hidden="true">零</span>
+        <div class="headtext">
+          <span class="range">階段零 · 0 → 500 粉 · 約第 1–6 週</span>
+          <h3 class="title">冷啟動：用 30 支影片換出爆款公式</h3>
+          <p class="goal">目標：<strong>發滿 30 支短影音</strong>，找出 2–3 個數據明顯較好的內容格式。這個階段的產出是「情報」，不是粉絲數。</p>
+          <p class="tracktip" data-tipidx="0" hidden><b>賽道戰術</b><span></span></p>
+        </div>
+        <div class="earn"><b>本階段收入</b><span class="amt" data-earnidx="0">NT$0</span><span class="note">正常。此時想賺錢會毀掉帳號權重，專心餵數據。</span></div>
+      </header>
+      <div class="body">
+        <div class="tasks">
+          <h4 class="do">任務清單（勾選存檔）</h4>
+          <ul class="checklist">
+            <li><label><input type="checkbox" data-key="s0-1"><span><b>寫出定位一句話</b>：套用上方策略區的定位模板</span></label></li>
+            <li><label><input type="checkbox" data-key="s0-2"><span><b>列出 50 個選題</b>，存進手機備忘錄當「選題庫」</span></label></li>
+            <li><label><input type="checkbox" data-key="s0-3"><span><b>開好三平台帳號</b>（IG／TikTok／YT Shorts），頭像、簡介、定位一句話全部一致</span></label></li>
+            <li><label><input type="checkbox" data-key="s0-4"><span><b>手機＋自然光開拍</b>，不買任何器材（上限：NT$500 的領夾麥克風）</span></label></li>
+            <li><label><input type="checkbox" data-key="s0-5"><span><b>每週發 5 支、連續 6 週</b>，同一支影片三平台同發</span></label></li>
+            <li><label><input type="checkbox" data-key="s0-6"><span><b>每支影片記錄數據</b>：完播率、按讚、分享、追蹤轉換（做成表格）</span></label></li>
+            <li><label><input type="checkbox" data-key="s0-7"><span><b>第 30 支後開檢討會</b>：找出表現前 20% 的影片共通點，定為「主格式」</span></label></li>
+          </ul>
+        </div>
+        <div class="side">
+          <h4 class="dont">這階段絕對不做</h4>
+          <ul class="plain bad">
+            <li>買粉絲、買讚——演算法會標記帳號，<strong>永久降權</strong></li>
+            <li>買器材、買課程——先用產出證明你撐得過 6 週</li>
+            <li>看單支影片的成敗——樣本要 30 支才有意義</li>
+            <li>三天沒爆就改定位——改一次，前面數據全部作廢</li>
+          </ul>
+          <h4>畢業標準</h4>
+          <ul class="plain">
+            <li>發滿 30 支＋找出主格式，<strong>粉絲數其次</strong></li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- 階段壹 -->
+    <article class="stage">
+      <header>
+        <span class="glyph serif" aria-hidden="true">壹</span>
+        <div class="headtext">
+          <span class="range">階段壹 · 500 → 5,000 粉 · 約第 2–4 個月</span>
+          <h3 class="title">放大：把爆款公式打到窮盡＋第一筆收入</h3>
+          <p class="goal">目標：主格式量產＋系列化，<strong>賺到第一筆錢</strong>——金額不重要，重要的是打通「內容→錢」的迴路。</p>
+          <p class="tracktip" data-tipidx="1" hidden><b>賽道戰術</b><span></span></p>
+        </div>
+        <div class="earn"><b>本階段收入</b><span class="amt" data-earnidx="1">NT$1,000–8,000／月</span><span class="note">聯盟行銷＋互惠案＋小額業配</span></div>
+      </header>
+      <div class="body">
+        <div class="tasks">
+          <h4 class="do">任務清單</h4>
+          <ul class="checklist">
+            <li><label><input type="checkbox" data-key="s1-1"><span><b>主格式做成系列</b>（策略區有你賽道的建議格式），系列是追蹤的理由</span></label></li>
+            <li><label><input type="checkbox" data-key="s1-2"><span><b>申請聯盟行銷</b>：蝦皮分潤計畫／聯盟網／通路王，把連結掛進簡介與留言區</span></label></li>
+            <li><label><input type="checkbox" data-key="s1-3"><span><b>每支影片加一句 CTA</b>：「商品連結在簡介」「追蹤看下一集」</span></label></li>
+            <li><label><input type="checkbox" data-key="s1-4"><span><b>回覆每一則留言</b>（前 1 小時最重要，互動率直接影響推播量）</span></label></li>
+            <li><label><input type="checkbox" data-key="s1-5"><span><b>做一頁報價單</b>：自介、粉絲輪廓、數據截圖、方案價格（沒人問也要先做好）</span></label></li>
+            <li><label><input type="checkbox" data-key="s1-6"><span><b>主動接 3 個互惠或小額案</b>：目的是累積合作案例與見證，不是賺錢</span></label></li>
+            <li><label><input type="checkbox" data-key="s1-7"><span><b>賺到第一筆 NT$1,000</b>——截圖存起來，這是系統打通的證明</span></label></li>
+          </ul>
+        </div>
+        <div class="side">
+          <h4 class="dont">這階段絕對不做</h4>
+          <ul class="plain bad">
+            <li>接與定位無關的業配——<strong>幾千元賣掉帳號標籤，最虧</strong></li>
+            <li>免費接「品牌曝光」大案——互惠僅限換產品的小案</li>
+            <li>開始做長影音——量能還不夠，先把短影音打穿</li>
+          </ul>
+          <h4>畢業標準</h4>
+          <ul class="plain">
+            <li>5,000 粉＋單月收入 &gt; NT$3,000＋有 3 個合作案例</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- 階段貳 -->
+    <article class="stage">
+      <header>
+        <span class="glyph serif" aria-hidden="true">貳</span>
+        <div class="headtext">
+          <span class="range">階段貳 · 5,000 → 20,000 粉 · 約第 4–8 個月</span>
+          <h3 class="title">開源：業配標準化＋長影音分潤</h3>
+          <p class="goal">目標：業配從「等人來問」變成「有價目表的生意」，同時鋪 YouTube 長影音，讓廣告分潤開始累積。</p>
+          <p class="tracktip" data-tipidx="2" hidden><b>賽道戰術</b><span></span></p>
+        </div>
+        <div class="earn"><b>本階段收入</b><span class="amt" data-earnidx="2">NT$10,000–50,000／月</span><span class="note">業配為主＋聯盟＋YT 分潤起步</span></div>
+      </header>
+      <div class="body">
+        <div class="tasks">
+          <h4 class="do">任務清單</h4>
+          <ul class="checklist">
+            <li><label><input type="checkbox" data-key="s2-1"><span><b>定業配價目表</b>：短影音一支、限動一組、長影音置入各一個價位，低於底價不接</span></label></li>
+            <li><label><input type="checkbox" data-key="s2-2"><span><b>每月主動提案 10 個品牌</b>：用報價單開發，不要只等私訊</span></label></li>
+            <li><label><input type="checkbox" data-key="s2-3"><span><b>開 YouTube 長影音</b>：每週 1 支，用短影音已驗證的爆款題目延伸</span></label></li>
+            <li><label><input type="checkbox" data-key="s2-4"><span><b>達成 YT 營利門檻</b>：1,000 訂閱＋4,000 小時觀看（或 Shorts 1,000 萬次觀看）</span></label></li>
+            <li><label><input type="checkbox" data-key="s2-5"><span><b>業配比例控制在 1/4 以下</b>：每 4 支內容最多 1 支商業內容</span></label></li>
+            <li><label><input type="checkbox" data-key="s2-6"><span><b>建立粉絲私域</b>：LINE 社群或 IG 摯友名單，之後團購與課程的種子用戶</span></label></li>
+          </ul>
+        </div>
+        <div class="side">
+          <h4 class="dont">這階段絕對不做</h4>
+          <ul class="plain bad">
+            <li>業配塞滿版面——粉絲流失比漲粉快得多</li>
+            <li>不簽合約就開拍——修改次數、檔期、授權範圍白紙黑字</li>
+            <li>辭職——<strong>月收入未連續 6 個月 &gt; 薪水前，不要辭</strong></li>
+          </ul>
+          <h4>畢業標準</h4>
+          <ul class="plain">
+            <li>2 萬粉＋月收入穩定 5 位數＋YT 營利已開通</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- 階段參 -->
+    <article class="stage">
+      <header>
+        <span class="glyph serif" aria-hidden="true">參</span>
+        <div class="headtext">
+          <span class="range">階段參 · 20,000 → 100,000 粉 · 約第 8–18 個月</span>
+          <h3 class="title">疊加：從賣流量到賣自己的東西</h3>
+          <p class="goal">目標：收入來源從「品牌給的」（業配）轉向「自己的」（團購抽成、課程、服務），毛利與主導權大幅提升。</p>
+          <p class="tracktip" data-tipidx="3" hidden><b>賽道戰術</b><span></span></p>
+        </div>
+        <div class="earn"><b>本階段收入</b><span class="amt" data-earnidx="3">NT$50,000–200,000／月</span><span class="note">業配＋團購＋課程／服務＋分潤</span></div>
+      </header>
+      <div class="body">
+        <div class="tasks">
+          <h4 class="do">任務清單</h4>
+          <ul class="checklist">
+            <li><label><input type="checkbox" data-key="s3-1"><span><b>辦第一場團購或上架自有產品</b>：挑自己真的在用的東西，抽成通常 15–30%</span></label></li>
+            <li><label><input type="checkbox" data-key="s3-2"><span><b>做一個小型數位產品</b>：電子書、模板、線上小課（NT$300–1,500 定價測水溫）</span></label></li>
+            <li><label><input type="checkbox" data-key="s3-3"><span><b>找經紀或助理</b>：報價談判、剪輯其一外包，你的時間留給內容</span></label></li>
+            <li><label><input type="checkbox" data-key="s3-4"><span><b>開直播測試</b>：每週固定時段，培養斗內與帶貨場景</span></label></li>
+            <li><label><input type="checkbox" data-key="s3-5"><span><b>設立收入儀表板</b>：每月記錄各管道收入占比，單一來源 &gt; 60% 就是警訊</span></label></li>
+            <li><label><input type="checkbox" data-key="s3-6"><span><b>處理稅務</b>：收入達規模請會計師，評估行號／公司（台灣：執行業務所得 vs 營利事業）</span></label></li>
+          </ul>
+        </div>
+        <div class="side">
+          <h4 class="dont">這階段絕對不做</h4>
+          <ul class="plain bad">
+            <li>簽長約賣斷帳號主導權——經紀約逐條看，<strong>分成比例與解約條款是重點</strong></li>
+            <li>推自己沒用過的團購品——一次翻車，信任清零</li>
+            <li>盲目擴編團隊——先外包、後聘僱</li>
+          </ul>
+          <h4>畢業標準</h4>
+          <ul class="plain">
+            <li>10 萬粉＋自有商品收入 &gt; 業配收入的一半</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- 階段肆 -->
+    <article class="stage">
+      <header>
+        <span class="glyph serif" aria-hidden="true">肆</span>
+        <div class="headtext">
+          <span class="range">階段肆 · 100,000 粉以上 · 第 18 個月起</span>
+          <h3 class="title">品牌化：把個人流量變成一間公司</h3>
+          <p class="goal">目標：收入不再依賴「你本人每週出鏡」——自有品牌、課程體系、團隊化內容，讓系統替你賺錢。</p>
+          <p class="tracktip" data-tipidx="4" hidden><b>賽道戰術</b><span></span></p>
+        </div>
+        <div class="earn"><b>本階段收入</b><span class="amt" data-earnidx="4">NT$200,000＋／月</span><span class="note">自有品牌＋課程＋業配（挑著接）</span></div>
+      </header>
+      <div class="body">
+        <div class="tasks">
+          <h4 class="do">任務清單</h4>
+          <ul class="checklist">
+            <li><label><input type="checkbox" data-key="s4-1"><span><b>推出自有品牌或旗艦課程</b>：毛利 70%+ 的主力產品</span></label></li>
+            <li><label><input type="checkbox" data-key="s4-2"><span><b>內容團隊化</b>：企劃、拍攝、剪輯、社群分工，你只負責出鏡與決策</span></label></li>
+            <li><label><input type="checkbox" data-key="s4-3"><span><b>開第二帳號或副品牌</b>：分散平台風險（帳號被封＝公司倒閉，不能賭）</span></label></li>
+            <li><label><input type="checkbox" data-key="s4-4"><span><b>業配只接年框與大案</b>：單案門檻拉高，數量減半、單價翻倍</span></label></li>
+            <li><label><input type="checkbox" data-key="s4-5"><span><b>建立現金儲備</b>：至少 12 個月營運成本，流量業有淡旺季與演算法風險</span></label></li>
+          </ul>
+        </div>
+        <div class="side">
+          <h4 class="dont">這階段絕對不做</h4>
+          <ul class="plain bad">
+            <li>All-in 單一平台——演算法一改，收入腰斬的案例每年都有</li>
+            <li>離受眾太遠——飛輪的核心永遠是內容，別當純老闆</li>
+          </ul>
+          <h4>這裡沒有畢業</h4>
+          <ul class="plain">
+            <li>此後比的是<strong>經營</strong>：品牌、團隊、現金流</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ 內容生產 SOP ============ -->
+<section id="sop">
+  <div class="wrap">
+    <p class="kicker">每週的固定節奏</p>
+    <h2 class="serif">每週做內容的流程</h2>
+    <p class="sub">新手斷更的原因不是懶，是<strong>每支影片都從零開始想</strong>。把生產拆成固定工序、批次處理，一週 6–8 小時就能穩定產出 5 支。</p>
+
+    <div class="sop">
+      <div class="day"><span class="d">週一 · 1hr</span><h3>選題</h3><p>從選題庫挑 5 題，各配一個鉤子開場</p></div>
+      <div class="day"><span class="d">週二 · 1.5hr</span><h3>寫腳本</h3><p>每支 100–150 字：鉤子→內容→CTA，寫滿 5 支</p></div>
+      <div class="day"><span class="d">週三 · 2hr</span><h3>批次拍攝</h3><p>一次拍完 5 支，換衣服製造「不同天」效果</p></div>
+      <div class="day"><span class="d">週四 · 2hr</span><h3>批次剪輯</h3><p>CapCut 模板化：字幕、節奏卡點、統一封面</p></div>
+      <div class="day"><span class="d">週五–日</span><h3>發布＋互動</h3><p>尖峰時段發布，發後 1 小時內回光所有留言</p></div>
+      <div class="day"><span class="d">週日 · 30min</span><h3>數據復盤</h3><p>記錄完播率與轉粉數，贏的格式下週加倍</p></div>
+    </div>
+
+    <div class="hookbox">
+      <h3>黃金 3 秒：六個開場鉤子公式（通用版，你賽道的專屬鉤子在策略區）</h3>
+      <div class="hooks">
+        <p><b>損失規避</b>「別再＿＿了，<em>90% 的人第一步就錯</em>」</p>
+        <p><b>結果前置</b>「我用這方法 30 天瘦了 5 公斤，<em>過程全記錄</em>」</p>
+        <p><b>具體數字</b>「月薪 3 萬，我每月存下 <em>1 萬 5</em> 的方法」</p>
+        <p><b>反常識</b>「越貴的保養品，<em>越可能不適合你</em>」</p>
+        <p><b>指名受眾</b>「如果你也是<em>油痘肌</em>，這支影片會救你的皮膚」</p>
+        <p><b>清單懸念</b>「5 個相見恨晚的免費工具，<em>第 3 個最狠</em>」</p>
+      </div>
+    </div>
+
+    <div class="cards c3" style="margin-top:14px">
+      <div class="card"><h3>發布可以全自動：平台原生排程</h3><p>批剪完當天就把整週 5 支排好：<strong>IG／FB 用 Meta Business Suite</strong>（免費）、<strong>YouTube 預定發布</strong>、<strong>TikTok 網頁版排程</strong>、<strong>Threads 排程貼文</strong>、<strong>LINE 官方帳號預約訊息</strong>。「排程內容會被降權」是迷思——演算法看的是內容表現，不是發布方式。</p></div>
+      <div class="card"><h3>再升一級：跨平台工具與自動化</h3><p><strong>Buffer／Later／Metricool</strong> 一個介面排全平台（都有免費額度）。要全自動可用 <strong>Make／Zapier</strong> 串「剪好上傳雲端 → 自動排程各平台」。省下的不是發布那 3 分鐘，是「每天都要記得發」的意志力。</p></div>
+      <div class="card"><h3>但互動不能自動：黃金 1 小時法則</h3><p>發布後 1 小時的留言回覆<strong>必須本人</strong>——演算法用早期互動速度決定推不推，粉絲也分得出真人和機器人。排程負責「準時」，你負責「在場」。訂鬧鐘，配合排程時間回留言。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 平台作戰手冊 ============ -->
+<section id="platforms">
+  <div class="wrap">
+    <p class="kicker">每個平台都不一樣</p>
+    <h2 class="serif">各平台怎麼發：一支影片，六種發法</h2>
+    <p class="sub">
+      每個社群的<strong>受眾性質、演算法邏輯、文案語感、照片風格、搜尋規則</strong>都不一樣——把 IG 的精緻文案原封不動貼到 Threads 會死，把 TikTok 的原生感直接上 YouTube 長片也會死。
+      點選平台，看它的完整打法。<strong>同一支內容，照各平台的規則改寫後再發</strong>（改寫指令在下方 AI 幫手 STEP 07）。
+    </p>
+    <div class="platbar" id="platBar" role="group" aria-label="選擇平台"></div>
+    <div class="platpanel" id="platPanel"></div>
+  </div>
+</section>
+
+<!-- ============ AI 副駕 ============ -->
+<section id="ai">
+  <div class="wrap">
+    <p class="kicker">每一步都有人帶</p>
+    <h2 class="serif">AI 幫手：14 個步驟，可自動也可手動</h2>
+    <p class="sub">
+      從定位到廣告共 14 站，<strong>每一站都有兩條路</strong>：「🤖 AI 自動」給你一條專家級指令——打開 Claude 或 ChatGPT，複製、把「＿＿」填上、送出；
+      「✋ 手動做法」給你不靠 AI 也能完成的具體步驟與免費工具。兩條路做完都算完成，隨時可切換。
+      別被數量嚇到：<strong>新手每週真正要跑的只有標「★ 每週核心」的那幾條</strong>，其餘是到了那個階段才打開的工具箱。
+      每條指令內建五層設計：<strong>行內方法論</strong>（留存點節奏、漏斗診斷、報價係數公式）、<strong>三重情境注入</strong>（你的賽道 × 人設 × 目前階段，隨勾選進度即時更新）、
+      <strong>訪談模式</strong>（資料不足時 AI 先問你再產出）、<strong>自評修正</strong>（AI 用專業度／具體度／可執行度自檢後才交稿）、<strong>交付自查</strong>（滑走點模擬、並排查重）。
+      你負責決策與出鏡，AI 負責到專業水準的初稿與分析。
+      這 14 步是一條<strong>指令鏈</strong>：每一步的產出尾端會自動附「交棒區」，複製貼進下一步即可——你的賽道、人設、階段在整條流水線上不斷鏈，
+      所以同一條指令，美妝×閨蜜型和理財×毒舌型跑出來的文字口氣完全不同。
+    </p>
+    <div class="aibanner" id="aiBanner"><b>提示</b>　尚未選擇賽道——指令會用通用版。回到上方選定賽道後，所有指令會自動代入你的賽道與定位。</div>
+    <div id="promptList"></div>
+  </div>
+</section>
+
+<!-- ============ SEO / AIO / GEO ============ -->
+<section id="seo">
+  <div class="wrap">
+    <p class="kicker">被找到的科學</p>
+    <h2 class="serif">讓人搜得到你：SEO・AI 搜尋・AI 引用</h2>
+    <p class="sub">
+      流量有兩種：演算法「推」給人的，和別人「搜」到你的。推薦流量像潮水，搜尋流量像地基——
+      而現在多了第三層：<strong>讓 AI（ChatGPT、Perplexity、Google AI 摘要）回答問題時引用你</strong>。三層一起鋪，舊內容才會持續生錢。
+    </p>
+    <div class="seocards">
+      <div class="seocard">
+        <span class="lv">第一層 · SEO</span>
+        <h3>平台內搜尋優化</h3>
+        <p>每個平台都是搜尋引擎。年輕人在 TikTok 搜餐廳、在 IG 搜穿搭、在 YT 搜教學。</p>
+        <ul>
+          <li><strong>帳號名稱＋簡介塞關鍵字</strong>：「阿明｜油痘肌保養」比「阿明的小天地」多十倍搜尋量</li>
+          <li><strong>標題用搜尋句式</strong>：「2026 新手 ETF 怎麼買」而不是「我的投資心得」</li>
+          <li><strong>字幕與說明文都會被索引</strong>：關鍵詞要「說出來＋寫出來」</li>
+          <li><strong>YT 是王</strong>：影片直接排進 Google 搜尋結果，一支排上去吃三年流量</li>
+          <li>留言區自問自答埋長尾關鍵字（TikTok 特別有效）</li>
+        </ul>
+      </div>
+      <div class="seocard">
+        <span class="lv">第二層 · AIO</span>
+        <h3>AI 搜尋優化</h3>
+        <p>越來越多人直接問 AI「推薦台北平價美食」「新手怎麼開始投資」。AI 的答案來自它能讀懂的內容。</p>
+        <ul>
+          <li><strong>內容做成明確 Q&A 結構</strong>：一個問題、一個答案、有數字有清單——AI 最愛引用這種</li>
+          <li><strong>YT 說明欄與字幕寫完整</strong>：AI 讀得到字幕，讀不到你的運鏡</li>
+          <li><strong>全平台用同一個名字與定位</strong>：AI 要能辨識「你是誰、你是哪個領域的」</li>
+          <li>具體數據與實測結果（「實測 30 天」）比空泛心得的引用率高得多</li>
+        </ul>
+      </div>
+      <div class="seocard">
+        <span class="lv">第三層 · GEO</span>
+        <h3>生成式引擎優化</h3>
+        <p>讓生成式 AI 把你當成「來源」。核心是建立可被機器驗證的權威訊號。</p>
+        <ul>
+          <li><strong>建一頁自有網站「權威頁」</strong>：你是誰＋定位＋代表作＋媒體報導＋數據，加上結構化資料（schema）</li>
+          <li><strong>被引用就是燃料</strong>：接受訪談、投稿媒體、與其他創作者互相引用</li>
+          <li><strong>Threads 高轉發觀點常被 AI 檢索</strong>：觀點型內容是 GEO 的低成本入口</li>
+          <li>階段貳後開始鋪；階段參起每月檢查：問 AI「推薦（你的賽道）創作者」，看你有沒有被提到</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 收入試算 ============ -->
+<section id="calc">
+  <div class="wrap">
+    <p class="kicker">互動工具</p>
+    <h2 class="serif">算算你能賺多少</h2>
+    <p class="sub">拉動滑桿，看看不同粉絲規模下，各收入管道大概能貢獻多少。<strong>選了賽道後，試算會改用該賽道的行情參數</strong>（業配單價、導購轉換、團購參與率）。它的用途是幫你排優先順序，不是保證收入。</p>
+
+    <div class="calc">
+      <div class="inputs">
+        <p class="trackline" id="calcTrack">目前使用：<b>通用參數</b>（選賽道後自動切換）</p>
+        <div class="field">
+          <label for="fFans">粉絲數 <output id="oFans">10,000</output></label>
+          <input type="range" id="fFans" min="0" max="100" value="50">
+          <p class="note">主平台粉絲（1 千 ～ 50 萬，對數刻度）</p>
+        </div>
+        <div class="field">
+          <label for="fPosts">每月短影音數 <output id="oPosts">16 支</output></label>
+          <input type="range" id="fPosts" min="4" max="30" value="16">
+        </div>
+        <div class="field">
+          <label for="fSponsor">每月業配數 <output id="oSponsor">2 案</output></label>
+          <input type="range" id="fSponsor" min="0" max="8" value="2">
+          <p class="note">建議 ≤ 內容量的 1/4，塞太滿會掉粉</p>
+        </div>
+        <div class="field">
+          <label for="fEng">互動率 <output id="oEng">4.0%</output></label>
+          <input type="range" id="fEng" min="1" max="10" value="4" step="0.5">
+          <p class="note">（讚＋留言）÷ 觸及。互動率高，業配單價上浮</p>
+        </div>
+        <div class="field check">
+          <label><input type="checkbox" id="fYT"> 已開通 YouTube 營利（廣告分潤）</label>
+        </div>
+        <div class="field check">
+          <label><input type="checkbox" id="fShop"> <span id="shopToggleLabel">有做團購／自有商品（2 萬粉後建議開）</span></label>
+        </div>
+      </div>
+      <div class="results">
+        <p class="total">預估每月總收入</p>
+        <p class="big" id="rTotal">NT$0</p>
+        <p class="range" id="rRange">保守 NT$0 ～ 樂觀 NT$0</p>
+
+        <div class="breakrow"><div class="t"><b>業配收入</b><span class="v" id="vSponsor">NT$0</span></div><div class="track"><i id="bSponsor"></i></div></div>
+        <div class="breakrow"><div class="t"><b>聯盟行銷</b><span class="v" id="vAff">NT$0</span></div><div class="track"><i id="bAff"></i></div></div>
+        <div class="breakrow"><div class="t"><b>平台分潤</b><span class="v" id="vAds">NT$0</span></div><div class="track"><i id="bAds"></i></div></div>
+        <div class="breakrow"><div class="t"><b id="shopRowLabel">團購／自有商品</b><span class="v" id="vShop">NT$0</span></div><div class="track"><i id="bShop"></i></div></div>
+
+        <p class="disclaimer" id="calcNote">估算基準（通用）：業配單價約 NT$400–600／千粉，隨互動率 ±40%；聯盟行銷以觸及 × 轉換估算；YT 分潤以中文區 RPM 約 NT$20–40 估算；團購以粉絲 3–5% 參與估算。實際收入依賽道、內容品質、談判能力浮動。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 成效追蹤 ============ -->
+<section id="results">
+  <div class="wrap">
+    <p class="kicker">看見自己的進度</p>
+    <h2 class="serif">預期 vs 實際：成效追蹤</h2>
+    <p class="sub">
+      藍線是系統依你選的主題推算的<strong>預期軌跡</strong>（中位數，不是保證）；橘線是<strong>你的實際紀錄</strong>——每週或每月記一筆就好。
+      兩條線的差距不是成績單，是<strong>導航</strong>：落後找原因（用 AI 幫手的「卡關急診室」），超前就加碼。
+    </p>
+
+    <div class="modetabs rangetabs" role="group" aria-label="時間範圍">
+      <button type="button" class="modebtn rangebtn" data-r="3" aria-pressed="true">前 90 天（衝刺期）</button>
+      <button type="button" class="modebtn rangebtn" data-r="18" aria-pressed="false">完整 18 個月</button>
+    </div>
+
+    <div class="chartcard">
+      <h3>粉絲成長</h3>
+      <p class="chsub">從 Day 1 起算的月份 × 粉絲數</p>
+      <div class="chlegend"><span class="exp"><i></i>預期軌跡</span><span class="act"><i></i>實際紀錄</span></div>
+      <div class="chartwrap" id="chartFans"><div class="chtip"></div></div>
+    </div>
+    <div class="chartcard">
+      <h3>每月收入</h3>
+      <p class="chsub">從 Day 1 起算的月份 × 月收入（NT$）</p>
+      <div class="chlegend"><span class="exp"><i></i>預期軌跡</span><span class="act"><i></i>實際紀錄</span></div>
+      <div class="chartwrap" id="chartIncome"><div class="chtip"></div></div>
+    </div>
+
+    <div class="chartcard">
+      <h3>記錄一筆實際成效</h3>
+      <p class="chsub">資料存在這台裝置。建議每週日復盤時記一筆。</p>
+      <div class="logform">
+        <div class="lf"><label for="logDate">日期</label><input type="date" id="logDate"></div>
+        <div class="lf"><label for="logFans">粉絲數</label><input type="number" id="logFans" min="0" placeholder="例：1200"></div>
+        <div class="lf"><label for="logIncome">當月收入 NT$</label><input type="number" id="logIncome" min="0" placeholder="例：3000"></div>
+        <button type="button" class="pbtn" id="logAdd">記錄</button>
+      </div>
+      <div class="tablewrap"><table class="logtable"><thead><tr><th>日期</th><th>粉絲數</th><th>當月收入</th><th></th></tr></thead><tbody id="logBody"></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 廣告投放 ============ -->
+<section id="ads">
+  <div class="wrap">
+    <p class="kicker">花錢的紀律</p>
+    <h2 class="serif">花錢買流量：只放大贏家，不拯救輸家</h2>
+    <p class="sub">
+      廣告不是流量的起點，是<strong>放大器</strong>——它把「已經被自然流量驗證過的內容」推到更多人面前。
+      新手燒錢的死法都一樣：內容還沒驗證就投廣告。照下面的階梯走，每一階都有明確的預算與過關數字。
+    </p>
+    <div class="adsteps">
+      <div class="adstep">
+        <span class="k">階段零 · 驗證期</span>
+        <h3>一毛都不投</h3>
+        <p>30 支影片的功課是找出爆款公式。這時投廣告等於花錢放大「還不知道行不行的東西」。<strong>預算：NT$0。</strong></p>
+      </div>
+      <div class="adstep">
+        <span class="k">階段壹 · 加熱測試</span>
+        <h3>小額加熱自然贏家</h3>
+        <p>只投「自然數據已經好」的影片：TikTok Promote／IG 加強推廣，單支 <span class="money">NT$300–500</span> 測試。<strong>過關數字：單粉成本（CPF）&lt; NT$8 就續投，超過就停。</strong></p>
+      </div>
+      <div class="adstep">
+        <span class="k">階段貳–參 · 轉換投放</span>
+        <h3>為團購與課程投放</h3>
+        <p>檔期前用 FB／IG 廣告管理員：先投「看過你影片 50% 的人」（再行銷，成本最低），日預算 <span class="money">NT$300→1,000→3,000</span> 階梯放大。<strong>過關數字：ROAS ≥ 3（花 1 賺 3）才加碼。</strong></p>
+      </div>
+      <div class="adstep">
+        <span class="k">階段肆 · 品牌期</span>
+        <h3>搜尋與擴量</h3>
+        <p>Google／YT 搜尋廣告接住高意圖流量（搜「賽道關鍵字」的人直接看到你的課程）；用類似受眾（lookalike）擴量。廣告費控制在<strong>營收的 15% 以內</strong>。</p>
+      </div>
+    </div>
+    <div class="cards c3">
+      <div class="card"><h3>鐵律一：素材＝已爆的內容</h3><p>廣告素材不要重新製作——直接用你自然流量最好的那支影片，<strong>原封不動</strong>。它已經通過了最嚴格的測試：真實觀眾。</p></div>
+      <div class="card"><h3>鐵律二：只看兩個數字</h3><p>漲粉目的看 <strong>CPF（單粉成本）</strong>，賣貨目的看 <strong>ROAS（廣告投報率）</strong>。其他數字（曝光、點讚）都是虛榮指標，不影響決策。</p></div>
+      <div class="card"><h3>鐵律三：預算階梯制</h3><p>每次加碼不超過前一階的 3 倍，達標才升階。<strong>永遠不要「一次投大的」</strong>——廣告系統需要學習期，大預算爛素材只會學得更快地浪費。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 90 天計畫 ============ -->
+<section id="plan90">
+  <div class="wrap">
+    <p class="kicker">立刻開始</p>
+    <h2 class="serif">前 90 天行事曆：一天一格，照做就好</h2>
+    <p class="sub">
+      前 90 天對應「階段零→階段壹」，任務不是爆紅，是<strong>建立產出習慣、拿到數據、賺到第一筆錢</strong>。
+      設定你的開始日期，系統會標出你今天在哪一格；做完就點一下勾掉，進度自動存檔。
+      節奏跟不上就順延，<strong>順序不要跳</strong>。
+    </p>
+    <div class="syncnote" id="syncNote"><b>策略已調整</b>　<span id="syncText"></span><button type="button" id="syncCopy">複製「重新校準」指令</button></div>
+    <div class="calctrl">
+      <label for="calStart">我的 Day 1 日期</label>
+      <input type="date" id="calStart">
+      <button type="button" class="icsbtn" id="icsBtn">📅 匯入手機行事曆（每天提醒）</button>
+      <span class="dayinfo" id="calDayInfo"></span>
+    </div>
+    <div id="cal90"></div>
+  </div>
+</section>
+
+<!-- ============ 避坑 ============ -->
+<section id="pitfalls">
+  <div class="wrap">
+    <p class="kicker">風險控管</p>
+    <h2 class="serif">新手陣亡的六種死法</h2>
+    <p class="sub">90% 的新手不是輸給能力，是輸給下面這六件事。先知道坑在哪，比多學十個技巧更值錢。</p>
+    <div class="pitfalls">
+      <div class="pit"><h3>① 完美主義斷更</h3><p>拍了 3 支覺得不夠好，停更兩週「準備」。<strong>解法：</strong>給自己「爛片配額」——前 30 支允許全爛，發出去就是贏。</p></div>
+      <div class="pit"><h3>② 什麼都拍</h3><p>美食、旅遊、心情全上，演算法無法標記帳號。<strong>解法：</strong>回到定位一句話，跟它無關的內容一律不發。</p></div>
+      <div class="pit"><h3>③ 為了快錢亂接案</h3><p>2,000 粉接到第一個業配就什麼都接。<strong>解法：</strong>與定位無關、自己不敢用的產品，價格再高都拒絕。</p></div>
+      <div class="pit"><h3>④ 買粉買讚</h3><p>數字好看但互動率崩盤，品牌方一查就露餡，演算法降權更是永久傷害。<strong>解法：</strong>沒有解法，就是不要買。</p></div>
+      <div class="pit"><h3>⑤ 收入單一化</h3><p>月入十萬全靠業配，演算法一改或市場緊縮直接歸零。<strong>解法：</strong>每季檢查收入占比，單一來源超過 60% 就補新管道。</p></div>
+      <div class="pit"><h3>⑥ 忽略合約與稅務</h3><p>口頭接案被凹無限修改；年底補稅嚇一跳。<strong>解法：</strong>再小的案都要書面確認範圍；收入破 20 萬就開始記帳。</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong class="serif" style="font-size:15px">社群小系統</strong>｜選主題 → 打造人設 → 拿到計畫 → 0 → 500 → 5,000 → 20,000 → 100,000</p>
+    <p>本頁所有金額為台灣市場公開行情之區間估算，僅供規劃參考，不構成收入保證。所有資料儲存於本機瀏覽器。</p>
+    <p style="margin-top:14px">
+      <button class="reset" id="bakExp" type="button">⬇ 匯出備份（換裝置用）</button>
+      <button class="reset" id="bakImp" type="button">⬆ 匯入備份</button>
+      <input type="file" id="bakFile" accept="application/json" hidden>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var LS = "creator-os-v1";
+  var LS_TRACK = "creator-os-track";
+
+  /* ================= 賽道資料庫 ================= */
+  var TRACKS = {
+    finance: {
+      name:"理財投資", power:5, rate:"NT$8,000–20,000／篇", src:"課程、聯盟開戶、業配",
+      tagline:"信任門檻最高、但客單價與業配單價也最高的賽道。核心資產是「真實」——敢公開對帳單的人，贏過會剪輯的人。",
+      position:"我幫 <b>月薪 3–5 萬的小資族</b>，用 <b>60 秒圖卡＋真實對帳單</b>，解決 <b>第一筆錢不知道怎麼投</b> 的問題。",
+      audience:"25–40 歲上班族。特徵：怕賠錢、資訊焦慮、對「保證獲利」免疫但對「真實紀錄」買單。付費意願全賽道最高。",
+      formats:[
+        "<strong>每月對帳單公開</strong>——真實績效是本賽道最強的信任資產，賠錢也照發（誠實反而漲粉）",
+        "<strong>新聞白話翻譯</strong>——升息、財報季、政策變動 48 小時內拆解，蹭熱點漲粉最快",
+        "<strong>小資實驗系列</strong>——「每月 5,000 元投資實測 EP.1–24」，系列即追蹤理由"
+      ],
+      hooks:[
+        "月薪 3 萬，我 3 年存到 100 萬——不是靠省」",
+        "這檔 ETF 人人在買，但 90% 的人買錯時機」",
+        "銀行理專絕對不會告訴你的 3 件事」"
+      ],
+      money:[
+        {k:"1,000 粉起", t:"聯盟開戶（CPA）", d:"券商／銀行開戶聯盟，成交一件 NT$300–1,500，是本賽道最早的金流"},
+        {k:"5,000 粉起", t:"金融業配", d:"銀行、券商、保經預算大，微型創作者單價即達 NT$8,000–20,000／篇"},
+        {k:"20,000 粉起", t:"入門課程／模板", d:"記帳模板、ETF 入門課，定價 NT$300–4,900，毛利 80% 以上"},
+        {k:"50,000 粉起", t:"訂閱制會員", d:"年費社群、每週投資週報——經常性收入，估值最高的變現形態"}
+      ],
+      legal:"未持牌不得收費薦股（投顧法）；提及個股一律加註「非投資建議」；不得保證獲利；業配金融商品要看清楚產品風險。",
+      gear:"手機＋NT$500 領夾麥即可。錢投資在「圖卡模板」：用 Canva 做對帳單／圖解模板，視覺一致性就是專業感。",
+      kpi:"完播率 >35%；開戶連結轉換 0.5–1%；粉絲開始留言問「怎麼開戶」＝變現時機到了。",
+      stageEarn:["NT$0","NT$2,000–10,000／月","NT$15,000–60,000／月","NT$60,000–250,000／月","NT$250,000＋／月"],
+      stageTips:[
+        "先做「新聞白話翻譯」餵數據——時事內容最容易被推給陌生人",
+        "掛上券商開戶聯盟連結，一件佣金 NT$300–1,500",
+        "金融業配單價全賽道最高，報價敢開；同步開 YT 長片（理財片 RPM 最高）",
+        "推出第一堂入門課 NT$1,500–4,900，用私域名單預售",
+        "轉訂閱制：年費社群／投資週報，收入不再看演算法臉色"
+      ],
+      calc:{rateK:700, aff:2.2, shopRate:0.015, shopPrice:2500, shopCut:0.7, shopLabel:"課程／訂閱"},
+      calcNote:"理財賽道參數：業配約 NT$700／千粉（金融業預算高）；聯盟以開戶 CPA 計，價值高；「團購」欄位改以課程／訂閱估算（參與率低但客單與毛利極高）。"
+    },
+    beauty: {
+      name:"美妝保養", power:5, rate:"NT$5,000–15,000／篇", src:"業配、聯盟、團購",
+      tagline:"品牌預算最多的賽道，業配來得最早最快。差異化靠「窄」：全美妝都講的帳號輸給只講油痘肌的帳號。",
+      position:"我幫 <b>油痘肌／敏感肌的小資女</b>，用 <b>空瓶實測＋成分白話</b>，解決 <b>錢花了皮膚卻沒變好</b> 的問題。",
+      audience:"18–35 歲女性。特徵：回購率高、儲存率高（存起來等下單）、對「真實使用感」的信任遠高於明星代言。",
+      formats:[
+        "<strong>空瓶記錄</strong>——用完整罐才推薦，信任度最強的美妝內容形態",
+        "<strong>成分白話拆解</strong>——「這兩罐成分 90% 一樣，價差 5 倍」，專業感＋話題性",
+        "<strong>7 天挑戰</strong>——單一產品連用一週的 before／after，數據通常最好"
+      ],
+      hooks:[
+        "這罐我用掉 3 個空瓶才敢推」",
+        "櫃姐不會說：這兩罐成分 90% 一樣，價差 5 倍」",
+        "油痘肌拜託不要再用這種洗面乳」"
+      ],
+      money:[
+        {k:"1,000 粉起", t:"聯盟導購", d:"蝦皮／momo 美妝佣金 5–15%，掛連結就有被動收入"},
+        {k:"3,000 粉起", t:"品牌業配", d:"美妝品牌對微型創作者最大方，NT$5,000 起跳，來得比其他賽道早"},
+        {k:"20,000 粉起", t:"團購開團", d:"抽成 20–30%，一檔團購常超過整月業配收入"},
+        {k:"100,000 粉起", t:"自有品牌／聯名", d:"終局玩法：自有保養品牌或聯名系列，毛利 60%+"}
+      ],
+      legal:"不得宣稱療效（「美白」「除皺」等字眼受《化粧品衛生安全管理法》廣告規範）；業配依規定標示「合作」；成分主張要有依據。",
+      gear:"自然光窗邊＋NT$1,000 內補光燈。產品自購是必要成本，每月編 NT$2,000 預算——自購品的實測才是你的信任資產。",
+      kpi:"完播率 >30%；儲存率 >3%（儲存＝回購意圖，品牌方最看這個）；導購連結 CTR 1–2%。",
+      stageEarn:["NT$0","NT$1,500–8,000／月","NT$12,000–50,000／月","NT$50,000–200,000／月","NT$200,000＋／月"],
+      stageTips:[
+        "鎖定單一膚質（油痘肌／敏感肌），所有內容圍繞它",
+        "掛蝦皮／momo 導購連結，佣金 5–15%，本階段就有進帳",
+        "美妝品牌預算多，主動提案回覆率高；空瓶實測就是你的作品集",
+        "開團購，抽成 20–30%——媽媽級與學生級粉絲轉換率都高",
+        "評估自有品牌或聯名，先從一個 SKU 開始"
+      ],
+      calc:{rateK:550, aff:1.8, shopRate:0.05, shopPrice:900, shopCut:0.25, shopLabel:"團購"},
+      calcNote:"美妝賽道參數：業配約 NT$550／千粉（品牌預算充足）；導購佣金 5–15% 使聯盟收入偏高；團購以 5% 參與率、客單 NT$900、抽成 25% 估算。"
+    },
+    food: {
+      name:"美食探店", power:3, rate:"NT$3,000–8,000／篇", src:"店家合作、團購、探店費",
+      tagline:"最好入門、最容易穩定產出的賽道——題材永遠拍不完。單價偏低，靠「量＋在地壟斷」取勝。",
+      position:"我幫 <b>台北的小資上班族</b>，用 <b>30 秒實吃評測</b>，解決 <b>不想踩雷又不想花大錢</b> 的問題。",
+      audience:"在地生活圈的上班族與學生。特徵：分享率高（tag 朋友「走！」）、決策快、對「敢講真話」的帳號忠誠度極高。",
+      formats:[
+        "<strong>銅板美食系列</strong>——鎖定一區＋一個價位帶（「台北 100 元內」），做成可預期的系列",
+        "<strong>踩雷實測</strong>——敢講缺點就是人設，「幫你排了 1 小時：不用排」",
+        "<strong>在地人清單</strong>——「XX 站走路 5 分鐘的 5 家店」，搜尋與儲存長尾流量"
+      ],
+      hooks:[
+        "這家排 1 小時，我幫你排了——結論：不用排」",
+        "台北 100 元吃到撐的 5 家店，第 4 家我吃了三次」",
+        "在地人才知道：觀光客都排錯家了」"
+      ],
+      money:[
+        {k:"2,000 粉起", t:"店家互惠→收費", d:"先換餐累積案例，5,000 粉後轉收費 NT$2,000–8,000／則"},
+        {k:"5,000 粉起", t:"探店費標準化", d:"做出「探店方案表」，在地店家的行銷預算比你想的多"},
+        {k:"10,000 粉起", t:"食品團購", d:"冷凍包、醬料、零食——食品團購參與率是各品類前段班"},
+        {k:"30,000 粉起", t:"美食地圖產品", d:"城市美食地圖／懶人包電子書，長尾被動收入"}
+      ],
+      legal:"收費體驗須揭露（合作標示）；食品不得誇大保健功效；負評講「事實＋個人感受」，抹黑同業有法律風險。",
+      gear:"手機就夠，穩定器後買。真正的成本是餐費：每月編 NT$3,000–5,000，前期鎖定銅板價位帶可以壓到最低。",
+      kpi:"完播率 >40%（短平快內容）；分享率 >2%——tag 朋友是本賽道的核心指標，高分享＝演算法狂推。",
+      stageEarn:["NT$0","NT$1,000–6,000／月","NT$8,000–35,000／月","NT$35,000–120,000／月","NT$120,000＋／月"],
+      stageTips:[
+        "鎖定一個行政區＋一個價位帶開拍，把那一區吃到壟斷",
+        "先接店家互惠換餐，重點是累積 10 個合作案例",
+        "探店轉收費 NT$2,000–8,000／則，同時開始接食品團購",
+        "團購常態化（每月 2 檔）＋出城市美食地圖電子書",
+        "自有選物（聯名醬料／冷凍包）或實體活動、美食導覽"
+      ],
+      calc:{rateK:400, aff:1.0, shopRate:0.045, shopPrice:600, shopCut:0.2, shopLabel:"食品團購"},
+      calcNote:"美食賽道參數：合作單價約 NT$400／千粉（含店家探店費）；聯盟導購偏弱；食品團購以 4.5% 參與率、客單 NT$600 估算。"
+    },
+    fitness: {
+      name:"健身減脂", power:4, rate:"NT$5,000–12,000／篇", src:"課程、補劑聯盟、教練服務",
+      tagline:"黏性最強的賽道——粉絲跟你不是看熱鬧，是跟練。你的身體變化就是最強內容，課表服務毛利接近 100%。",
+      position:"我幫 <b>想減脂的忙碌上班族</b>，用 <b>自身改造全紀錄</b>，解決 <b>練了沒效、不知道怎麼吃</b> 的問題。",
+      audience:"25–45 歲上班族。特徵：目標明確（減脂／增肌）、願意為「確定有效」付費、對 before/after 無抵抗力。",
+      formats:[
+        "<strong>90 天改造全紀錄</strong>——自己的 before/after 是本賽道最強內容，沒有之一",
+        "<strong>觀念破解</strong>——「仰臥起坐瘦不了肚子」，反常識內容轉發率高",
+        "<strong>一分鐘跟練</strong>——儲存率極高（存起來今晚練），演算法最愛"
+      ],
+      hooks:[
+        "90 天從 28% 體脂到 18%，我只改了 3 件事」",
+        "你瘦不下來，真的不是因為吃太多」",
+        "健身房最浪費時間的 5 個動作，第 1 個你天天做」"
+      ],
+      money:[
+        {k:"1,000 粉起", t:"補劑／裝備聯盟", d:"乳清、健身裝備導購，健身受眾的購買意圖非常明確"},
+        {k:"5,000 粉起", t:"品牌業配", d:"補劑、運動品牌、健身房，NT$5,000–12,000／篇"},
+        {k:"10,000 粉起", t:"線上課表", d:"客製課表＋飲食建議，月費制，毛利接近 100%——本賽道的變現王"},
+        {k:"50,000 粉起", t:"訓練營／實體", d:"線上訓練營、實體團課、教練品牌化"}
+      ],
+      legal:"不得宣稱醫療效果；補劑推薦保守（個人使用經驗）；課表服務註明「非醫療建議，運動前請評估身體狀況」。",
+      gear:"手機＋三腳架。健身房月費就是你的攝影棚租金。運動相機（跟練視角）等變現後再買。",
+      kpi:"追蹤轉換 >1.5%（改造紀錄的黏性紅利）；跟練影片儲存率 >4%；私訊問「可以幫我看課表嗎」＝開服務的時機。",
+      stageEarn:["NT$0","NT$1,000–7,000／月","NT$10,000–45,000／月","NT$45,000–180,000／月","NT$180,000＋／月"],
+      stageTips:[
+        "以自己的改造紀錄為主線——每週一支進度報告，粉絲陪你走",
+        "掛補劑／裝備聯盟連結，健身受眾轉換意圖明確",
+        "業配＋YT 長片並進（教學長片觀看時長長，分潤佳）",
+        "開線上課表服務：月費制、毛利近 100%，是本賽道的變現核心",
+        "訓練營與教練品牌化，從個人教練變成一個方法論品牌"
+      ],
+      calc:{rateK:500, aff:1.4, shopRate:0.035, shopPrice:1200, shopCut:0.3, shopLabel:"課表／服務"},
+      calcNote:"健身賽道參數：業配約 NT$500／千粉；補劑聯盟轉換佳；「團購」欄位以課表服務估算（參與率 3.5%、客單 NT$1,200、毛利 30% 計入平台與成本後）。"
+    },
+    tech: {
+      name:"3C 開箱", power:4, rate:"NT$6,000–15,000／篇", src:"業配、聯盟導購、YT 分潤",
+      tagline:"聯盟導購轉換率最高的賽道（受眾帶著比價心態來）。避開大咖的旗艦機戰場，平價配件就是新手的藍海。",
+      position:"我幫 <b>預算有限的學生與新鮮人</b>，用 <b>平價配件實測</b>，解決 <b>怕買到雷品</b> 的問題。",
+      audience:"18–35 歲男性為主。特徵：決策前必看評測、點連結比價是肌肉記憶、對「真實缺點」的信任高於滿分好評。",
+      formats:[
+        "<strong>3,000 元以下好物</strong>——平價定位避開大咖的旗艦戰場，新手唯一該打的位置",
+        "<strong>使用 30 天後</strong>——長期心得是大咖不做的差異化（他們忙著追新品）",
+        "<strong>A vs B 對決</strong>——「299 的線 vs 1,290 原廠線」，衝突感自帶流量"
+      ],
+      hooks:[
+        "這條 299 的線，打爆我 1,290 的原廠線」",
+        "用了 30 天，我後悔了——但不是你想的那樣」",
+        "別買旗艦，這台 6 折價給你 9 成體驗」"
+      ],
+      money:[
+        {k:"1,000 粉起", t:"聯盟導購", d:"蝦皮／momo 3C 導購，本賽道受眾點連結率全品類最高"},
+        {k:"5,000 粉起", t:"品牌業配", d:"配件品牌起步，NT$6,000–15,000／篇；敢寫缺點反而接得到長期案"},
+        {k:"10,000 粉起", t:"YT 長片分潤", d:"3C 長片觀看時長長、RPM 高，分潤在本賽道特別肥"},
+        {k:"50,000 粉起", t:"自有選品", d:"選品店、獨家團購價，甚至自有品牌配件"}
+      ],
+      legal:"收費評測必須揭露；規格與實測數據要能被驗證（跑分留原始截圖）；水貨、保固條件講清楚。",
+      gear:"唯一建議早期投資燈光的賽道：補光燈＋乾淨桌面背景約 NT$3,000。產品先測「自己已經有的」，零成本起步。",
+      kpi:"完播率 >35%；連結 CTR 2–3%（比價心態強）；YT 長片平均觀看 >4 分鐘。",
+      stageEarn:["NT$0","NT$1,500–8,000／月","NT$12,000–50,000／月","NT$50,000–180,000／月","NT$180,000＋／月"],
+      stageTips:[
+        "只測平價品，避開大咖的旗艦戰場；先拍自己已有的裝備",
+        "3C 聯盟轉換率高，連結掛好掛滿（簡介＋留言區＋置頂）",
+        "重心移到 YT 長片——3C 長片分潤是本賽道的隱藏引擎",
+        "選品團購談獨家價，「我談到全網最低」就是內容",
+        "自有選品店或聯名配件，把流量變成通路"
+      ],
+      calc:{rateK:550, aff:2.0, shopRate:0.03, shopPrice:1500, shopCut:0.15, shopLabel:"選品團購"},
+      calcNote:"3C 賽道參數：業配約 NT$550／千粉；導購 CTR 全品類最高故聯盟係數高；團購以 3% 參與率、客單 NT$1,500、抽成 15% 估算。開 YT 分潤影響特別大。"
+    },
+    parenting: {
+      name:"親子育兒", power:4, rate:"NT$5,000–12,000／篇", src:"團購（超強）、業配",
+      tagline:"團購之王。媽媽社群的信任轉換率全賽道最高——一次成功開團的收入常常超過一整月業配。",
+      position:"我幫 <b>0–3 歲寶寶的新手爸媽</b>，用 <b>實用清單＋真實日常</b>，解決 <b>怕買錯、怕做錯</b> 的問題。",
+      audience:"25–40 歲新手爸媽（決策者多為媽媽）。特徵：資訊焦慮高峰期、社群轉發極活躍、「同為媽媽」的信任無可取代。",
+      formats:[
+        "<strong>月齡清單</strong>——「0–6 個月必買／完全不用買」，媽媽社群轉發率最高的形態",
+        "<strong>真實日常</strong>——崩潰與可愛並存的育兒現場，情感連結的來源",
+        "<strong>爸媽問答</strong>——回覆留言變成內容，永遠有題材"
+      ],
+      hooks:[
+        "新生兒用品，這 5 樣我一次都沒用過——省下 8,000」",
+        "月子中心不會教你的 3 件事」",
+        "這玩具 199，我兒子玩了半年沒膩」"
+      ],
+      money:[
+        {k:"1,000 粉起", t:"母嬰聯盟導購", d:"尿布、副食品、玩具導購——媽媽的購物車永遠是滿的"},
+        {k:"5,000 粉起", t:"品牌業配", d:"母嬰品牌預算穩定，NT$5,000–12,000／篇"},
+        {k:"10,000 粉起", t:"團購開團", d:"本賽道的主力收入。參與率 4–6% 全賽道最高，一檔勝過整月業配"},
+        {k:"50,000 粉起", t:"自有選品／課程", d:"選品品牌、親子課程、電子書（副食品食譜等）"}
+      ],
+      legal:"孩子露臉程度先想清楚（數位足跡是一輩子的，部分創作者選擇遮臉／背影）；嬰幼兒產品的安全宣稱要保守；奶粉行銷有法規限制。",
+      gear:"手機即可。重點是家裡固定一個「拍攝角落」（光線好、背景乾淨）。玩具與用品本來就要買——把每次購物變成選題。",
+      kpi:"分享率 >3%（媽媽群轉發是核心通路）；團購參與率 4–6%；私訊問「什麼時候開團」＝主力變現啟動訊號。",
+      stageEarn:["NT$0","NT$1,500–8,000／月","NT$12,000–55,000／月","NT$55,000–200,000／月","NT$200,000＋／月"],
+      stageTips:[
+        "月齡清單是冷啟動神器——新手爸媽會整包儲存＋轉發",
+        "掛母嬰用品聯盟連結，同時開始經營媽媽社群（LINE 群）",
+        "進入團購節奏：每月 1–2 檔，選品只選自己用過的",
+        "團購為主力、業配挑著接；上架副食品食譜等數位產品",
+        "自有選品品牌或親子課程，媽媽社群就是你的通路"
+      ],
+      calc:{rateK:500, aff:1.5, shopRate:0.06, shopPrice:1000, shopCut:0.22, shopLabel:"團購"},
+      calcNote:"親子賽道參數：業配約 NT$500／千粉；團購參與率以 6% 估算（全賽道最高）、客單 NT$1,000、抽成 22%——團購是本賽道的收入主力。"
+    },
+    knowledge: {
+      name:"知識教學", power:4, rate:"NT$4,000–10,000／篇", src:"課程、會員、企業合作",
+      tagline:"最早能賣自有產品的賽道——1,000 粉就能賣模板。你的本業技能就是庫存，數位產品毛利 85% 起跳。",
+      position:"我幫 <b>想加薪的職場新人</b>，用 <b>60 秒一招</b>，解決 <b>Excel／簡報／英文卡關</b> 的問題。",
+      audience:"20–35 歲職場人。特徵：儲存率極高（存起來上班用）、為「省時間」付費乾脆、企業端（內訓）是隱藏大客戶。",
+      formats:[
+        "<strong>一招系列</strong>——每支只教一件事，教到會為止；貪多就是新手的死法",
+        "<strong>大改造</strong>——把醜簡報／爛履歷改到好，before/after 的知識版",
+        "<strong>職場情境劇</strong>——「主管突然說要改報告」，共鳴＋教學二合一"
+      ],
+      hooks:[
+        "這個 Excel 快捷鍵，讓我每天早下班 1 小時」",
+        "你的履歷被刷掉，是因為第一行就寫錯了」",
+        "主管秒回的信，都長這樣」"
+      ],
+      money:[
+        {k:"1,000 粉起", t:"模板／電子書", d:"履歷模板、簡報模板 NT$300–990——本賽道 1,000 粉就能開賣，全系統最早"},
+        {k:"5,000 粉起", t:"工具業配", d:"軟體工具商（筆記、AI 工具、線上課平台）業配穩定"},
+        {k:"20,000 粉起", t:"旗艦課程", d:"NT$3,000–9,900 完整課程，先用私域名單預售再開錄"},
+        {k:"50,000 粉起", t:"企業內訓／顧問", d:"單場內訓 NT$30,000 起，B 端是本賽道的隱藏天花板"}
+      ],
+      legal:"軟體畫面與教材注意版權；「保證加薪」「保證上岸」這類承諾不要說；引用他人方法標註出處。",
+      gear:"螢幕錄影（OBS 免費）＋NT$500 麥克風就能開工。本賽道口條與邏輯比畫質重要，是器材成本最低的賽道。",
+      kpi:"儲存率 >5%——「存起來以後用」是本賽道的核心指標；模板購買轉換 1–2%；企業私訊詢問＝B 端市場開了。",
+      stageEarn:["NT$0–3,000（模板可先賣）","NT$3,000–12,000／月","NT$15,000–60,000／月","NT$60,000–250,000／月","NT$250,000＋／月"],
+      stageTips:[
+        "一支只教一招，做成系列；本賽道冷啟動就能上架模板試賣",
+        "上架第一批數位產品（模板／電子書 NT$300–990）",
+        "軟體工具業配＋開始用私域名單預售課程",
+        "推出旗艦課程 NT$3,000–9,900——先預售、達標才開錄，零風險",
+        "企業內訓與年費社群，B 端單價是 C 端的 10 倍"
+      ],
+      calc:{rateK:450, aff:1.2, shopRate:0.045, shopPrice:600, shopCut:0.85, shopLabel:"模板／課程"},
+      calcNote:"知識賽道參數：業配約 NT$450／千粉；「團購」欄位以數位產品估算——參與率 4.5%、客單 NT$600、毛利 85%（數位產品幾乎零成本）。"
+    },
+    vlog: {
+      name:"生活 Vlog", power:2, rate:"NT$2,000–6,000／篇", src:"業配（需大量粉絲）",
+      tagline:"誠實說：純 Vlog 是變現天花板最低的賽道。系統的建議是「Vlog × 利基」混合打法——用 Vlog 的形式，包一個能賣貨的內核。",
+      position:"我幫 <b>想把日子過好的租屋族</b>，用 <b>改造與 Routine 紀錄</b>，解決 <b>小空間住得不舒服</b> 的問題。（示範：把 Vlog 綁定「租屋改造」利基）",
+      audience:"18–30 歲、嚮往「把生活過好」的族群。特徵：黏性靠人格魅力、轉化靠場景種草——他們買的是「你生活裡出現的東西」。",
+      formats:[
+        "<strong>改造系列</strong>——租屋改造、桌面改造：Vlog 形式＋明確利基，每樣物品都可掛連結",
+        "<strong>Routine 紀錄</strong>——晨間／下班 Routine，物品自然植入的最佳場景",
+        "<strong>預算挑戰</strong>——「5,000 元改造陽台」，數字鉤子＋好物清單二合一"
+      ],
+      hooks:[
+        "8 坪租屋處，我花 1 萬讓它像雜誌裡的家」",
+        "下班後的 3 小時，決定你和別人的差距」",
+        "房東看到都想漲租的改造——全部可帶走」"
+      ],
+      money:[
+        {k:"2,000 粉起", t:"居家好物聯盟", d:"影片中出現的每樣物品都掛導購連結——場景種草轉換率意外地好"},
+        {k:"10,000 粉起", t:"好物團購", d:"香氛、收納、小家電團購，比等業配實際得多"},
+        {k:"30,000 粉起", t:"品牌業配", d:"生活風格類業配此時才有量；人格黏性讓單價可以往上談"},
+        {k:"100,000 粉起", t:"自有選物", d:"選物品牌／自有生活小物，人格品牌的終局"}
+      ],
+      legal:"置入須標示；拍到路人、店家注意肖像權與場地權；租屋改造注意租約限制（還原條款）。",
+      gear:"手機＋廣角鏡頭。本賽道的生死線是「剪輯節奏」——把時間投資在剪輯模板與轉場節奏，而不是相機。",
+      kpi:"平均觀看時長與回訪率（人格黏性指標）；好物連結 CTR >1.5%。如果半年後還找不到能賣的「內核」，考慮轉利基賽道。",
+      stageEarn:["NT$0","NT$500–4,000／月","NT$5,000–25,000／月","NT$25,000–90,000／月","NT$90,000＋／月"],
+      stageTips:[
+        "純 Vlog 難冷啟動——一開始就綁定具體利基（租屋改造／極簡／桌面）",
+        "影片裡每樣物品都掛聯盟連結，場景種草就是你的變現形態",
+        "開始團購居家好物；業配還早，別浪費時間等",
+        "生活風格業配此時才有量，挑品牌接；持續團購",
+        "自有選物品牌——你的審美就是產品力"
+      ],
+      calc:{rateK:300, aff:1.0, shopRate:0.025, shopPrice:800, shopCut:0.2, shopLabel:"好物團購"},
+      calcNote:"Vlog 賽道參數：業配約 NT$300／千粉（全賽道最低）；變現重心在場景種草的聯盟導購與好物團購。若試算結果不理想，這就是系統建議綁定利基的原因。"
+    }
+  };
+  var TRACK_ORDER = ["finance","beauty","food","fitness","tech","parenting","knowledge","vlog"];
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ================= 賽道卡片 ================= */
+  function dotsHTML(p){
+    var s = "";
+    for(var i=1;i<=5;i++) s += (i<=p ? "●" : "<span>●</span>");
+    return s;
+  }
+  var grid = $("trackGrid");
+  TRACK_ORDER.forEach(function(id){
+    var t = TRACKS[id];
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "trackcard";
+    btn.setAttribute("data-track", id);
+    btn.setAttribute("aria-pressed", "false");
+    btn.innerHTML = "<h3>"+t.name+"</h3>"
+      + "<span class='dots'>"+dotsHTML(t.power)+"</span>"
+      + "<span class='rate'>微型業配行情 <b>"+t.rate+"</b></span>"
+      + "<span class='src'>主力："+t.src+"</span>";
+    btn.addEventListener("click", function(){ selectTrack(id); });
+    grid.appendChild(btn);
+  });
+
+  /* 自訂賽道卡：8 個以外的賽道從這裡進系統 */
+  var ccard = document.createElement("div");
+  ccard.className = "trackcard customcard";
+  ccard.setAttribute("aria-pressed","false");
+  ccard.innerHTML = "<h3>＋ 自訂賽道</h3>"
+    + "<span class='src' style='margin:2px 0 10px;display:block'>8 個以外的賽道？輸入名稱，系統照樣帶你打。</span>"
+    + "<input type='text' id='ctName' placeholder='例：命理塔羅、露營、寵物' maxlength='12' aria-label='自訂賽道名稱'>"
+    + "<select id='ctRef' aria-label='變現模式最接近的賽道'>"
+    + "<option value=''>變現模式最接近哪個賽道？</option>"
+    + TRACK_ORDER.map(function(id){ return "<option value='"+id+"'>"+TRACKS[id].name+"</option>"; }).join("")
+    + "<option value='__none'>都不像──讓 AI 從 16 種變現模式幫我配</option>"
+    + "</select>"
+    + "<button type='button' class='ctgo' id='ctGo'>生成策略</button>";
+  grid.appendChild(ccard);
+  ccard.querySelector("#ctGo").addEventListener("click", function(){
+    var name = ccard.querySelector("#ctName").value.trim();
+    var ref = ccard.querySelector("#ctRef").value;
+    if(!name){ ccard.querySelector("#ctName").focus(); return; }
+    if(!ref){ ccard.querySelector("#ctRef").focus(); return; }
+    selectCustom(name, ref, false);
+  });
+
+  /* ================= 策略生成 ================= */
+  function ul(items, cls){
+    return "<ul"+(cls?" class='"+cls+"'":"")+">" + items.map(function(x){ return "<li>"+x+"</li>"; }).join("") + "</ul>";
+  }
+  function renderStrategy(t){
+    var msteps = t.money.map(function(m){
+      return "<div class='mstep'><span class='k'>"+m.k+"</span><h5>"+m.t+"</h5><p>"+m.d+"</p></div>";
+    }).join("");
+    $("stratBody").innerHTML =
+      "<div class='stratwrap'>"
+      + "<div class='strathead'>"
+      +   "<h3 class='tname'><small>你的賽道策略</small>"+t.name+"</h3>"
+      +   "<p class='tag'>"+t.tagline+"</p>"
+      + "</div>"
+      + "<div class='stratgrid'>"
+      +   "<div class='stratcell'><h4>定位模板（把粗體換成你的字）</h4><p class='postmpl'>"+t.position+"</p><p style='margin-top:10px'>"+t.audience+"</p></div>"
+      +   "<div class='stratcell'><h4>主打內容格式（三選一當主格式）</h4>"+ul(t.formats)+"</div>"
+      +   "<div class='stratcell'><h4>本賽道專屬開場鉤子</h4>"+ul(t.hooks,"hookslist")+"</div>"
+      +   "<div class='stratcell'><h4 class='warn'>法規與紅線</h4><p>"+t.legal+"</p><h4 style='margin-top:16px'>起步成本與器材</h4><p>"+t.gear+"</p></div>"
+      + "</div>"
+      + "<div class='moneypath'><h4>賺錢順序（照這個順序開通，不要跳級）</h4><div class='msteps'>"+msteps+"</div></div>"
+      + "<div class='stratmeta'><span>微型業配行情：<b>"+t.rate+"</b></span><span>關鍵指標：<b>"+t.kpi+"</b></span></div>"
+      + "</div>";
+    $("stratSub").innerHTML = "系統依「<strong>"+t.name+"</strong>」賽道生成。換賽道隨時回上一區重選，進度勾選不會消失。";
+  }
+
+  /* ================= 階段注入 ================= */
+  var tipEls = document.querySelectorAll(".tracktip");
+  var earnEls = document.querySelectorAll("[data-earnidx]");
+  var DEFAULT_EARNS = [];
+  earnEls.forEach(function(el){ DEFAULT_EARNS[+el.getAttribute("data-earnidx")] = el.textContent; });
+  function renderStages(t){
+    tipEls.forEach(function(el){
+      var i = +el.getAttribute("data-tipidx");
+      el.querySelector("span").textContent = t.stageTips[i];
+      el.hidden = false;
+    });
+    earnEls.forEach(function(el){
+      var i = +el.getAttribute("data-earnidx");
+      el.textContent = t.stageEarn[i];
+    });
+  }
+
+  /* ================= 平台作戰手冊 ================= */
+  var PLATFORMS = {
+    instagram: { name:"Instagram", tag:"信任中樞＋業配主場——品牌方報價先看這裡", cells:[
+      ["受眾性質","20–40 歲、女性略多。重視美感與生活風格、購買力強，是台灣<strong>業配與團購的主戰場</strong>。"],
+      ["演算法邏輯","Reels 靠<strong>完播與分享</strong>推給陌生人；貼文與限動主要餵給既有粉絲。內文（caption）已被搜尋索引——IG 正式進入 SEO 時代。"],
+      ["內容與文案","Reels：豎版 9:16、前 3 秒鉤子、字幕必上。<strong>輪播貼文儲存率最高</strong>，最適合清單與教學。限動每天發，用投票、問答養鐵粉。文案第一行決定「更多」會不會被點開。"],
+      ["照片與封面","講究「一眼美感」：統一色調、九宮格視覺一致。封面圖上<strong>大字標題</strong>——手機縮圖上要看得清楚。"],
+      ["平台內 SEO","帳號名稱與簡介塞賽道關鍵字（「阿明｜油痘肌保養」）；說明文第一行放關鍵句；<strong>3–5 個精準 hashtag 勝過 30 個氾濫的</strong>；在地內容一定標地點。"],
+      ["發文節奏","Reels 每週 3–5 支；輪播每週 1–2 篇；限動每天 1–3 則。台灣尖峰：<strong>12–13 點、21–23 點</strong>。"],
+      ["在系統中的角色","信任資產的家。DM 與摯友名單是私域入口，業配與團購的成交主場。"],
+      ["廣告工具","「加強推廣」適合幫團購貼文加熱；進階走廣告管理員（與 FB 共用），可對「看過影片的人」做再行銷。"]
+    ]},
+    tiktok: { name:"TikTok", tag:"流量引擎——冷啟動最快，0 粉也能爆", cells:[
+      ["受眾性質","16–30 歲為主、男女均衡。娛樂導向、決策衝動、<strong>對廣告感內容容忍度極低</strong>。"],
+      ["演算法邏輯","最純粹的內容賽馬：<strong>不看粉絲數，每支影片重新比賽</strong>。完播率 &gt; 互動率 &gt; 粉絲量。爆款可以來自 0 粉帳號——這就是新手該先攻這裡的原因。"],
+      ["內容與文案","原生感 &gt; 精緻感：手持、真實、快節奏，開頭直接進重點。跟熱門音效與挑戰，但<strong>套自己賽道的內容</strong>。文案短、口語、像朋友說話。"],
+      ["照片與封面","封面不重要（流量來自推薦頁，不是主頁），但<strong>第一幀就要有字卡</strong>——鉤子直接寫在畫面上。"],
+      ["平台內 SEO","TikTok 是年輕世代的搜尋引擎：標題與字幕塞「怎麼」「推薦」「教學」等搜尋詞；<strong>留言區自問自答埋長尾關鍵字</strong>。"],
+      ["發文節奏","每天 1 支或隔天 1 支，量大取勝。尖峰：<strong>18–23 點</strong>。"],
+      ["在系統中的角色","漲粉引擎。台灣變現工具較弱——流量導去 IG 與 YT 收割（簡介互掛）。"],
+      ["廣告工具","Promote（推廣）小額加熱驗證過的影片，NT$300 就能開測，看單粉成本決定續投。"]
+    ]},
+    youtube: { name:"YouTube", tag:"資產庫＋分潤引擎——唯一舊內容持續生錢的平台", cells:[
+      ["受眾性質","全年齡最廣、<strong>觀看意圖最強</strong>（主動搜尋而來）。長片觀眾的信任深度是所有平台之最——課程與高單價服務在這裡成交。"],
+      ["演算法邏輯","雙軌制：Shorts 引流、長片養信任與分潤。長片靠 <strong>CTR（封面＋標題）與觀看時長</strong>。影片壽命以「年」計，今天上的片三年後還在賺。"],
+      ["內容與文案","Shorts 直接同發短影音。長片 8–15 分鐘：<strong>前 30 秒講清楚「看完你會得到什麼」</strong>，中段用章節切分，結尾導訂閱與下一支。"],
+      ["照片與封面","封面是長片的生死線：<strong>大臉表情＋大字＋高對比</strong>，同頻道風格統一。CTR 差 1%，收入差一截——封面值得花整支影片 20% 的時間。"],
+      ["平台內 SEO","全網 SEO 價值最高：標題直接寫成搜尋句（「2026 ETF 怎麼買」）；說明欄前兩行埋關鍵字；上章節時間戳；<strong>YT 影片會排進 Google 搜尋第一頁</strong>。"],
+      ["發文節奏","Shorts 每週 3–5、長片每週 1。上片後 <strong>48 小時</strong>是演算法關鍵期，集中導流。"],
+      ["在系統中的角色","三年資產庫：分潤、課程成交、AIO/GEO 的主要素材源（AI 讀得到你的字幕與說明）。"],
+      ["廣告工具","課程／服務期用 Google Ads 投搜尋與 YT 內廣告，接住「主動搜尋你賽道」的高意圖受眾。"]
+    ]},
+    facebook: { name:"Facebook", tag:"團購主場＋熟齡金礦——最常被年輕創作者低估", cells:[
+      ["受眾性質","35–60 歲為主，<strong>在地社團文化極強</strong>。親子、美食、理財賽道在 FB 的轉換率常高於 IG——這裡的受眾是真的會下單的人。"],
+      ["演算法邏輯","<strong>社團 &gt; 粉專</strong>：演算法偏好社團內互動與討論。外部連結貼文觸及被壓制——內容直接放貼文裡，連結放留言。"],
+      ["內容與文案","跟 IG 相反：<strong>長文敘事可行</strong>，故事型、心得型貼文表現好。經營自己的團購社團＝自建私域，開團在這裡預熱與成交。"],
+      ["照片與封面","真實生活照 &gt; 精修圖；<strong>多圖相簿型貼文</strong>觸及好。熟齡受眾信「像鄰居的人」，不信網美圖。"],
+      ["平台內 SEO","粉專名稱與「關於」放關鍵字；<strong>公開貼文會被 Google 索引</strong>，有搜尋長尾價值。"],
+      ["發文節奏","粉專每週 3–5 篇；社團每天丟互動話題。尖峰：<strong>早 7–9 點、晚 20–22 點</strong>。"],
+      ["在系統中的角色","團購與在地生意的成交場。階段貳建立團購社團，階段參起它就是你的印鈔機。"],
+      ["廣告工具","廣告管理員是全網最強定向工具：年齡／興趣／行為分層、再行銷、類似受眾——轉換型投放的主戰場。"]
+    ]},
+    threads: { name:"Threads", tag:"觀點放大器——成本最低的曝光管道", cells:[
+      ["受眾性質","20–35 歲、文字型用戶，台灣活躍度全球前段。吃<strong>觀點、話題、真實心得</strong>，反感行銷腔。"],
+      ["演算法邏輯","純話題流：<strong>轉發（引用）與回覆權重極高</strong>。一句話觀點就能觸及數十萬人，帳號大小几乎不影響——第二個適合冷啟動的平台。"],
+      ["內容與文案","純文字觀點、爭議性提問、幕後心得、失敗紀錄。<strong>不用做圖不用剪片</strong>——每天 2–5 則短想法，是所有平台裡生產成本最低的。"],
+      ["照片與封面","可有可無。<strong>截圖型內容</strong>（對帳單、成果、對話截圖）是例外，效果很好。"],
+      ["平台內 SEO","持續輸出同一主題，建立「你＝某話題」的心智連結；<strong>高轉發觀點會被 AI 檢索與引用</strong>——這裡是 GEO 的低成本入口。"],
+      ["發文節奏","每天 2–5 則；蹭時事話題反應要快（24 小時內）。"],
+      ["在系統中的角色","觀點槓桿＋導流：爆文導去 IG／YT 收割追蹤，也替你累積「可被引用的觀點庫」。"],
+      ["廣告工具","暫無成熟廣告工具——這裡用內容槓桿就好，錢留給別的平台。"]
+    ]},
+    line: { name:"LINE 私域", tag:"變現收割場——名單是你的，不是平台的", cells:[
+      ["受眾性質","台灣滲透率最高的 App，全年齡。進到你 LINE 的人已經是<strong>最信任你的那群</strong>——他們是團購與課程的第一批買家。"],
+      ["演算法邏輯","<strong>沒有演算法，訊息 100% 送達</strong>。這就是它的價值：平台流量是租的，LINE 名單是你自己的資產，不怕演算法改版。"],
+      ["內容與文案","官方帳號：每週 1–2 次廣播（新片通知、開團通知、專屬優惠）。社群：鐵粉聊天室，開團前的預熱場。<strong>語氣像會員通知，不要像廣告</strong>。"],
+      ["照片與封面","圖文選單與廣播圖卡設計成「會員專屬」的質感；開團倒數圖卡是轉換利器。"],
+      ["平台內 SEO","無公開搜尋——重點是<strong>入口設計</strong>：每支影片 CTA 導 LINE，用「進群領模板／清單／優惠」當誘餌。"],
+      ["發文節奏","廣播每週 ≤ 2 次（太多會被封鎖）；社群每天有互動。<strong>2 萬粉前就要開始養名單</strong>。"],
+      ["在系統中的角色","收割場：團購、課程預售、直播通知都在這裡成交。名單數 × 信任度＝你真正的身價。"],
+      ["廣告工具","官方帳號有分眾訊息（依標籤發不同內容）；初期免費額度夠用，先把名單養大。"]
+    ]}
+  };
+  var PLAT_ORDER = ["instagram","tiktok","youtube","facebook","threads","line"];
+  var currentPlat = "instagram";
+
+  function renderPlatform(id){
+    currentPlat = id;
+    var p = PLATFORMS[id];
+    document.querySelectorAll(".platbtn").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-plat")===id ? "true" : "false");
+    });
+    var cells = p.cells.map(function(c){
+      return "<div class='stratcell'><h4>"+c[0]+"</h4><p>"+c[1]+"</p></div>";
+    }).join("");
+    $("platPanel").innerHTML =
+      "<div class='plathead'><h3>"+p.name+"</h3><p><b>定位｜</b>"+p.tag+"</p></div>"
+      + "<div class='platgrid'>"+cells+"</div>";
+  }
+  var platBar = $("platBar");
+  PLAT_ORDER.forEach(function(id){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "platbtn";
+    b.setAttribute("data-plat", id);
+    b.setAttribute("aria-pressed", "false");
+    b.textContent = PLATFORMS[id].name;
+    b.addEventListener("click", function(){ renderPlatform(id); });
+    platBar.appendChild(b);
+  });
+  renderPlatform("instagram");
+
+  /* ================= 目標（賺錢／被看見／傳理念） ================= */
+  var LS_GOAL = "creator-os-goal";
+  var GOALS = {
+    money:"穩定收入（優先優化轉換與變現）",
+    fame:"被更多人看見（優先優化觸及、記憶點與分享）",
+    idea:"傳達理念（優先優化同溫層外的擴散與信任深度，變現以可持續為度）"
+  };
+  var goalSet = [];
+  try{ goalSet = JSON.parse(localStorage.getItem(LS_GOAL) || "[]"); }catch(e){ goalSet = []; }
+  function goalPlain(){
+    if(!goalSet.length) return "尚未特別設定（預設以穩定收入為主）";
+    return goalSet.map(function(g){ return GOALS[g]; }).join("；");
+  }
+  function refreshGoalChips(){
+    document.querySelectorAll(".goalchip").forEach(function(b){
+      b.setAttribute("aria-pressed", goalSet.indexOf(b.getAttribute("data-goal")) >= 0 ? "true" : "false");
+    });
+  }
+  document.querySelectorAll(".goalchip").forEach(function(b){
+    b.addEventListener("click", function(){
+      var g = b.getAttribute("data-goal");
+      var idx = goalSet.indexOf(g);
+      if(idx >= 0) goalSet.splice(idx, 1); else goalSet.push(g);
+      try{ localStorage.setItem(LS_GOAL, JSON.stringify(goalSet)); }catch(e){}
+      refreshGoalChips();
+      renderPrompts();
+    });
+  });
+  refreshGoalChips();
+
+  /* ================= 人設引擎 ================= */
+  var LS_PERSONA = "creator-os-persona";
+  var ARCH = {
+    expert:{name:"專家權威型", desc:"用專業背書講人話。信任來得快，單價開得高。", eg:"例：醫師講保健、會計師講稅", fit:"變現強項：課程、諮詢、高價業配"},
+    record:{name:"真實紀錄型", desc:"公開自己的過程與數據，觀眾陪你一起走。黏性最強，新手最容易上手。", eg:"例：減脂 90 天全記錄、還債日記", fit:"變現強項：聯盟、團購、陪跑服務"},
+    contrast:{name:"反差衝突型", desc:"A 身分做 B 的事，天生自帶話題與記憶點。", eg:"例：不會做菜的營養師、會寫程式的阿嬤", fit:"變現強項：業配、流量財"},
+    critic:{name:"毒舌評論型", desc:"敢講真話、幫觀眾踩雷。有風險，但忠誠度最高。", eg:"例：踩雷開箱、「不推薦」清單", fit:"變現強項：聯盟導購、訂閱會員"},
+    buddy:{name:"陪伴閨蜜型", desc:"像朋友一樣聊天，賣的是關係不是資訊。", eg:"例：下班陪聊、宵夜電台", fit:"變現強項：直播斗內、訂閱、團購"},
+    character:{name:"角色扮演型", desc:"虛構角色或誇張化的自己，IP 化潛力最大，可以不露臉。", eg:"例：擬人化寵物、職場情境劇角色", fit:"變現強項：IP 授權、聯名、UGC"}
+  };
+  var ARCH_ORDER = ["expert","record","contrast","critic","buddy","character"];
+  var PFIELDS = ["pf1","pf2","pf3","pf4","pf5","pf6"];
+  var PLABELS = ["我是誰","反差點","站在誰那邊","記憶點","語氣","絕不做"];
+  var persona = null;
+  try{ persona = JSON.parse(localStorage.getItem(LS_PERSONA) || "null"); }catch(e){ persona = null; }
+
+  var archGrid = $("archGrid");
+  ARCH_ORDER.forEach(function(id){
+    var a = ARCH[id];
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "arch";
+    b.setAttribute("data-arch", id);
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML = "<h3>"+a.name+"</h3>"+a.desc+"<span class='eg'>"+a.eg+"</span><span class='fit'>"+a.fit+"</span>";
+    b.addEventListener("click", function(){
+      var cur = persona || {arch:null, f:["","","","","",""]};
+      cur.arch = (cur.arch === id) ? null : id;
+      persona = cur;
+      savePersona();
+      refreshArch();
+      renderPersonaCard();
+      renderPersonaPrompt();
+      renderPrompts();
+    });
+    archGrid.appendChild(b);
+  });
+  function refreshArch(){
+    document.querySelectorAll(".arch").forEach(function(b){
+      b.setAttribute("aria-pressed", (persona && persona.arch === b.getAttribute("data-arch")) ? "true" : "false");
+    });
+  }
+  function savePersona(){ try{ localStorage.setItem(LS_PERSONA, JSON.stringify(persona)); }catch(e){} }
+  function personaPlain(){
+    if(!persona) return null;
+    var parts = [];
+    if(persona.arch) parts.push("原型：" + ARCH[persona.arch].name);
+    (persona.f || []).forEach(function(v, i){
+      if(v && v.trim()) parts.push(PLABELS[i] + "：" + v.trim());
+    });
+    return parts.length ? parts.join("；") : null;
+  }
+  function renderPersonaCard(){
+    var card = $("personaCard");
+    var pp = personaPlain();
+    if(!pp){ card.hidden = true; return; }
+    var f = (persona.f || []);
+    var line = (f[0]||"＿＿") + (f[1] ? " × " + f[1] : "");
+    var dl = "";
+    if(persona.arch) dl += "<dt>人設原型</dt><dd>"+ARCH[persona.arch].name+"</dd>";
+    f.forEach(function(v,i){ if(v && v.trim()) dl += "<dt>"+PLABELS[i]+"</dt><dd>"+v.trim().replace(/</g,"&lt;")+"</dd>"; });
+    card.innerHTML = "<p class='pc-line'>「<b>"+line.replace(/</g,"&lt;")+"</b>」</p><dl>"+dl+"</dl>"
+      + "<p class='pc-note'>✓ 已儲存。這份人設已自動放進 AI 幫手的腳本、封面、文案、留言指令——AI 寫出來的每一稿都會是你的口氣。</p>";
+    card.hidden = false;
+  }
+  function personaPromptText(){
+    var f = PFIELDS.map(function(id){ var el = $(id); return el ? el.value.trim() : ""; });
+    var archName = persona && persona.arch ? ARCH[persona.arch].name : "（未選，請幫我選）";
+    return "你是人設打磨顧問，專門幫創作者做出「有記憶點、可長期經營、不易翻車」的人設。以下是我的人設六要素草稿（可能不完整）：\n"
+      + "人設原型：" + archName + "\n"
+      + "我是誰：" + (f[0]||"＿＿") + "\n反差點：" + (f[1]||"＿＿") + "\n永遠站在誰那邊：" + (f[2]||"＿＿")
+      + "\n記憶點（穿著／口頭禪／場景）：" + (f[3]||"＿＿") + "\n語氣：" + (f[4]||"＿＿") + "\n絕不做的事：" + (f[5]||"＿＿") + "\n"
+      + "我的賽道：{賽道}\n\n請：\n"
+      + "1. 給我 3 個完整人設方案，每個包含：人設一句話、開場白示範、口頭禪 ×3、社群簡介文案（80 字內）、最適合的內容形式\n"
+      + "2. 指出我草稿裡最有潛力的元素、最弱的元素，以及跟同賽道常見人設的重疊風險\n"
+      + "3. 用最好的那個方案，示範同一個題目的 30 秒開場逐字稿——讓我聽到這個人設「說話的樣子」\n"
+      + "4. 給這個人設的 3 條紅線（一做人設就崩的事）"
+      + PRO_SUFFIX;
+  }
+  function renderPersonaPrompt(){
+    $("pfPre").textContent = fillTpl(personaPromptText());
+  }
+  PFIELDS.forEach(function(id, i){
+    var el = $(id);
+    if(persona && persona.f && persona.f[i]) el.value = persona.f[i];
+  });
+  $("pfSave").addEventListener("click", function(){
+    var cur = persona || {arch:null, f:[]};
+    cur.f = PFIELDS.map(function(id){ return $(id).value.trim(); });
+    persona = cur;
+    savePersona();
+    renderPersonaCard();
+    renderPersonaPrompt();
+    renderPrompts();
+    var btn = $("pfSave");
+    btn.textContent = "已儲存 ✓";
+    setTimeout(function(){ btn.textContent = "儲存人設"; }, 1600);
+  });
+  $("pfClear").addEventListener("click", function(){
+    if(!confirm("確定要清除人設嗎？")) return;
+    persona = null;
+    try{ localStorage.removeItem(LS_PERSONA); }catch(e){}
+    PFIELDS.forEach(function(id){ $(id).value = ""; });
+    refreshArch(); renderPersonaCard(); renderPersonaPrompt(); renderPrompts();
+  });
+  $("pfCopy").addEventListener("click", function(){
+    copyText($("pfPre").textContent, $("pfCopy"), "複製指令");
+  });
+  refreshArch();
+  renderPersonaCard();
+
+  /* ================= AI 副駕：指令庫 ================= */
+  var PROMPTS = [
+    {t:"定位精煉", d:"用市場三角＋JTBD 方法論，把興趣變成能賺錢的定位",
+     tpl:"你是自媒體定位策略顧問，方法論結合定位理論（Positioning）與顧客任務理論（JTBD），熟悉台灣社群生態與各賽道行情。\n\n【我的資料】\n賽道：{賽道}\n我目前在：{階段}\n背景與專業：＿＿\n資源（器材、人脈、可用素材）：＿＿\n每週可投入：＿＿小時\n\n【工作流程】\n第一步：如果上面的資料不足以做出高品質定位，先列出你需要知道的問題（最多 5 個）問我，等我回答再繼續；資料夠就直接開始。\n第二步：用「市場三角」評估這個賽道：受眾規模、付費能力、競爭飽和度——各給推理依據，不要憑感覺。\n第三步：給 3 個定位方案，每個包含：\n- 定位一句話（我幫〔誰〕，用〔什麼形式〕，解決〔什麼問題〕）\n- 受眾輪廓：年齡、使用場景、最痛的 3 個問題（用受眾自己會說的話寫）\n- 差異化切角：同賽道頭部帳號沒佔住的空位是什麼\n- 變現路徑：前 3 個收入來源與預估啟動時間點\n- 風險：這個定位最可能失敗的原因\n第四步：推薦一個方案並解釋為什麼，附「50 題測試」——列出這個定位下的前 10 個選題，證明題目量撐得起半年。"},
+    {t:"50 題選題庫", d:"三軸評分（搜尋×情緒×差異）生成一整季題目",
+     tpl:"你是「{賽道}」領域的內容策略師，選題方法論是三軸評分：搜尋需求 × 情緒張力 × 差異空間。\n\n【背景】定位：{定位}；我目前在：{階段}\n\n請生成 50 個短影音選題，規則：\n1. 按五種選題類型分佈：搜尋型（有人主動搜的問題）×15、情緒型（憤怒／焦慮／暖心）×10、反常識型 ×10、熱點掛鉤型（附掛鉤方法）×5、系列型（可連載 10 集以上）×10\n2. 每題附：目標關鍵字或情緒點｜三軸評分（各 1–5 分）｜一句話鉤子\n3. 按三軸總分排序，標出前 10 名「先拍這些」\n4. 對系列型的 10 題，各給系列名稱與前 3 集的子題\n5. 最後查重：50 題裡有沒有本質上是同一題的？有就換掉\n輸出成表格。"},
+    {t:"短影音腳本", d:"逐秒時間軸＋留存點設計＋滑走點自查",
+     tpl:"你是短影音編劇，方法論：前 3 秒鉤子 → 每 8–10 秒一個留存點（節奏轉折、資訊爆點或畫面變化）→ 開放式結尾。你的目標是完播率，不是文采。\n\n【背景】賽道：{賽道}；我的人設：{人設}；我目前在：{階段}\n【本支影片】題目：＿＿；想傳達的重點：＿＿；目標長度：＿＿秒\n\n【要求】\n1. 先給 3 個開場鉤子（損失規避型／結果前置型／反常識型各一），每個附前 3 秒逐字稿＋畫面，並判斷哪個最適合這個題目、為什麼\n2. 用選定的鉤子寫完整腳本，輸出時間軸表格：秒數｜逐字稿｜畫面指示｜字卡文字\n3. 口語標準：每句 ≤15 字、零書面語、像我人設本人在說話——讀起來有「文案感」的句子直接重寫\n4. 每 8–10 秒標一個「留存點」並說明它為什麼留得住人\n5. 結尾 CTA 只選一個目標（追蹤／留言／連結），說明選擇理由\n6. 交付前自查：標出最可能讓人滑走的 2 個時間點，各附替代寫法"},
+    {t:"拍攝分鏡表", d:"景別交替＋光位收音＋批拍效率最佳化",
+     tpl:"你是短影音攝影指導，擅長用一支手機拍出高級感，原則：景別每 2–3 句交替、動靜交錯、光比先於器材。\n\n【腳本】＿＿\n【我的器材】＿＿（手機型號、麥克風、腳架，沒有就寫沒有）\n\n請輸出：\n1. 分鏡表：鏡號｜秒數｜景別（特寫／半身／全身／空鏡）｜機位與角度｜運鏡（固定／推／搖）｜台詞｜道具與光位備註\n2. 手機設定：解析度與幀率、對焦與曝光鎖定、收音方案——依我的器材給，不要推薦我買東西\n3. B-roll 清單：這支需要的 5–8 個空鏡，標出哪些拍一次可長期重複用\n4. 批拍最佳化：我這次共拍 ＿＿ 支，把所有鏡頭按「場地＋機位＋服裝」重排成最省時間的拍攝順序表\n5. 現場防翻車：這類腳本拍攝最常出的 3 個問題與當場對策"},
+    {t:"剪輯留存優化", d:"留存曲線預判＋字卡系統＋標題公式 A/B",
+     tpl:"你是短影音剪輯指導兼留存率分析師，思考方式：觀眾的手指懸在螢幕上，每一秒都要給他一個不滑走的理由。\n\n【素材】逐字稿或粗剪描述：＿＿；平台：＿＿；這支的既有數據（若有）：＿＿\n\n請給我：\n1. 留存曲線預判：標出最可能掉人的 3 個時間點，各附剪輯對策（剪掉／加字卡／加音效／換畫面）\n2. 節奏規格：理想的 jump-cut 密度、BGM 類型與卡點位置、音效（SFX）加在哪幾個字上\n3. 字卡系統：開頭大字卡（≤9 字）、進度提示卡、金句卡各怎麼寫；字級與顏色對比原則（手機小螢幕可讀）\n4. 標題 ×5：套五種公式（數字型／損失型／懸念型／指名型／反差型）各一，預測 CTR 最高的並說明理由\n5. 封面字 3 案：以手機縮圖尺寸檢查可讀性\n6. 交付自查清單：上片前逐項檢查的 8 個點（第 1 幀有沒有字、音量一致性、字幕錯字⋯）"},
+    {t:"視覺系統設計", d:"色彩系統＋封面規格＋AI 生圖完整指令",
+     tpl:"你是品牌視覺總監，為多個大型創作者帳號做過視覺系統，原則：3 秒認出是你、縮圖可讀、放大人設記憶點。\n\n【背景】賽道：{賽道}；人設：{人設}\n【需求】影片主題：＿＿；我現有的視覺元素（若有）：＿＿\n\n請輸出：\n1. 帳號視覺系統：主色＋輔色＋強調色（HEX 色碼與使用比例）、中文字體風格、版式網格——每個選擇都要說明它如何呼應我的賽道與人設，不要給「安全但無記憶點」的方案\n2. 封面模板規格：構圖（臉的位置與視線方向）、大字區（≤7 字）、元素層級；給「好封面 vs 壞封面」各一個具體描述讓我對照\n3. 本支封面：標題字 3 案＋表情與姿勢指導＋背景處理\n4. AI 生圖指令（英文）：完整結構 subject + style + lighting + camera + composition + negative prompt，可直接貼給 Midjourney／DALL·E\n5. IG 九宮格節奏：接下來 9 格的類型排列與一致性規則\n6. 自查：這套視覺放在同賽道前 10 名帳號旁邊，一眼認得出是我嗎？負責這件事的是哪個元素？"},
+    {t:"一稿六平台改寫", d:"每版鎖定該平台的演算法指標＋並排查重 ★ 核心指令",
+     tpl:"你是跨平台內容營運總監，核心原則：每則貼文都要像「那個平台土生土長的內容」，並且各自針對該平台的核心演算法指標優化——不是換個開頭就了事。\n\n【素材】主題：＿＿；內容摘要或逐字稿：＿＿\n【背景】賽道：{賽道}；定位：{定位}；人設：{人設}（六個版本都要是這個人的口氣）；我目前在：{階段}\n\n請改寫成 6 個版本，每則標出它優化的演算法指標：\n1. Instagram Reels 說明文——優化「分享與儲存」：第一行鉤子（前 20 字定生死，之後被折疊）、內文含 SEO 關鍵句、結尾 CTA、3–5 個 hashtag（大中小聲量混搭並標明聲量層級）\n2. TikTok——優化「完播率」：口語標題＋前 3 秒字卡文案＋一個搜尋型關鍵詞＋建議置頂的自問自答留言\n3. YouTube——優化「CTR × 觀看時長」：標題 3 案（搜尋句式，≤28 字）＋說明欄前兩行＋章節時間戳＋置頂留言\n4. Threads——優化「轉發與回覆」：160 字內觀點版，結尾丟一個會讓人站隊的問題（良性），附 1 則我可以預先準備的補充回覆\n5. Facebook——優化「有意義互動」：長文敘事版（場景→轉折→體悟），並提示連結放留言\n6. LINE 廣播——優化「開封與點擊」：50 字內會員通知語氣＋按鈕文字，避開促銷感字眼\n每版附建議發布時段。\n最後自查：把 6 版並排，任兩版讀起來像同一篇的，重寫其中一版。"},
+    {t:"SEO / AIO 關鍵字包", d:"搜尋意圖分類＋佈署對照表＋成效驗證法",
+     tpl:"你是搜尋與 AI 引用優化顧問，同時精通平台內搜尋（IG／TikTok／YT）、Google SEO 與 AIO/GEO（讓 ChatGPT、Perplexity、AI 摘要引用我）。\n\n【背景】賽道：{賽道}；這支內容主題：＿＿；我的帳號簡介現況：＿＿\n\n請輸出：\n1. 關鍵字包：主關鍵字 1 個＋長尾 5 個。每個標註搜尋意圖（資訊型／比較型／交易型）與競爭度估計；長尾必須是「使用者真的會打出來的句子」，不是行銷詞\n2. 佈署對照表：每個關鍵字放在哪（標題／口播字幕／說明文／hashtag／置頂留言），各給一句可直接複製的示範\n3. 標題雙版本：同一關鍵字給「純 SEO 版」與「SEO×好奇心版」，說明取捨\n4. AIO 改寫：把內容核心改寫成 AI 容易引用的 Q&A（明確問句＋含數字的直接答案＋我的署名格式）\n5. 簡介優化：一版含關鍵字的帳號簡介（≤80 字），保留我的人設口氣\n6. 驗證方法：教我 2 個月後怎麼驗證成效——去哪搜什麼、問 AI 什麼問題、看哪個數據"},
+    {t:"留言區經營", d:"優先級矩陣＋酸民判斷標準＋UGC 轉化",
+     tpl:"你是社群經理，信條：留言區是第二個內容版位——回覆是演出，不是客服。優先級矩陣：高情緒 > 有問題 > 高影響力帳號 > 一般好評 > 酸民。\n\n【背景】我的人設：{人設}\n【留言清單】＿＿\n\n請：\n1. 先把留言按優先級矩陣分類排序，說明排序邏輯\n2. 每則寫回覆：≤30 字、我人設的口氣、每則埋一個「讓對話繼續」的鉤子\n3. 酸民與負評：各給「幽默化解版」與「認真回應版」，並判斷該用哪版——判斷標準：對方講的是情緒還是事實\n4. 挑 1 則做「置頂自問自答」：改寫成含搜尋關鍵字的版本\n5. 挖掘：留言中隱藏的新選題 ×3；適合做成內容的 UGC ×1（附徵求同意的話術）\n6. 紅線判斷：這批留言有沒有應該「不回覆」或「截圖存證」的？各是哪種情況"},
+    {t:"業配提案與報價", d:"報價係數公式＋談判劇本＋合約紅線對照",
+     tpl:"你是創作者商務經紀，經手過數百筆合作案。報價方法論：基準價（粉絲數 × 賽道行情）× 互動係數 × 內容形式係數 × 授權範圍係數；談判原則：加值不降價。\n\n【我的資料】賽道：{賽道}；我目前在：{階段}；粉絲：＿＿；近 30 天平均觀看：＿＿；互動率：＿＿%；受眾輪廓：＿＿；過往合作：＿＿\n【目標品牌】＿＿\n\n請輸出：\n1. 報價體系：短影音單支／限動組合／長影音置入／團購分潤四種方案的區間，展示計算過程（用上面的公式對標台灣行情），並給我的「底價」\n2. 開發信（≤150 字）：受眾與品牌客群重疊的具體證據＋一個可直接執行的合作點子＋一個低門檻的下一步（例：先寄產品試用）\n3. Media Kit 大綱：一頁式報價單的 8 個區塊與順序，哪個數據放最前面最有說服力、為什麼\n4. 談判劇本：品牌殺價 30% 的 3 種應對話術；什麼情況該直接放棄這個案子\n5. 合約紅線對照表：修改次數、檔期、授權範圍與期限、二次投放、競品排他、付款條件——每項給「合理值」與「危險訊號」\n6. 風險檢查：這個品牌的調性跟我的人設有沒有衝突點？接了會不會傷帳號？"},
+    {t:"數據復盤分析", d:"漏斗五層診斷＋ICE 優先級＋樣本量誠實聲明",
+     tpl:"你是內容數據分析師，分析框架：漏斗五層（曝光→3 秒留存→完播→互動→轉粉）。原則一：先看漏斗哪一層破，再談內容好壞。原則二：樣本少於 10 支只找方向、不下結論——寧可說「不確定」也不要硬掰。\n\n【背景】賽道：{賽道}；我目前在：{階段}\n【本週數據】（片名｜曝光｜3 秒留存%｜完播率｜讚｜留言｜分享｜新增粉絲，缺的欄位就空著）：\n＿＿\n\n請分析：\n1. 漏斗診斷：我的內容主要破在哪一層？用不同影片同層數據的落差證明，不要憑印象\n2. 爆款解剖：表現最好那支，贏在題材、鉤子、形式還是時段？其中「可複製的變數」是哪個\n3. 失敗解剖：最差那支，是「題目不行」還是「執行不行」？（兩者的對策完全不同，講清楚怎麼區分的）\n4. 我目前的爆款公式：題材 × 形式 × 鉤子類型的最優組合，與上次相比有沒有變化\n5. 下週作戰表：5 支影片的選題＋形式＋預期目標，用 ICE 分數排優先級（影響 × 信心 × 難易）\n6. 誠實檢查：這批樣本量夠不夠支撐以上結論？哪些判斷需要更多數據才能確認？"},
+    {t:"廣告投放設定", d:"冷暖熱受眾分層＋操作日曆＋素材疲勞監控",
+     tpl:"你是績效廣告投手，管理過大額月預算帳戶。原則：素材只用自然流量已驗證的贏家、受眾分冷暖熱三層、預算 70/20/10（穩定跑／測試／探索）、學習期內不動設定。\n\n【目標】＿＿（漲粉／團購轉換／課程預售）；平台：＿＿；日預算：NT$＿＿\n【背景】賽道：{賽道}；我目前在：{階段}；要投的素材（那支已驗證影片的自然數據）：＿＿\n\n請輸出：\n1. 受眾架構：冷受眾（興趣／行為怎麼定義）、暖受眾（互動再行銷怎麼建、回溯天數設多少）、熱受眾（名單／網站訪客）——三層各自的任務與預算佔比\n2. 廣告文案 3 版 A/B：不同鉤子角度，標明每版對應哪一層受眾\n3. KPI 儀表板：這個目標唯一該盯的北極星指標＋及格線＋計算方式；另列 2 個「虛榮指標」警告我別被騙\n4. 操作日曆：第 1–3 天（學習期）做什麼與絕不做什麼、第 4–7 天、第 2 週；加碼的階梯規則（每次 ≤ 前一階 3 倍）與關閉條件\n5. 素材疲勞監控：頻率（frequency）到多少該換素材、換的時候換什麼（鉤子？畫面？受眾？）\n6. 燒錢陷阱：這種目標最常見的 3 個錯誤設定，各附自查方法"},
+    {t:"AI 圖像生成工程", d:"美術指導級生圖指令：構圖／光種／鏡頭／一致性／紅線",
+     tpl:"你是 AI 圖像指令工程師兼美術指導，精通 Midjourney、DALL·E、Stable Diffusion 的語法差異，也懂社群封面的 CTR 邏輯——好看不等於會被點。\n\n【背景】賽道：{賽道}；人設：{人設}\n【需求】用途：＿＿（封面／貼文圖／九宮格／頭像／縮圖背景）；平台與尺寸：＿＿；我的視覺系統（色碼與風格，做過 STEP 06 就把交棒區貼這裡）：＿＿\n\n請輸出：\n1. 主指令（英文）：完整結構——subject（含人設記憶點）→ environment → composition（指名構圖法則：三分／居中對稱／負空間留字區）→ lighting（光種與方向：柔光箱／黃金時刻／霓虹）→ camera（焦段與景深，例 85mm shallow DOF）→ style & mood → color palette（帶入我的 HEX）\n2. Negative prompt：這個用途最常見的 10 個瑕疵（畸形手、浮水印、多餘文字⋯）\n3. 參數對照：Midjourney 版（--ar／--s／--style raw；用 --sref 或 seed 維持系列一致性的具體做法）與 DALL·E／SD 的對應寫法\n4. 變體策略：同一張圖的 3 個變體方向（改構圖／改光／改情緒），供 A/B\n5. 中文字處理：AI 生圖的中文字必壞——告訴我哪裡留白、標題字區怎麼預留給後製\n6. 紅線判斷：什麼情況不該用 AI 圖（實測類、開箱類內容用 AI 圖＝信任自殺）；該用時需不需要標註"},
+    {t:"AI 影片生成工程", d:"導演級文生影片指令：分鏡化、工具選擇、實拍紅線",
+     tpl:"你是 AI 影片導演，精通 Runway、Kling、Pika、Veo 等工具的鏡頭語言，並且清楚 AI 影片在創作者工作流的正確位置：B-roll、轉場、概念畫面用 AI；涉及本人與真實體驗的鏡頭必須實拍。\n\n【背景】賽道：{賽道}；人設：{人設}\n【需求】這支影片需要的畫面：＿＿（B-roll／開場動畫／概念示意／產品情境）；時長與比例：＿＿；會搭配的實拍內容：＿＿\n\n請輸出：\n1. 先判斷：這個需求該 AI 生成還是實拍？判斷標準——涉及「我本人、真實測試、真實場地」一律實拍。不該用 AI 就直接告訴我怎麼拍，不要硬給指令\n2. 分鏡化指令（英文）：每個鏡頭一條，含 subject & action → camera movement（push in／orbit／handheld／static）→ shot size → lighting & mood → style reference，每條對應 5–10 秒\n3. 工具選擇：這種畫面用哪個工具最合適（寫實動態／角色一致性／文字動畫各有強項工具），並提醒我發布前自查該工具目前的方案與浮水印政策\n4. 一致性方案：多鏡頭同風格的做法——首幀圖法（先用 STEP 13 生首幀，再 image-to-video）與 style reference 的用法\n5. 聲音層：這段畫面配什麼（旁白／BGM／音效）；若用 AI 配音，語速與斷句怎麼調才不出戲、以及是否需要揭露\n6. 紅線：AI 影片絕不能做的用法——假實測、假到場、深偽他人、假使用心得，任何一項都會一次毀掉人設信任"},
+    {t:"現有帳號健檢", d:"已經在經營的帳號：四層健檢＋30 天處方",
+     tpl:"你是帳號診斷顧問，方法論：定位清晰度 → 漏斗數據 → 內容組合 → 變現配置，四層健檢。只給可執行處方，不給「內容不錯繼續加油」這種空話。\n\n【我的帳號現況】平台與帳號連結或描述：＿＿；粉絲數：＿＿；經營多久：＿＿；最近 10 支內容的數據（題目｜觀看｜完播｜互動｜轉粉）：＿＿；目前收入來源與金額：＿＿\n【背景】賽道：{賽道}；人設：{人設}\n\n請輸出：\n1. 定位健檢：從我的內容清單反推「演算法眼中這個帳號在講什麼」，跟我自認的定位有沒有偏差、偏在哪\n2. 漏斗健檢：觸及→留存→互動→轉粉，哪一層最弱？用我的數據對比證明\n3. 內容組合健檢：流量型／信任型／變現型內容的現況比例與建議比例\n4. 變現健檢：以我目前的粉絲數，對照 16 種變現模式，哪些該開還沒開、哪些開太早\n5. 保留與捨棄：哪些內容繼續做、哪些立刻停（各給理由）\n6. 30 天處方：4 週各自的重點動作與量化目標"},
+    {t:"熱門貼文拆解", d:"拆自己或對手的爆款：可複製的結構＋改編方案",
+     tpl:"你是爆款內容分析師，原則：拆結構不拆運氣——同樣的結構可以複製，同樣的時機不能。\n\n【素材】貼上 5–10 則熱門貼文或影片的資料（自己的或同賽道對手的），每則含：標題或開場、形式、數據（觀看／互動／轉發）、內文摘要：\n＿＿\n【背景】賽道：{賽道}；人設：{人設}\n\n請輸出：\n1. 逐則拆解表：鉤子類型｜結構（敘事線）｜情緒觸發點｜CTA 設計｜「可複製的元素」vs「不可複製的時機運氣」\n2. 共同模式：這批爆款的公因數（題材角度、形式、節奏、發布時段）\n3. 遷移方案：每一則給一個「換成我的人設與主題」的改編版（標題＋開場 3 秒逐字稿）\n4. 反面清單：哪些手法不適合我的人設，硬學會翻車，為什麼\n5. 排序：所有改編版按「成功率 × 製作成本」排出先拍順序"},
+    {t:"卡關急診室", d:"成效不如預期：分診→病灶→兩週實驗處方",
+     tpl:"你是創作者急診醫師：先判斷是不是真的生病（樣本量夠不夠），再找病灶（漏斗斷點），最後開藥（兩週實驗）。禁止說「繼續堅持就好」這種安慰話。\n\n【現況】卡關描述：＿＿（例：連續 3 週數據下滑／發滿 30 支沒起色／粉絲有漲但沒收入）；最近的數據：＿＿；已經試過的方法：＿＿；想放棄程度（1–10）：＿＿\n【背景】賽道：{賽道}；人設：{人設}；我目前在：{階段}\n\n請輸出：\n1. 分診：這是「正常波動」「執行問題」「策略問題」還是「市場問題」？判斷依據是什麼\n2. 病灶定位：用漏斗五層找最可能的斷點，並列出「還要看哪個數據才能確診」\n3. 兩週實驗處方：2–3 個單一變因實驗，每個寫清楚——改什麼、其他保持什麼、成功指標數字、失敗的話下一步\n4. 止損線：什麼條件該調整定位、什麼條件該換主題、什麼條件其實該原地加碼——給明確條件，不給雞湯\n5. 心理面：以我的狀態，本週的「最低可行產出量」是多少（保住習慣比保住數據重要）\n6. 計畫連動：如果採納你的調整，我的 90 天行事曆哪幾類任務要暫停、哪些要新增"},
+    {t:"自有照片美化編排", d:"你自己拍的照片：統一調色＋裁切構圖＋輪播九宮格編排",
+     tpl:"你是社群修圖與版面指導，原則：修圖是統一氣質，不是變成別人；排版是說故事，不是排整齊。\n\n【素材】描述我手上的照片（拍了什麼、光線、場景、張數，可以分組描述）：＿＿；拍攝工具：＿＿；要用在：＿＿（單張貼文／輪播／九宮格／封面）\n【背景】賽道：{賽道}；人設：{人設}（照片要放大人設的記憶點）\n\n請輸出：\n1. 統一調色配方：一組可重複套用的修圖參數（曝光／對比／色溫／飽和／HSL 重點色方向），用 Lightroom Mobile 或美圖類 App 的免費功能就能完成\n2. 逐組處置：每組照片怎麼裁（構圖法則）、怎麼修、哪張當主圖、哪張放棄\n3. 排版方案：輪播的敘事順序（首圖鉤子→中段內容→尾圖 CTA）；九宮格的視覺節奏規則\n4. 文字上圖規範：字型風格、字級、位置、跟我的品牌色怎麼搭\n5. 補拍清單：現有素材缺什麼，下次拍照補哪 5 張（具體到構圖與光線）"},
+    {t:"自有影片美化", d:"你自己拍的影片：結構手術→節奏→調色→字幕",
+     tpl:"你是影片後期指導，原則：先救結構、再救節奏、最後才是調色——順序反了就是白工。\n\n【素材】描述我拍好的影片（內容、長度、自覺的問題）：＿＿；剪輯工具：＿＿；要發到：＿＿\n【背景】賽道：{賽道}；人設：{人設}\n\n請輸出：\n1. 結構手術：內容怎麼重排——哪段搬到開頭當鉤子、哪段整段刪、哪裡需要補拍 5 秒\n2. 節奏處方：卡點密度、變速的使用時機、轉場原則（新手常犯：轉場太花俏反而廉價）\n3. 調色配方：適合我人設氣質的調色方向與參數（CapCut 免費功能可完成）\n4. 字幕與字卡規範：樣式、大小、關鍵字強調規則、位置安全區\n5. 聲音層：BGM 類型、人聲／BGM／音效的音量比例、需要補音效的位置\n6. 發布前自查：這支影片要過的 6 個檢查點"}
+  ];
+
+  /* 指令鏈：每一步輸出尾端附「交棒區」，直接貼進下一步——賽道與人設全程不斷鏈 */
+  var CHAINS = [
+    "\n\n【交棒區】輸出的最後，附一個標題為《交棒 → STEP 02 選題庫》的區塊，只放：定位一句話（選定版）、受眾輪廓 3 行、受眾最痛的 3 個問題。我會原封不動貼進下一條指令。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 03 腳本》區塊：本週要拍的 5 題（各含題目、一句話鉤子、目標關鍵字）。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 04 分鏡》區塊：完整時間軸腳本表（秒數｜逐字稿｜畫面指示｜字卡）。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 05 剪輯》區塊：分鏡表精簡版＋B-roll 清單＋現場最容易出錯的 3 點。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 07 六平台改寫》區塊：最終標題、開場鉤子逐字稿、影片重點 3 句、金句字卡。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 13 圖像生成》區塊：主色輔色 HEX、封面構圖規格、標題字區位置。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 08 SEO》區塊：六版文案中出現的關鍵句清單（每平台 1–2 句）。",
+    "\n\n【交棒區】輸出的最後，附《發布檢查表》：每平台的標題／文案／hashtag／建議時段一覽表，我照表排程發布。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 02 選題庫》區塊：留言挖出的 3 個新選題（各附原留言引文）。",
+    "\n\n【交棒區】輸出的最後，附《合作執行卡》：確認報價、交付項目、時程、合約必查 6 項——我談判與簽約時照著核對。",
+    "\n\n【交棒區】輸出的最後，附兩個區塊：《交棒 → STEP 02》下週 5 題作戰表；《交棒 → STEP 12》若本週有值得投廣告加熱的贏家，附它的數據摘要，沒有就寫「本週無」。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 11 復盤》區塊：投放結束後要回填的數據欄位表（花費、觸及、CPF 或 ROAS、頻率）。",
+    "\n\n【交棒區】輸出的最後，附《素材規格卡》：最終選用的指令全文＋參數＋尺寸——我會存檔，之後同系列素材直接重用以維持一致性。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 05 剪輯》區塊：生成片段清單（建議檔名、秒數、對應腳本的哪一段）。",
+    "\n\n【交棒區】輸出的最後，依健檢結果擇一附上：《交棒 → STEP 17 卡關急診室》（若有明顯病灶）或《交棒 → STEP 02 選題庫》（若主要是內容方向問題）——把 30 天處方的第一週任務整理成可直接執行的清單。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 03 腳本》區塊：排序第一的改編版本（題目＋鉤子逐字稿＋目標關鍵字）。",
+    "\n\n【交棒區】輸出的最後，附《計畫修訂單》：兩週實驗期間，我的 90 天行事曆要暫停哪類任務、新增哪些任務——條列清楚讓我照著改。",
+    "\n\n【交棒區】輸出的最後，附《發布包》：每張圖的檔名建議、發布順序、對應的文案要點。",
+    "\n\n【交棒區】輸出的最後，附《交棒 → STEP 07 六平台改寫》區塊：影片最終標題、重點 3 句、金句字卡。"
+  ];
+  function buildPrompt(i){
+    return fillTpl("【我的經營目標】" + goalPlain() + "——所有建議都以這個目標為準做取捨。\n\n"
+      + PROMPTS[i].tpl + (CHAINS[i] || "") + PRO_SUFFIX);
+  }
+
+  /* 每一步的手動做法：不想用 AI 也能自己完成 */
+  var MANUALS = [
+    "拿一張紙回答三個問題：① 哪個主題我能連續講出 50 個題目？② 誰會為這個主題花錢、花在哪？③ 我幫這群人省下什麼（時間、錢、踩雷）？三個答案兜成一句：「我幫〔誰〕用〔形式〕解決〔問題〕」。寫好貼在書桌前，兩週內不准改。",
+    "打開同主題前 10 名的帳號，把每家最熱門的 20 支影片題目抄進表格（約 200 題），刪掉重複後挑 50 題、改成自己的角度。再養一個習慣：生活中每次有人問你問題，都記進題庫——被問過的問題，就是有人想看的內容。",
+    "紙筆公式：第一句寫鉤子（讓人想知道後面）→ 中間講 3 個重點（一句一重點）→ 最後一句請大家做一件事（追蹤或留言）。寫完大聲唸出來計時：超過 60 秒就刪字；唸起來不像你平常說話，就改成口語。",
+    "在腳本每句旁邊做記號：◎特寫、○半身、△空景。拍攝時同記號的一次拍完再換位置。手機打開網格線、按住螢幕鎖定對焦、人站窗邊自然光——這三件事就有八成質感。",
+    "用 CapCut（免費）照這個順序剪：① 自動字幕跑一遍、改錯字 ② 刪掉所有氣口和贅字 ③ 每 8 秒檢查畫面有沒有變化，沒有就加字卡或換景 ④ 配樂選節奏型、重點句對準鼓點 ⑤ 第一格畫面加大字標題。想更省力：CapCut 智能剪輯、剪映「一鍵成片」、Opus Clip（長片自動切短片）都可以代工初剪，你只做最後把關。",
+    "用 Canva（免費）：挑一個封面模板，固定三個顏色、一種字體，一次做 10 張存成「我的模板」。之後每支影片只換字和照片，一張 3 分鐘。配色沒靈感，就直接參考你最喜歡的三個帳號。",
+    "先把全文發在你最熟的平台；其他平台只改三個地方——第一行的鉤子、hashtag、字數（Threads 砍到 160 字內、Facebook 可以加長說故事）。熟練後一支影片 15 分鐘發完六個平台。",
+    "把你的題目打進 IG、TikTok、YouTube 的搜尋框，看跳出來的自動補全文字——那些就是大家真的在搜的字。挑 3 個塞進：標題、文案第一行、影片裡口播一次。",
+    "設鬧鐘：發布後第 1 小時全部回覆。順序：先回有問題的、再回長留言、最後用貼圖回短留言。酸民二選一：幽默帶過，或不回。永遠不對罵——吵架的截圖會活得比你的影片久。",
+    "手動三件套：① 用 Canva 做一頁報價單（你是誰＋數據截圖＋三種方案和價格）② 每週主動私訊或寄信給 5 個品牌 ③ 任何合作都要白紙黑字：做什麼、什麼時候交、改幾次、多少錢。",
+    "開一張 Google 試算表，每支影片記：日期、題目、觀看、完播率、讚、新增粉絲。每週日花 30 分鐘，圈出最好和最差各一支，各寫一行「為什麼」。連續做四週，你自己就是數據分析師。",
+    "只用平台內建按鈕：TikTok「推廣」、IG「加強推廣」，單支 NT$300 起。投放前記下粉絲數，結束後算「每個新粉花了多少錢」——超過 NT$8 就停，換一支影片再測。",
+    "免費做法：窗邊自然光＋手機拍＋Canva 加字，就是一張合格的封面。素材不夠用免費圖庫（Unsplash、Pexels）。要 AI 生圖，切回「AI 自動」用左邊的指令，貼給 Midjourney、DALL·E 或 Canva AI。",
+    "手動：把常用的空景畫面（環境、手部、產品特寫）列成清單，一次拍齊、存進資料夾重複使用。想省力：剪映「圖文成片」、Canva 影片模板可以半自動；全 AI 生成就切回「AI 自動」跑指令。",
+    "手動健檢：打開帳號後台，回答四題——① 最近 10 支的平均觸及比三個月前高還是低？② 哪一支轉粉最多、它長什麼樣子？③ 內容裡「給價值」和「要東西」的比例是多少？④ 對照「賺錢方法」區，以你的粉絲數漏開了哪些？答案寫下來，就是你的處方。",
+    "手動拆解：把你或對手最熱門的 10 則貼文截圖存進資料夾，每則寫三行——開頭怎麼勾人／中間怎麼留人／結尾叫人做什麼。寫完把出現兩次以上的手法圈起來，那就是可複製的公式。",
+    "手動急診：先問樣本夠嗎（少於 10 支別下結論）。夠的話對照漏斗：觸及低＝題目或時段問題；有觸及沒完播＝開頭問題；有完播沒互動＝內容沒觸發情緒；有互動沒轉粉＝帳號定位不清。對號入座後，一次只改一個變因，測兩週。",
+    "手動美化三步：① 同一批照片套同一個濾鏡（強度 50–70%）② 裁圖開九宮格線，主體放交叉點 ③ 亮度寧可偏亮。排版：首圖放最有張力的一張，尾圖放行動呼籲。",
+    "手動救片三步（CapCut）：① 把最精彩的 3 秒剪到開頭 ② 每 8 秒沒變化就加字卡或放大畫面 ③ 濾鏡套「自然」強度 50%。鐵則：人聲永遠比音樂大——聽不清楚說什麼，畫面再美都白拍。"
+  ];
+
+  function trackPlain(){
+    if(currentTrack === "__custom" && customTrack){
+      return { name:customTrack.name, pos:"＿＿（你的定位一句話）", custom:true };
+    }
+    if(!currentTrack) return null;
+    var t = TRACKS[currentTrack];
+    return { name:t.name, pos:t.position.replace(/<[^>]+>/g,"") };
+  }
+  function stagePlain(){
+    var stages = document.querySelectorAll("#stages .stage");
+    for(var i=0; i<stages.length; i++){
+      var un = stages[i].querySelector("input[data-key]:not(:checked)");
+      if(un){
+        var seg = stages[i].querySelector(".range").textContent.split("·");
+        return seg[0].trim() + "（" + (seg[1]||"").trim() + "）";
+      }
+    }
+    return "階段肆之後（100,000 粉以上）";
+  }
+  var PRO_SUFFIX = "\n\n【品質要求】輸出前先在內部用三個標準自評：專業度（有沒有行內才知道的細節）、具體度（有沒有數字與可直接使用的句子）、可執行度（我今天就能照做嗎）。任何一項不到位就自行修正後再輸出，只給我修正後的最終版。如果我提供的資料太少會影響品質，先問我關鍵問題再開始，不要硬編。";
+  function fillTpl(s){
+    var tp = trackPlain();
+    var pp = personaPlain();
+    return s
+      .replace(/\{賽道\}/g, tp ? tp.name : "＿＿（你的賽道）")
+      .replace(/\{定位\}/g, tp ? tp.pos : "＿＿（你的定位一句話）")
+      .replace(/\{人設\}/g, pp || "＿＿（你的人設：到「人設」區建好後會自動代入）")
+      .replace(/\{階段\}/g, stagePlain());
+  }
+  function copyText(text, btn, restore){
+    function ok(){ btn.textContent = "已複製 ✓"; setTimeout(function(){ btn.textContent = restore; }, 1600); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok, function(){ fallbackCopy(text); ok(); });
+    } else { fallbackCopy(text); ok(); }
+  }
+  function updateSetup(){
+    var el = $("setupSteps"); if(!el) return;
+    var cs = $("calStart");
+    var steps = [
+      {t:"① 定目標", done:goalSet.length > 0, href:"#goalRow"},
+      {t:"② 選主題", done:!!currentTrack, href:"#position"},
+      {t:"③ 存人設", done:!!personaPlain(), href:"#persona"},
+      {t:"④ 設 Day 1", done:!!(cs && cs.value), href:"#plan90"}
+    ];
+    el.innerHTML = steps.map(function(s){
+      return "<a class='setupstep"+(s.done?" done":"")+"' href='"+s.href+"'>"+(s.done?"✓ ":"")+s.t+"</a>";
+    }).join("");
+  }
+  var PGROUPS = [
+    {title:"起步設定（做一次就好）", ids:[0,14,15]},
+    {title:"每週循環", ids:[1,2,3,4,6,7,8,10]},
+    {title:"素材工具箱（需要時再開）", ids:[5,12,13,17,18]},
+    {title:"賺錢與成長（階段到了再開）", ids:[9,11,16]}
+  ];
+  var CORE_STEPS = {1:1, 2:1, 4:1, 6:1, 10:1};
+  function renderPrompts(){
+    var list = $("promptList");
+    var openSet = {};
+    list.querySelectorAll("details").forEach(function(d){ if(d.open) openSet[d.getAttribute("data-pi")] = true; });
+    list.innerHTML = "";
+    PGROUPS.forEach(function(gp){
+      var h = document.createElement("h3");
+      h.className = "pgroup";
+      h.textContent = gp.title;
+      list.appendChild(h);
+      gp.ids.forEach(function(i){
+        var p = PROMPTS[i];
+        var no = (i+1<10?"0":"")+(i+1);
+        var det = document.createElement("details");
+        det.className = "pstep";
+        det.setAttribute("data-pi", i);
+        if(openSet[i]) det.open = true;
+        det.innerHTML = "<summary><span class='no'>STEP "+no+"</span>"+p.t
+          + (CORE_STEPS[i] ? " <span class='corebadge'>★ 每週核心</span>" : "")
+          +"<span class='desc'>"+p.d+"</span></summary>"
+          +"<div class='pbody'>"
+          +   "<div class='modetabs'>"
+          +     "<button type='button' class='modebtn' data-m='ai' aria-pressed='true'>🤖 AI 自動</button>"
+          +     "<button type='button' class='modebtn' data-m='hand' aria-pressed='false'>✋ 手動做法</button>"
+          +   "</div>"
+          +   "<div class='mwrap'><button type='button' class='copybtn'>複製指令</button><pre></pre></div>"
+          +   "<div class='handbox' hidden></div>"
+          + "</div>";
+        det.querySelector("pre").textContent = buildPrompt(i);
+        det.querySelector(".handbox").textContent = MANUALS[i] || "";
+        var mwrap = det.querySelector(".mwrap"), handbox = det.querySelector(".handbox");
+        det.querySelectorAll(".modebtn").forEach(function(mb){
+          mb.addEventListener("click", function(){
+            var isAI = mb.getAttribute("data-m") === "ai";
+            det.querySelectorAll(".modebtn").forEach(function(x){
+              x.setAttribute("aria-pressed", x === mb ? "true" : "false");
+            });
+            mwrap.hidden = !isAI;
+            handbox.hidden = isAI;
+          });
+        });
+        det.querySelector(".copybtn").addEventListener("click", function(ev){
+          copyText(buildPrompt(i), ev.currentTarget, "複製指令");
+        });
+        list.appendChild(det);
+      });
+    });
+    renderPersonaPrompt();
+    updateSetup();
+    var banner = $("aiBanner");
+    var tp = trackPlain();
+    if(tp && tp.custom){
+      banner.innerHTML = "<b>已代入自訂賽道</b>　所有指令已自動填入「"+tp.name+"」——建議先用策略區的主指令生成完整策略，再回來跑這 12 步。";
+    } else if(tp){
+      banner.innerHTML = "<b>已代入賽道</b>　所有指令已自動填入「"+tp.name+"」與你的定位模板——複製後把「＿＿」換成你的資料即可使用。";
+    } else {
+      banner.innerHTML = "<b>提示</b>　尚未選擇賽道——指令目前是通用版。回到上方選定賽道後，所有指令會自動代入你的賽道與定位。";
+    }
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  renderPrompts();
+
+  /* ================= 任務 AI 代勞 ================= */
+  function copyPrompt(i, btn){
+    var text = buildPrompt(i);
+    var orig = btn.textContent;
+    function ok(){ btn.textContent = "✓"; setTimeout(function(){ btn.textContent = orig; }, 1500); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok, function(){ fallbackCopy(text); ok(); });
+    } else { fallbackCopy(text); ok(); }
+  }
+  var TASK_AI = {"s0-1":0,"s0-2":1,"s0-6":10,"s0-7":10,"s1-1":1,"s1-5":9,"s1-6":9,"s2-1":9,"s2-2":9,"s2-3":2,"s4-4":9};
+  Object.keys(TASK_AI).forEach(function(k){
+    var input = document.querySelector('input[data-key="'+k+'"]');
+    if(!input) return;
+    var chip = document.createElement("button");
+    chip.type = "button"; chip.className = "aichip";
+    chip.textContent = "AI 代勞";
+    chip.title = "複製這個任務的 AI 指令";
+    chip.addEventListener("click", function(e){
+      e.preventDefault(); e.stopPropagation();
+      copyPrompt(TASK_AI[k], chip);
+    });
+    input.closest("label").querySelector("span").appendChild(chip);
+  });
+
+  /* ================= 下一步指示器 ================= */
+  function updateNextStep(){
+    var el = $("nextStep");
+    if(!el) return;
+    if(!currentTrack){
+      el.innerHTML = "<b>下一步</b><span><a href='#position'>到「選賽道」選一個賽道（8 個內建或自訂）</a>，系統會開始帶你走。</span>";
+      return;
+    }
+    var inputs = document.querySelectorAll("#stages input[data-key]");
+    for(var i=0; i<inputs.length; i++){
+      if(!inputs[i].checked){
+        var label = inputs[i].closest("label");
+        var b = label.querySelector("span b");
+        var txt = b ? b.textContent : label.querySelector("span").textContent;
+        var range = inputs[i].closest(".stage").querySelector(".range").textContent;
+        var stageName = range.split("·")[0].trim();
+        el.innerHTML = "<b>下一步</b><span>"+stageName+"：<a href='#stages'>"+txt+"</a>"
+          + (TASK_AI.hasOwnProperty(inputs[i].getAttribute("data-key")) ? "（這項有 AI 代勞按鈕）" : "") + "</span>";
+        return;
+      }
+    }
+    el.innerHTML = "<b>下一步</b><span>五階段任務全部完成 🎉 你早就不是新手了——回「變現全景圖」補上還沒開的收入模式。</span>";
+  }
+
+  /* ================= 選擇賽道 ================= */
+  var currentTrack = null;
+  var customTrack = null;
+  function selectTrack(id, silent){
+    currentTrack = id;
+    customTrack = null;
+    var t = TRACKS[id];
+    document.querySelectorAll(".trackcard").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-track")===id ? "true" : "false");
+    });
+    renderStrategy(t);
+    renderStages(t);
+    $("calcTrack").innerHTML = "目前使用：<b>"+t.name+"</b> 賽道行情參數";
+    $("calcNote").textContent = t.calcNote;
+    $("shopRowLabel").textContent = t.calc.shopLabel;
+    $("shopToggleLabel").textContent = "有做"+t.calc.shopLabel+"（2 萬粉後建議開）";
+    try{ localStorage.setItem(LS_TRACK, id); }catch(e){}
+    renderPrompts();
+    calc();
+    updateNextStep();
+    noteStrategyChange();
+    renderCharts();
+    if(!silent){
+      var strat = $("strategy");
+      if(strat && strat.scrollIntoView) strat.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  }
+
+  /* ================= 自訂賽道 ================= */
+  function customStratPrompt(name, noneMode){
+    return "你是頂尖的自媒體變現策略顧問，熟悉台灣市場行情。我要經營的賽道是「"+name+"」，請為我生成一份完整的賽道變現策略，包含：\n"
+      + (noneMode ? "0. 這個賽道的變現模式不明顯。請先從以下 16 種變現模式中，判斷最適合這個賽道的 3–5 種組合並說明理由：廣告分潤、創作者基金、業配、聯盟行銷、團購、數位產品、線上課程、自有商品／選物、接案溢價、諮詢／教練服務、企業內訓／演講、訂閱制會員、直播斗內、贊助抖內、UGC 創作者、IP 授權聯名。後面所有規劃都以這個組合為核心。\n" : "")
+      + "1. 定位一句話 ×3 個方案（我幫〔誰〕，用〔什麼形式〕，解決〔什麼問題〕），並推薦一個\n"
+      + "2. 目標受眾輪廓：年齡、特徵、最痛的 3 個問題、付費意願分析\n"
+      + "3. 主打內容格式 ×3（各附「為什麼有效」與 2 個範例題目）\n"
+      + "4. 開場鉤子 ×6（可直接使用的句子）\n"
+      + "5. 賺錢順序：4 個變現手段按開通順序排列，各附粉絲門檻與台灣市場的行情區間\n"
+      + "6. 法規與紅線：這個賽道在台灣要避開的宣稱與法律風險\n"
+      + "7. 起步器材與每月成本預算\n"
+      + "8. 關鍵指標（KPI）及格線：完播率、儲存率、轉粉率等\n"
+      + "9. 五階段戰術：0→500、500→5千、5千→2萬、2萬→10萬、10萬+ 粉，各階段一句話重點與月收入區間估算\n"
+      + "要具體、給數字與實例，不要空泛的建議。"
+      + PRO_SUFFIX;
+  }
+  function renderCustomStrategy(name, ref){
+    var r = TRACKS[ref] || null;
+    var prompt = customStratPrompt(name, !r);
+    var tagText = r
+      ? "這個賽道不在內建的 8 個裡——沒關係，系統照樣運作：收入試算與階段結構先用變現模式最接近的「"+r.name+"」行情估算；完整策略用下方指令一鍵生成（60 秒）。"
+      : "這個賽道的變現模式不像內建的任何一個——下方指令會先讓 AI 從「變現全景圖」的 16 種模式裡幫你配出組合，再生成完整策略。試算器先用通用參數，拿到 AI 的行情後以 AI 的為準。";
+    var calcLine = r
+      ? "收入試算器已切到「"+r.name+"」參數——若 AI 給的行情差很多，以 AI 的為準"
+      : "收入試算器使用通用參數——拿到 AI 配的變現組合後，以 AI 給的行情為準";
+    var meta = r
+      ? "<div class='stratmeta'><span>行情估算參考：<b>"+r.name+"</b>（"+r.rate+"）</span><span>參考賽道主力：<b>"+r.src+"</b></span></div>"
+      : "<div class='stratmeta'><span>行情估算：<b>通用參數</b></span><span>變現組合：<b>由 AI 從 16 種模式中配置</b>（見變現全景圖）</span></div>";
+    $("stratBody").innerHTML =
+      "<div class='stratwrap'>"
+      + "<div class='strathead'>"
+      +   "<h3 class='tname'><small>你的賽道策略（自訂）</small>"+name+"</h3>"
+      +   "<p class='tag'>"+tagText+"</p>"
+      + "</div>"
+      + "<div class='stratgrid'>"
+      +   "<div class='stratcell'><h4>定位模板（先把空格填起來）</h4><p class='postmpl'>我幫 <b>＿＿（誰）</b>，用 <b>＿＿（什麼形式）</b>，解決 <b>＿＿（什麼問題）</b>。</p><p style='margin-top:10px'>寫不出來就先跑下方指令，AI 會給你 3 個方案。接著到「人設」區把你的人設建起來——自訂賽道更依賴人設差異化。</p></div>"
+      +   "<div class='stratcell'><h4>怎麼拿到完整策略</h4><ul>"
+      +     "<li><strong>複製下方指令</strong>，貼給 Claude 或 ChatGPT</li>"
+      +     "<li>把 AI 給的定位、鉤子、賺錢順序抄回來，照五階段執行</li>"
+      +     "<li>下方 AI 幫手的 14 條指令已自動代入「"+name+"」，直接可用</li>"
+      +     "<li>"+calcLine+"</li>"
+      +   "</ul></div>"
+      + "</div>"
+      + "<div class='ctprompt'><button type='button' class='copybtn' id='ctCopy'>複製指令</button><pre id='ctPre'></pre></div>"
+      + meta
+      + "</div>";
+    $("ctPre").textContent = prompt;
+    $("ctCopy").addEventListener("click", function(){
+      copyText(prompt, $("ctCopy"), "複製指令");
+    });
+    $("stratSub").innerHTML = "系統依你的自訂賽道「<strong>"+name+"</strong>」運作中（行情參考："+(r ? r.name : "通用參數，由 AI 配置變現組合")+"）。";
+  }
+  function selectCustom(name, ref, silent){
+    currentTrack = "__custom";
+    customTrack = { name:name, ref:ref };
+    var r = TRACKS[ref] || null;
+    document.querySelectorAll(".trackcard").forEach(function(b){
+      b.setAttribute("aria-pressed", b.classList.contains("customcard") ? "true" : "false");
+    });
+    renderCustomStrategy(name, ref);
+    tipEls.forEach(function(el){ el.hidden = true; });
+    earnEls.forEach(function(el){
+      var i = +el.getAttribute("data-earnidx");
+      el.textContent = DEFAULT_EARNS[i];
+    });
+    if(r){
+      $("calcTrack").innerHTML = "目前使用：自訂賽道「<b>"+name+"</b>」（參考 "+r.name+" 行情）";
+      $("calcNote").textContent = "自訂賽道以「"+r.name+"」的參數估算。" + r.calcNote;
+      $("shopRowLabel").textContent = r.calc.shopLabel;
+      $("shopToggleLabel").textContent = "有做"+r.calc.shopLabel+"（2 萬粉後建議開）";
+    } else {
+      $("calcTrack").innerHTML = "目前使用：自訂賽道「<b>"+name+"</b>」（通用參數）";
+      $("calcNote").textContent = "自訂賽道使用通用參數估算。用策略區的指令讓 AI 配出變現組合後，以 AI 給的行情為準。";
+      $("shopRowLabel").textContent = "團購／自有商品";
+      $("shopToggleLabel").textContent = "有做團購／自有商品（2 萬粉後建議開）";
+    }
+    try{ localStorage.setItem(LS_TRACK, "custom|"+name+"|"+ref); }catch(e){}
+    renderPrompts();
+    calc();
+    updateNextStep();
+    noteStrategyChange();
+    renderCharts();
+    if(!silent){
+      var strat = $("strategy");
+      if(strat && strat.scrollIntoView) strat.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  }
+
+  /* ================= 90 天日曆 ================= */
+  var LS_START = "creator-os-start90";
+  var CAL_W1 = ["套定位模板，寫出定位一句話","拆解同賽道 5 個帳號的爆款","再拆 5 個＋建立數據記錄表","列出 25 個選題入庫","選題庫補滿 50 個","開通三平台＋統一頭像簡介","寫好第一批 5 支腳本"];
+  var CAL_W2 = ["批次拍攝 5 支","剪輯第 1–2 支","發布第 1 支 🚀","發布第 2 支＋回覆全部留言","發布第 3 支＋記錄數據","發布第 4 支","發布第 5 支＋第一次週復盤"];
+  var CAL_PAT = ["選題 5 題＋各配一個鉤子","寫 5 支腳本","批次拍攝 5 支","批次剪輯＋做封面","發布 2 支＋黃金 1 小時回留言","發布 2 支＋互動","發布 1 支＋週復盤記數據"];
+  var CAL_OV = {
+    28:"月復盤：找出前 20% 影片的共通點",
+    42:"開檢討會：定出你的「主格式」",
+    49:"主格式系列化：定系列名＋封面模板",
+    56:"週復盤＋檢查粉絲成長曲線",
+    57:"申請聯盟行銷（蝦皮分潤／聯盟網）",
+    58:"分潤連結掛上簡介＋置頂留言",
+    59:"本週影片全部加上 CTA",
+    60:"做出報價單 v1",
+    64:"列 20 個潛在合作品牌／店家",
+    66:"寄出前 5 封開發信",
+    70:"週復盤＋追蹤開發信回覆",
+    71:"再寄 5 封開發信",
+    77:"週復盤＋檢查聯盟連結數據",
+    78:"優化連結位置與 CTA 話術",
+    80:"談成第 1 個互惠／小額案",
+    85:"交付合作案內容",
+    88:"最後 5 封開發信＋全部追蹤",
+    89:"整理 90 天數據總表",
+    90:"總復盤：定下一個 90 天目標 🎯"
+  };
+  var CAL_WK = ["建置：打地基","建置：首發上線","量產：建立節奏","量產：穩定輸出","量產：第一次月復盤","量產：加倍贏家","量產：定出主格式","量產：系列化","變現：打開金流","變現：主動開發","變現：優化轉換","變現：成交收款","收官：總復盤"];
+
+  function dayTask(d){
+    if(CAL_OV[d]) return CAL_OV[d];
+    if(d <= 7) return CAL_W1[d-1];
+    if(d <= 14) return CAL_W2[d-8];
+    return CAL_PAT[(d-15)%7];
+  }
+  var CAL_AI_W1 = [0,null,null,1,1,null,2];
+  var CAL_AI_W2 = [3,4,4,8,8,8,10];
+  var CAL_AI_PAT = [1,2,3,4,8,8,10];
+  var CAL_AI_OV = {28:10,42:10,49:10,56:10,60:9,64:9,66:9,70:10,71:9,77:10,78:7,80:9,85:6,88:9,89:10,90:10};
+  function dayAI(d){
+    if(CAL_AI_OV.hasOwnProperty(d)) return CAL_AI_OV[d];
+    if(CAL_OV[d]) return null;
+    if(d <= 7) return CAL_AI_W1[d-1];
+    if(d <= 14) return CAL_AI_W2[d-8];
+    return CAL_AI_PAT[(d-15)%7];
+  }
+  var cal = $("cal90");
+  var whtml = "";
+  for(var w=1; w<=13; w++){
+    var startD = (w-1)*7+1, endD = Math.min(90, w*7);
+    var days = "";
+    for(var d=startD; d<=endD; d++){
+      var ai = dayAI(d);
+      days += "<label class='calday' data-day='"+d+"'>"
+        + "<input type='checkbox' data-key='d"+d+"'>"
+        + (ai !== null && ai !== undefined ? "<button type='button' class='aichip' data-ai='"+ai+"' title='複製這天任務的 AI 指令'>AI</button>" : "")
+        + "<span class='dn'>DAY "+d+"</span>"
+        + "<span class='dt'>"+dayTask(d)+"</span></label>";
+    }
+    whtml += "<div class='calweek'><header>"
+      + "<span class='wl'>第 "+w+" 週 · "+CAL_WK[w-1]+"</span>"
+      + "<span class='wc'></span></header>"
+      + "<div class='caldays'>"+days+"</div></div>";
+  }
+  cal.innerHTML = whtml;
+
+  function updateWeekCounts(){
+    document.querySelectorAll(".calweek").forEach(function(wk){
+      var cbs = wk.querySelectorAll("input[type=checkbox]");
+      var done = 0;
+      cbs.forEach(function(c){ if(c.checked) done++; });
+      wk.querySelector(".wc").textContent = done + " / " + cbs.length;
+    });
+  }
+  cal.addEventListener("change", updateWeekCounts);
+  cal.addEventListener("click", function(e){
+    var chip = e.target && e.target.closest ? e.target.closest(".aichip") : null;
+    if(!chip) return;
+    e.preventDefault();
+    copyPrompt(+chip.getAttribute("data-ai"), chip);
+  });
+
+  var calStart = $("calStart");
+  try{ var savedStart = localStorage.getItem(LS_START); if(savedStart) calStart.value = savedStart; }catch(e){}
+  function markToday(){
+    document.querySelectorAll(".calday.today").forEach(function(el){ el.classList.remove("today"); });
+    var info = $("calDayInfo");
+    if(!calStart.value){ info.textContent = "（設定日期後，系統會標出你今天在哪一格）"; return; }
+    var start = new Date(calStart.value + "T00:00:00");
+    var now = new Date(); now.setHours(0,0,0,0);
+    var idx = Math.floor((now - start)/86400000) + 1;
+    if(idx < 1){
+      info.textContent = "距離 Day 1 還有 " + (1-idx) + " 天——先把定位跟選題想起來。";
+    } else if(idx > 90){
+      info.textContent = "90 天已走完 🎉 回五階段路線圖，往下一階打。";
+    } else {
+      var el = document.querySelector(".calday[data-day='"+idx+"']");
+      if(el) el.classList.add("today");
+      info.textContent = "今天是你的第 " + idx + " 天（第 " + Math.ceil(idx/7) + " 週）";
+    }
+  }
+  calStart.addEventListener("change", function(){
+    try{ localStorage.setItem(LS_START, calStart.value); }catch(e){}
+    markToday();
+    renderCharts();
+    updateSetup();
+  });
+  markToday();
+
+  /* ================= 匯出行事曆提醒（.ics） ================= */
+  $("icsBtn").addEventListener("click", function(){
+    if(!calStart.value){ alert("先設定「我的 Day 1 日期」，再匯出提醒。"); calStart.focus(); return; }
+    var start = new Date(calStart.value + "T00:00:00");
+    function pad(n){ return (n<10?"0":"")+n; }
+    var lines = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//social-mini-system//90days//ZH","CALSCALE:GREGORIAN"];
+    for(var dd=1; dd<=90; dd++){
+      var dt = new Date(start.getTime() + (dd-1)*86400000);
+      var ds = "" + dt.getFullYear() + pad(dt.getMonth()+1) + pad(dt.getDate());
+      var task = dayTask(dd).replace(/[,;\\]/g, " ");
+      lines.push("BEGIN:VEVENT",
+        "UID:day"+dd+"-"+ds+"@social-mini-system",
+        "DTSTART:"+ds+"T090000",
+        "DTEND:"+ds+"T093000",
+        "SUMMARY:Day "+dd+"｜"+task,
+        "DESCRIPTION:社群小系統 90 天行事曆——做完記得回系統勾掉",
+        "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:今日任務提醒","TRIGGER:-PT0M","END:VALARM",
+        "END:VEVENT");
+    }
+    lines.push("END:VCALENDAR");
+    var blob = new Blob([lines.join("\r\n")], {type:"text/calendar;charset=utf-8"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "社群小系統-90天計畫.ics";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+
+  /* ================= 成效追蹤：預期 vs 實際 ================= */
+  var LS_LOG = "creator-os-log";
+  var EXPECT_MONTHS = [0, 1.5, 4, 8, 18];
+  var EXPECT_FANS = [0, 500, 5000, 20000, 100000];
+  var EXPECT_INCOME = {
+    finance:[0,6000,37500,155000,250000], beauty:[0,4750,31000,125000,200000],
+    food:[0,3500,21500,77500,120000], fitness:[0,4000,27500,112500,180000],
+    tech:[0,4750,31000,115000,180000], parenting:[0,4750,33500,127500,200000],
+    knowledge:[1500,7500,37500,155000,250000], vlog:[0,2250,15000,57500,90000],
+    _default:[0,4500,30000,120000,200000]
+  };
+  var logData = [];
+  try{ logData = JSON.parse(localStorage.getItem(LS_LOG) || "[]"); }catch(e){ logData = []; }
+  function saveLog(){ try{ localStorage.setItem(LS_LOG, JSON.stringify(logData)); }catch(e){} }
+  function logBaseDate(){
+    if(calStart.value) return new Date(calStart.value + "T00:00:00");
+    if(logData.length) return new Date(logData[0].d + "T00:00:00");
+    return null;
+  }
+  function monthOf(dstr){
+    var base = logBaseDate(); if(!base) return 0;
+    return Math.max(0, (new Date(dstr + "T00:00:00") - base) / (86400000 * 30.44));
+  }
+  function expIncomeArr(){
+    var key = (currentTrack === "__custom" && customTrack) ? customTrack.ref : currentTrack;
+    return EXPECT_INCOME[key] || EXPECT_INCOME._default;
+  }
+  function fmtNum(n){
+    if(n >= 10000){ var w = n/10000; return (w >= 10 ? Math.round(w) : Math.round(w*10)/10) + " 萬"; }
+    return Math.round(n).toLocaleString("zh-TW");
+  }
+  var chartRange = 3;
+  function expAt(m, vals){
+    if(m <= EXPECT_MONTHS[0]) return vals[0];
+    for(var i=1; i<EXPECT_MONTHS.length; i++){
+      if(m <= EXPECT_MONTHS[i]){
+        var m0 = EXPECT_MONTHS[i-1], m1 = EXPECT_MONTHS[i];
+        return vals[i-1] + (vals[i]-vals[i-1]) * (m-m0)/(m1-m0);
+      }
+    }
+    return vals[vals.length-1];
+  }
+  function drawChart(id, expY, actPts, unit){
+    var wrap = $(id); if(!wrap) return;
+    var tip = wrap.querySelector(".chtip");
+    var W=720, H=260, Lp=58, Rp=48, Tp=16, Bp=30, maxX=chartRange;
+    var inRange = actPts.filter(function(p){ return p.m <= maxX + 0.15; });
+    var maxY = Math.max(expAt(maxX, expY), 1);
+    inRange.forEach(function(p){ if(p.y > maxY) maxY = p.y; });
+    maxY *= 1.08;
+    function X(m){ return Lp + (W-Lp-Rp) * (Math.min(m,maxX)/maxX); }
+    function Y(v){ return Tp + (H-Tp-Bp) * (1 - v/maxY); }
+    var sampleMs = maxX === 18 ? EXPECT_MONTHS : [0,0.5,1,1.5,2,2.5,3];
+    var exp = sampleMs.map(function(m){ var v = expAt(m, expY); return {x:X(m), y:Y(v), m:m, v:v}; });
+    var expPath = exp.map(function(p,i){ return (i?"L":"M")+p.x.toFixed(1)+" "+p.y.toFixed(1); }).join(" ");
+    var areaPath = expPath + " L"+X(maxX).toFixed(1)+" "+Y(0).toFixed(1)+" L"+X(0).toFixed(1)+" "+Y(0).toFixed(1)+" Z";
+    var acts = inRange.slice().sort(function(a,b){ return a.m-b.m; })
+      .map(function(p){ return {x:X(p.m), y:Y(p.y), m:p.m, v:p.y, d:p.d}; });
+    var actPath = acts.map(function(p,i){ return (i?"L":"M")+p.x.toFixed(1)+" "+p.y.toFixed(1); }).join(" ");
+    var s = "<svg viewBox='0 0 "+W+" "+H+"' role='img' aria-label='預期與實際對照圖'>";
+    for(var g=0; g<=4; g++){
+      var gv = maxY*g/4, gy = Y(gv).toFixed(1);
+      s += "<line class='grid' x1='"+Lp+"' y1='"+gy+"' x2='"+(W-Rp)+"' y2='"+gy+"'/>";
+      s += "<text x='"+(Lp-8)+"' y='"+(+gy+4)+"' text-anchor='end'>"+fmtNum(gv)+"</text>";
+    }
+    (maxX === 18 ? [0,3,6,9,12,15,18] : [0,1,2,3]).forEach(function(m){
+      s += "<text x='"+X(m).toFixed(1)+"' y='"+(H-8)+"' text-anchor='middle'>"+m+"月</text>";
+    });
+    s += "<line class='axis' x1='"+Lp+"' y1='"+Y(0).toFixed(1)+"' x2='"+(W-Rp)+"' y2='"+Y(0).toFixed(1)+"'/>";
+    s += "<path d='"+areaPath+"' fill='var(--ch-exp)' opacity='.08'/>";
+    s += "<path d='"+expPath+"' fill='none' stroke='var(--ch-exp)' stroke-width='2' stroke-linejoin='round'/>";
+    var expEnd = exp[exp.length-1];
+    s += "<text x='"+(expEnd.x-4)+"' y='"+(expEnd.y-8)+"' text-anchor='end' fill='var(--ch-exp)' font-weight='700'>預期</text>";
+    if(acts.length){
+      if(acts.length > 1) s += "<path d='"+actPath+"' fill='none' stroke='var(--ch-act)' stroke-width='2' stroke-linejoin='round'/>";
+      acts.forEach(function(p){
+        s += "<circle cx='"+p.x.toFixed(1)+"' cy='"+p.y.toFixed(1)+"' r='4.5' fill='var(--ch-act)' stroke='var(--card)' stroke-width='2'/>";
+      });
+      var last = acts[acts.length-1];
+      s += "<text x='"+(last.x+8).toFixed(1)+"' y='"+(last.y-8).toFixed(1)+"' fill='var(--ch-act)' font-weight='700'>實際</text>";
+    }
+    s += "</svg>";
+    wrap.innerHTML = s;
+    wrap.appendChild(tip);
+    var svg = wrap.querySelector("svg");
+    var all = exp.map(function(p){ return {x:p.x, y:p.y, label:"預期・第 "+(Math.round(p.m*10)/10)+" 個月", val:p.v}; })
+      .concat(acts.map(function(p){ return {x:p.x, y:p.y, label:"實際・"+p.d, val:p.v}; }));
+    svg.addEventListener("mousemove", function(ev){
+      var r = svg.getBoundingClientRect();
+      var mx = (ev.clientX - r.left) / r.width * W, my = (ev.clientY - r.top) / r.height * H;
+      var best = null, bd = 1e9;
+      all.forEach(function(p){ var d=(p.x-mx)*(p.x-mx)+(p.y-my)*(p.y-my); if(d<bd){ bd=d; best=p; } });
+      if(best && bd < 2600){
+        tip.style.display = "block";
+        tip.style.left = (best.x / W * 100) + "%";
+        tip.style.top = (best.y / H * 100) + "%";
+        tip.textContent = best.label + "：" + (unit === "$" ? "NT$" + Math.round(best.val).toLocaleString("zh-TW") : fmtNum(best.val) + " 粉");
+      } else { tip.style.display = "none"; }
+    });
+    svg.addEventListener("mouseleave", function(){ tip.style.display = "none"; });
+  }
+  function renderCharts(){
+    var fansAct = logData.map(function(e){ return {m:monthOf(e.d), y:+e.f, d:e.d}; }).filter(function(p){ return p.y > 0; });
+    var incAct = logData.map(function(e){ return {m:monthOf(e.d), y:+e.i, d:e.d}; });
+    drawChart("chartFans", EXPECT_FANS, fansAct, "");
+    drawChart("chartIncome", expIncomeArr(), incAct, "$");
+  }
+  function renderLogTable(){
+    var tb = $("logBody");
+    logData.sort(function(a,b){ return a.d < b.d ? -1 : 1; });
+    tb.innerHTML = logData.length ? "" : "<tr><td colspan='4' style='color:var(--muted)'>還沒有紀錄——記下第一筆，橘色的「實際」線就會出現。</td></tr>";
+    logData.forEach(function(e, idx){
+      var tr = document.createElement("tr");
+      tr.innerHTML = "<td>"+e.d+"</td><td>"+(+e.f).toLocaleString("zh-TW")+"</td><td>NT$"+(+e.i).toLocaleString("zh-TW")+"</td><td></td>";
+      var del = document.createElement("button");
+      del.type = "button"; del.textContent = "刪除";
+      del.addEventListener("click", function(){
+        logData.splice(idx, 1); saveLog(); renderLogTable(); renderCharts();
+      });
+      tr.lastElementChild.appendChild(del);
+      tb.appendChild(tr);
+    });
+  }
+  $("logAdd").addEventListener("click", function(){
+    var d = $("logDate").value, f = +$("logFans").value, inc = +$("logIncome").value;
+    if(!d){ $("logDate").focus(); return; }
+    logData.push({ d:d, f:isNaN(f)?0:f, i:isNaN(inc)?0:inc });
+    saveLog(); renderLogTable(); renderCharts();
+    $("logFans").value = ""; $("logIncome").value = "";
+  });
+  renderLogTable();
+  renderCharts();
+
+  /* ================= 策略調整連動 ================= */
+  var prevStrategyName = null;
+  function strategyName(){
+    if(currentTrack === "__custom" && customTrack) return "自訂・" + customTrack.name;
+    if(currentTrack && TRACKS[currentTrack]) return TRACKS[currentTrack].name;
+    return null;
+  }
+  function noteStrategyChange(){
+    var now = strategyName();
+    if(prevStrategyName && now && prevStrategyName !== now){
+      var doneCount = document.querySelectorAll("input[data-key]:checked").length;
+      if(doneCount > 0){
+        $("syncText").textContent = "從「"+prevStrategyName+"」改為「"+now+"」。所有 AI 指令、階段收入、試算器與預期圖表已自動同步；90 天日曆是通用流程所以照走，但建議讓 AI 重排你接下來的優先順序。";
+        $("syncNote").classList.add("show");
+      }
+    }
+    prevStrategyName = now;
+  }
+  $("syncCopy").addEventListener("click", function(){
+    var p = "你是計畫重排顧問。我在經營社群帳號的途中臨時調整了策略，現在的方向是「"+(strategyName()||"＿＿")+"」。\n"
+      + "我的經營目標：" + goalPlain() + "\n我目前在：" + stagePlain() + "\n我的人設：" + (personaPlain()||"＿＿") + "\n"
+      + "已完成任務數：" + document.querySelectorAll("input[data-key]:checked").length + " 項（原計畫是依舊策略制定的）\n\n請：\n"
+      + "1. 判斷哪些已完成任務的產出可以沿用、哪些要重做（例：簡介、置頂留言、系列名、報價單）\n"
+      + "2. 重排我接下來 30 天的優先任務（對照每週生產循環）\n"
+      + "3. 指出「今天就要改」的三件事\n"
+      + "4. 更新我的 90 天里程碑與量化目標，並說明預期圖表的軌跡該怎麼重新解讀"
+      + PRO_SUFFIX;
+    copyText(p, $("syncCopy"), "複製「重新校準」指令");
+  });
+
+  /* ================= 圖表時間範圍 ================= */
+  document.querySelectorAll(".rangebtn").forEach(function(b){
+    b.addEventListener("click", function(){
+      chartRange = +b.getAttribute("data-r");
+      document.querySelectorAll(".rangebtn").forEach(function(x){
+        x.setAttribute("aria-pressed", x === b ? "true" : "false");
+      });
+      renderCharts();
+    });
+  });
+
+  /* ================= 備份與還原 ================= */
+  var LS_KEYS = [LS, LS_TRACK, LS_PERSONA, LS_GOAL, LS_START, LS_LOG];
+  $("bakExp").addEventListener("click", function(){
+    var out = { app:"social-mini-system", exported:new Date().toISOString() };
+    LS_KEYS.forEach(function(k){
+      try{ var v = localStorage.getItem(k); if(v !== null) out[k] = v; }catch(e){}
+    });
+    var blob = new Blob([JSON.stringify(out, null, 2)], {type:"application/json"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "社群小系統-備份.json";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+  $("bakImp").addEventListener("click", function(){ $("bakFile").click(); });
+  $("bakFile").addEventListener("change", function(){
+    var f = this.files && this.files[0]; if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var data = JSON.parse(r.result);
+        var found = 0;
+        LS_KEYS.forEach(function(k){
+          if(typeof data[k] === "string"){ localStorage.setItem(k, data[k]); found++; }
+        });
+        if(!found){ alert("這個檔案裡沒有可還原的資料。"); return; }
+        location.reload();
+      }catch(e){ alert("備份檔格式不正確。"); }
+    };
+    r.readAsText(f);
+  });
+
+  /* ================= checklist persistence ================= */
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(LS) || "{}"); } catch(e){ state = {}; }
+  var boxes = document.querySelectorAll('input[type=checkbox][data-key]');
+
+  function save(){ try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){} }
+  function refreshProgress(){
+    var total = boxes.length, done = 0;
+    boxes.forEach(function(b){ if(b.checked) done++; });
+    var pct = total ? Math.round(done/total*100) : 0;
+    $("pbar").style.width = pct + "%";
+    $("ppct").textContent = pct + "%";
+    updateNextStep();
+  }
+  boxes.forEach(function(b){
+    var k = b.getAttribute("data-key");
+    if(state[k]) b.checked = true;
+    b.addEventListener("change", function(){
+      state[k] = b.checked; save(); refreshProgress();
+    });
+  });
+  $("resetAll").addEventListener("click", function(){
+    if(!confirm("確定要清空所有勾選進度嗎？（賽道選擇會保留）")) return;
+    state = {}; save();
+    boxes.forEach(function(b){ b.checked = false; });
+    refreshProgress();
+    updateWeekCounts();
+  });
+  refreshProgress();
+  updateWeekCounts();
+
+  /* ================= income calculator ================= */
+  var DEFAULT_CALC = {rateK:500, aff:1.2, shopRate:0.04, shopPrice:800, shopCut:0.2, shopLabel:"團購／自有商品"};
+  var fFans=$("fFans"), fPosts=$("fPosts"), fSponsor=$("fSponsor"), fEng=$("fEng"),
+      fYT=$("fYT"), fShop=$("fShop");
+
+  function fansFromSlider(v){
+    var min = Math.log(1000), max = Math.log(500000);
+    return Math.round(Math.exp(min + (max-min)*(v/100)) / 100) * 100;
+  }
+  function fmt(n){
+    return "NT$" + Math.round(n).toLocaleString("zh-TW");
+  }
+  function calc(){
+    var p = DEFAULT_CALC;
+    if(currentTrack === "__custom" && customTrack) p = TRACKS[customTrack.ref] ? TRACKS[customTrack.ref].calc : DEFAULT_CALC;
+    else if(currentTrack) p = TRACKS[currentTrack].calc;
+    var fans = fansFromSlider(+fFans.value);
+    var posts = +fPosts.value;
+    var sponsors = +fSponsor.value;
+    var eng = +fEng.value;
+
+    $("oFans").textContent = fans.toLocaleString("zh-TW");
+    $("oPosts").textContent = posts + " 支";
+    $("oSponsor").textContent = sponsors + " 案";
+    $("oEng").textContent = eng.toFixed(1) + "%";
+
+    // 業配：賽道單價/千粉，互動率 4% 為基準上下 ±40%
+    var engFactor = Math.max(0.6, Math.min(1.4, 0.6 + (eng/4)*0.4));
+    var pricePerCase = fans/1000 * p.rateK * engFactor;
+    if(fans < 3000) pricePerCase = Math.min(pricePerCase, 2500); // 小帳多為互惠或小額
+    var sponsorIncome = sponsors * pricePerCase;
+
+    // 觸及：每支影片平均觸及 ≈ 粉絲 × 1.6（短影音有外溢流量）
+    var reach = fans * 1.6 * posts;
+
+    // 聯盟：觸及 × 0.8% 點擊 × 2.5% 轉換 × 客單 NT$800 × 佣金 12% × 賽道係數
+    var affIncome = reach * 0.008 * 0.025 * 800 * 0.12 * p.aff;
+
+    // 平台分潤：開通後以 RPM NT$30 估（觸及的 55% 為有效收益觀看）
+    var adsIncome = fYT.checked ? (reach * 0.55 / 1000) * 30 : 0;
+
+    // 團購／自有商品／課程：賽道參與率 × 客單 × 抽成，每月 1 檔
+    var shopIncome = fShop.checked ? fans * p.shopRate * p.shopPrice * p.shopCut : 0;
+
+    var total = sponsorIncome + affIncome + adsIncome + shopIncome;
+
+    $("rTotal").textContent = fmt(total);
+    $("rRange").textContent = "保守 " + fmt(total*0.55) + " ～ 樂觀 " + fmt(total*1.6);
+
+    var maxPart = Math.max(sponsorIncome, affIncome, adsIncome, shopIncome, 1);
+    function setRow(v,b,val){
+      $(v).textContent = fmt(val);
+      $(b).style.width = Math.round(val/maxPart*100) + "%";
+    }
+    setRow("vSponsor","bSponsor",sponsorIncome);
+    setRow("vAff","bAff",affIncome);
+    setRow("vAds","bAds",adsIncome);
+    setRow("vShop","bShop",shopIncome);
+  }
+  [fFans,fPosts,fSponsor,fEng].forEach(function(el){ el.addEventListener("input", calc); });
+  [fYT,fShop].forEach(function(el){ el.addEventListener("change", calc); });
+
+  /* ================= 還原上次的賽道 ================= */
+  var savedTrack = null;
+  try{ savedTrack = localStorage.getItem(LS_TRACK); }catch(e){}
+  if(savedTrack && savedTrack.indexOf("custom|") === 0){
+    var parts = savedTrack.split("|");
+    if(parts[1] && (TRACKS[parts[2]] || parts[2] === "__none")){
+      ccard.querySelector("#ctName").value = parts[1];
+      ccard.querySelector("#ctRef").value = parts[2];
+      selectCustom(parts[1], parts[2], true);
+    } else { calc(); }
+  } else if(savedTrack && TRACKS[savedTrack]){
+    selectTrack(savedTrack, true);
+  } else {
+    calc();
+  }
+})();
+</script>
