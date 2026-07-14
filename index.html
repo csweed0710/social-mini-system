@@ -1,57 +1,57 @@
 <title>社群小系統</title>
 <style>
-  /* 視覺語彙：療癒系晨光——暖象牙紙、柔杏、鼠尾草綠、霧藍、淡奶油黃，低對比柔光 */
+  /* 視覺語彙：編輯質感——暖瓷白紙、深松綠、沙金、霧灰藍、玫瑰灰，安靜而篤定 */
   :root{
-    --paper:#FAF7F1;
+    --paper:#F7F5EF;
     --card:#FFFFFF;
-    --ink:#4A4237;
-    --muted:#9A8D7D;
-    --line:rgba(74,66,55,.10);
-    --accent:#C17049;
-    --accent-soft:rgba(193,112,73,.10);
-    --growth:#5F8672;
-    --growth-soft:rgba(127,160,140,.14);
-    --risk:#A65E77;
-    --risk-soft:rgba(193,121,143,.10);
-    --sky:#B4CCDE;
-    --butter:#F1D8A3;
+    --ink:#262825;
+    --muted:#8B8578;
+    --line:rgba(38,40,37,.11);
+    --accent:#2F6B52;
+    --accent-soft:rgba(47,107,82,.09);
+    --growth:#3E7D5E;
+    --growth-soft:rgba(62,125,94,.11);
+    --risk:#B4556A;
+    --risk-soft:rgba(180,85,106,.08);
+    --sky:#AFC3CE;
+    --butter:#E7D6B0;
     --btn-ink:#FFFFFF;
-    --shadow:0 12px 32px rgba(74,66,55,.07);
+    --shadow:0 12px 32px rgba(38,40,37,.07);
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --paper:#262A2E;
-      --card:#30353B;
-      --ink:#EDE7DC;
-      --muted:#A9A093;
-      --line:rgba(237,231,220,.12);
-      --accent:#E5A97F;
-      --accent-soft:rgba(229,169,127,.13);
-      --growth:#96BFA6;
-      --growth-soft:rgba(150,191,166,.15);
-      --risk:#D999AC;
-      --risk-soft:rgba(217,153,172,.12);
-      --sky:#8FAEC6;
-      --butter:#E0C793;
-      --btn-ink:#262A2E;
-      --shadow:0 12px 32px rgba(0,0,0,.28);
+      --paper:#202622;
+      --card:#2A322C;
+      --ink:#ECEAE2;
+      --muted:#A5A294;
+      --line:rgba(236,234,226,.13);
+      --accent:#8CC7A9;
+      --accent-soft:rgba(140,199,169,.13);
+      --growth:#7FBF9E;
+      --growth-soft:rgba(127,191,158,.14);
+      --risk:#D48CA0;
+      --risk-soft:rgba(212,140,160,.12);
+      --sky:#93AEBD;
+      --butter:#D9C79A;
+      --btn-ink:#202622;
+      --shadow:0 12px 32px rgba(0,0,0,.3);
     }
   }
   :root[data-theme="light"]{
-    --paper:#FAF7F1; --card:#FFFFFF; --ink:#4A4237; --muted:#9A8D7D;
-    --line:rgba(74,66,55,.10); --accent:#C17049; --accent-soft:rgba(193,112,73,.10);
-    --growth:#5F8672; --growth-soft:rgba(127,160,140,.14);
-    --risk:#A65E77; --risk-soft:rgba(193,121,143,.10);
-    --sky:#B4CCDE; --butter:#F1D8A3; --btn-ink:#FFFFFF;
-    --shadow:0 12px 32px rgba(74,66,55,.07);
+    --paper:#F7F5EF; --card:#FFFFFF; --ink:#262825; --muted:#8B8578;
+    --line:rgba(38,40,37,.11); --accent:#2F6B52; --accent-soft:rgba(47,107,82,.09);
+    --growth:#3E7D5E; --growth-soft:rgba(62,125,94,.11);
+    --risk:#B4556A; --risk-soft:rgba(180,85,106,.08);
+    --sky:#AFC3CE; --butter:#E7D6B0; --btn-ink:#FFFFFF;
+    --shadow:0 12px 32px rgba(38,40,37,.07);
   }
   :root[data-theme="dark"]{
-    --paper:#262A2E; --card:#30353B; --ink:#EDE7DC; --muted:#A9A093;
-    --line:rgba(237,231,220,.12); --accent:#E5A97F; --accent-soft:rgba(229,169,127,.13);
-    --growth:#96BFA6; --growth-soft:rgba(150,191,166,.15);
-    --risk:#D999AC; --risk-soft:rgba(217,153,172,.12);
-    --sky:#8FAEC6; --butter:#E0C793; --btn-ink:#262A2E;
-    --shadow:0 12px 32px rgba(0,0,0,.28);
+    --paper:#202622; --card:#2A322C; --ink:#ECEAE2; --muted:#A5A294;
+    --line:rgba(236,234,226,.13); --accent:#8CC7A9; --accent-soft:rgba(140,199,169,.13);
+    --growth:#7FBF9E; --growth-soft:rgba(127,191,158,.14);
+    --risk:#D48CA0; --risk-soft:rgba(212,140,160,.12);
+    --sky:#93AEBD; --butter:#D9C79A; --btn-ink:#202622;
+    --shadow:0 12px 32px rgba(0,0,0,.3);
   }
 
   *{box-sizing:border-box}
@@ -63,7 +63,7 @@
     line-height:1.75; margin:0; font-size:16px;
     -webkit-font-smoothing:antialiased;
   }
-  .serif{font-family:inherit;letter-spacing:.015em}
+  .serif{font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;font-weight:700;letter-spacing:.02em}
 
   .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
   main section{padding:56px 0 8px}
@@ -512,7 +512,7 @@
   .apiwrap textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
   .apibar{display:flex;gap:10px;align-items:center;margin:10px 0 0;flex-wrap:wrap}
   .gobtn{
-    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
     padding:9px 20px;font-family:inherit;font-size:13.5px;font-weight:900;cursor:pointer;
   }
   .gobtn:hover{opacity:.85}
@@ -534,9 +534,15 @@
     margin-top:14px;padding:12px 16px;border:1px solid var(--risk);border-radius:10px;
     background:var(--risk-soft);color:var(--risk);font-size:13px;line-height:1.7;
   }
-  .apiresultbar{display:flex;gap:8px;margin-top:10px}
+  .apiresultbar{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .tweakrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
+  .tweak{
+    background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:999px;
+    padding:3px 14px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;
+  }
+  .tweak:hover{border-color:var(--accent);color:var(--accent)}
   .inlinegen{
-    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
     padding:6px 16px;font-family:inherit;font-size:12.5px;font-weight:900;cursor:pointer;
   }
   .inlinegen:hover{opacity:.85}
@@ -596,8 +602,8 @@
   .calday.today .dn::before{content:"今天 · ";color:var(--growth)}
 
   /* ---------- 療癒皮膚：柔光、呼吸感、慢動作 ---------- */
-  h1{font-weight:800}
-  h2{font-weight:800}
+  h1{font-weight:700}
+  h2{font-weight:700}
   body{line-height:1.85}
   main section{padding:64px 0 12px}
   .card,.trackcard,.arch,.mm,.seocard,.adstep,.phase,.sop .day,.pstep,.hookbox,
@@ -700,12 +706,10 @@
     padding:6px 16px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-left:10px;
   }
   .icsbtn{
-    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
     padding:8px 18px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;
   }
-  :root[data-theme="dark"] .icsbtn{color:#262A2E}
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .icsbtn{color:#262A2E} }
-  .icsbtn:hover{opacity:.85}
+    .icsbtn:hover{opacity:.85}
 
   /* ---------- view tabs & today card ---------- */
   .viewbtn{
@@ -729,12 +733,10 @@
   .todaycard .task.done{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(128,128,128,.5)}
   .todaycard .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .todaycard .donebtn{
-    background:var(--growth);color:#fff;border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
     padding:12px 34px;font-family:inherit;font-size:15.5px;font-weight:900;cursor:pointer;
   }
-  :root[data-theme="dark"] .todaycard .donebtn{color:#262A2E}
-  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .todaycard .donebtn{color:#262A2E} }
-  .todaycard .donebtn:hover{opacity:.85}
+    .todaycard .donebtn:hover{opacity:.85}
   .todaycard .donebtn.isdone{background:var(--card);color:var(--growth);border:1.5px solid var(--growth)}
   .todaycard .note{font-size:13px;color:var(--muted);margin:18px 0 0}
   .todaycard .note a{color:var(--accent);font-weight:700;text-decoration:none;border-bottom:1.5px solid var(--accent)}
@@ -754,7 +756,7 @@
   .diagcard.good{background:var(--growth-soft);border-color:var(--growth)}
   .diagcard.good b{color:var(--growth)}
   .diagbtn{
-    background:var(--risk);color:#fff;border:none;border-radius:999px;
+    background:var(--risk);color:var(--btn-ink);border:none;border-radius:999px;
     padding:8px 18px;font-family:inherit;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;
   }
   .diagbtn:hover{opacity:.85}
@@ -871,7 +873,7 @@
     font-family:inherit;cursor:pointer;margin-left:8px;vertical-align:middle;letter-spacing:.04em;
     line-height:1.7;
   }
-  .aichip:hover{background:var(--growth);color:#fff}
+  .aichip:hover{background:var(--growth);color:var(--btn-ink)}
   .aichip:focus-visible{outline:2px solid var(--growth);outline-offset:2px}
   .calday .aichip{position:absolute;top:8px;right:8px;margin:0}
 </style>
@@ -893,9 +895,8 @@
     <p class="eyebrow">社群小系統 · 陪你從 0 開始賺錢的社群工作台</p>
     <h1 class="serif">被看見不是運氣，<br>是<span class="gold">照流程做出來</span>的。</h1>
     <p class="lede">
-      這套系統帶一個 <strong>0 粉絲、0 經驗</strong> 的新手，走到<strong>你自己定義的目標</strong>——穩定收入、被更多人看見，或把理念傳出去。
-      用法很簡單：<strong>① 選主題、定目標 → ② 系統生成你的專屬計畫 → ③ 照階段執行、做完勾掉</strong>。
-      每個平台有各自的發文方法，流程的每一步都可以<strong>選 AI 自動或自己手動</strong>——你負責決策與出鏡，系統帶著你走。
+      從 0 粉絲，走到你要的目標——收入、被看見，或傳達理念。
+      <strong>選主題 → 拿到計畫 → 每天做一件事</strong>。每一步都可以交給 AI，也可以自己來。
     </p>
     <div class="goalrow" id="goalRow" role="group" aria-label="我的目標（可複選）">
       <span class="goallabel">我做這件事是為了（可複選）：</span>
@@ -910,7 +911,7 @@
       <button class="reset" id="resetAll" type="button">清空所有勾選</button>
       <div class="setupsteps" id="setupSteps" aria-label="開始前的四個設定"></div>
       <div class="nextstep" id="nextStep"><b>下一步</b><span>選一個主題，系統會開始帶你走。</span></div>
-      <p class="hint">所有設定與進度自動存在這台裝置（頁尾可匯出備份）。標有 <span class="aichip" style="cursor:default">AI 代勞</span> 的任務點一下就複製指令——你不用全部自己做。</p>
+      <p class="hint">進度自動儲存（頁尾可匯出備份）。標 <span class="aichip" style="cursor:default">AI 代勞</span> 的任務可一鍵交給 AI。</p>
     </div>
   </div>
 </header>
@@ -947,7 +948,7 @@
   <div class="wrap">
     <p class="kicker">系統邏輯</p>
     <h2 class="serif">錢的路徑只有一條</h2>
-    <p class="sub">不管你的目標是收入、影響力還是理念擴散，成果都走同一條漏斗。搞懂它，你就知道每個階段該優化哪一環，而不是瞎忙。</p>
+    <p class="sub">所有成果都走同一條漏斗。搞懂它，就知道每個階段該優化哪一環。</p>
 
     <div class="funnel">
       <div class="step"><span class="n">01</span><h3>內容</h3><p>可複製的內容格式，一週穩定產出 3–5 支</p></div>
@@ -970,9 +971,8 @@
     <p class="kicker">第 1 步 · 由你決定</p>
     <h2 class="serif">選一個主題（賽道）</h2>
     <p class="sub">
-      點選一個賽道，系統會生成該賽道的<strong>完整變現策略</strong>：定位模板、主打格式、開場鉤子、賺錢順序、行情價格、法規紅線，
-      並同步更新下方的五階段收入與試算器參數。挑選原則：<strong>你講得出 50 個題目的領域 × 有人願意花錢的市場</strong>。
-      記住：賽道只決定「市場在哪」，<strong>選完賽道要接著做「人設」</strong>——那才是別人搶不走的部分。
+      點一張卡，系統生成該主題的完整計畫：定位、格式、鉤子、賺錢順序與行情。
+      選不出來？<strong>挑你講得出 50 個題目的那個</strong>。選完記得去做「人設」。
     </p>
     <div class="trackgrid" id="trackGrid" role="group" aria-label="選擇賽道"></div>
   </div>
@@ -996,9 +996,8 @@
     <p class="kicker">第 2 步 · 別人搶不走的</p>
     <h2 class="serif">打造人設：主題可以重複，人設不能</h2>
     <p class="sub">
-      同一條賽道有一萬個帳號，觀眾為什麼追蹤<strong>你</strong>？答案不是內容（內容會被抄），是人設——
-      <strong>身分 × 反差 × 立場 × 記憶點</strong>的組合，這個組合全世界只有一個。
-      先選一個原型當骨架，再用下面的六要素建構器把血肉填上；完成的人設會自動注入所有 AI 指令，讓每支腳本、每則文案都是「你的口氣」。
+      同一個主題有一萬個帳號，<strong>人設決定為什麼是你</strong>。
+      選一個原型、填六個空格，存好之後所有 AI 指令都會用你的口氣寫。
     </p>
 
     <div class="archgrid" id="archGrid"></div>
@@ -1038,9 +1037,8 @@
     <p class="kicker">錢從哪裡來</p>
     <h2 class="serif">16 種賺錢方法：業配只是其中一種</h2>
     <p class="sub">
-      這套系統前面常拿業配和團購舉例，因為它們最早能上手——但它們只是入口，不是全部。
-      收入模式共六大類 16 種，<strong>成熟的創作者通常同時開 3–5 種</strong>。
-      標了「0 粉可做」的，是連粉絲都還沒有就能開始賺的模式——新手完全可以邊漲粉邊接。
+      收入模式共六大類 16 種，業配只是其中之一。
+      標「<strong>0 粉可做</strong>」的，現在就能開始賺。
     </p>
 
     <div class="mmapcat"><h3>流量財</h3><p>平台直接付你錢——按觀看計費，睡覺也在賺，但單價低、看平台臉色</p></div>
@@ -1092,9 +1090,8 @@
     <p class="kicker">成長地圖</p>
     <h2 class="serif">五個階段，每一階都有錢拿</h2>
     <p class="sub">
-      階段用<strong>粉絲數</strong>劃分，不是時間——做得快 3 個月走完前三階，做得慢就照自己的節奏。
-      規則只有一條：<strong>不要做超過你當前階段的事</strong>（例如 500 粉就想開課），也不要漏掉該階段的變現動作。
-      選了賽道後，每個階段會多出一條<strong>賽道戰術</strong>與該賽道的收入區間。
+      用粉絲數分五階，每一階都有該做的事和能賺的錢。
+      唯一規則：<strong>不要跳級</strong>。
     </p>
 
     <!-- 階段零 -->
@@ -1300,7 +1297,7 @@
   <div class="wrap">
     <p class="kicker">每週的固定節奏</p>
     <h2 class="serif">每週做內容的流程</h2>
-    <p class="sub">新手斷更的原因不是懶，是<strong>每支影片都從零開始想</strong>。把生產拆成固定工序、批次處理，一週 6–8 小時就能穩定產出 5 支。</p>
+    <p class="sub">斷更不是因為懶，是每支影片都從零想。照固定流程批次做，一週 6–8 小時穩定產出 5 支。</p>
 
     <div class="sop">
       <div class="day"><span class="d">週一 · 1hr</span><h3>選題</h3><p>從選題庫挑 5 題，各配一個鉤子開場</p></div>
@@ -1337,8 +1334,8 @@
     <p class="kicker">每個平台都不一樣</p>
     <h2 class="serif">各平台怎麼發：一支影片，六種發法</h2>
     <p class="sub">
-      每個社群的<strong>受眾性質、演算法邏輯、文案語感、照片風格、搜尋規則</strong>都不一樣——把 IG 的精緻文案原封不動貼到 Threads 會死，把 TikTok 的原生感直接上 YouTube 長片也會死。
-      點選平台，看它的完整打法。<strong>同一支內容，照各平台的規則改寫後再發</strong>（改寫指令在下方 AI 幫手 STEP 07）。
+      每個平台的受眾、演算法、語感都不同——同一支影片，六種發法。
+      點選平台看完整打法，改寫交給 AI 幫手 STEP 07。
     </p>
     <div class="platbar" id="platBar" role="group" aria-label="選擇平台"></div>
     <div class="platpanel" id="platPanel"></div>
@@ -1358,7 +1355,7 @@
 
     <div class="apisettings" id="apiSettings">
       <h3>🔌 想要按一下就生成，不用複製貼上？</h3>
-      <p>預設是「複製給 AI」（零成本、零風險）。想要「⚡ 直接生成」，貼上你自己的 <b>Anthropic（Claude）API 金鑰</b>即可——金鑰只存在<strong>這台瀏覽器</strong>，不會送到我的任何伺服器，直接呼叫 Anthropic 官方網址，費用算在你自己的帳戶。</p>
+      <p>預設「複製給 AI」零成本。想一鍵生成，貼上你自己的 <b>Claude API 金鑰</b>——只存在這台瀏覽器、直連官方，費用算你的帳戶。</p>
       <div class="apiform">
         <input type="password" id="apiKeyInput" placeholder="貼上金鑰：sk-ant-...">
         <select id="apiModelSelect">
@@ -1370,7 +1367,7 @@
         <button type="button" class="reset" id="apiKeyClear">清除金鑰</button>
       </div>
       <p class="status" id="apiKeyStatus">尚未設定金鑰——目前所有步驟都是複製貼上模式。</p>
-      <p class="help">還沒有金鑰？到 <b>console.anthropic.com</b> 註冊，在 API Keys 頁面建立一組，並建議設定用量上限。只想用複製貼上模式的話，這一區完全可以忽略。</p>
+      <p class="help">金鑰在 <b>console.anthropic.com</b> 建立，建議設用量上限。不用金鑰也完全能用。</p>
     </div>
 
     <div class="aibanner" id="aiBanner"><b>提示</b>　尚未選擇賽道——指令會用通用版。回到上方選定賽道後，所有指令會自動代入你的賽道與定位。</div>
@@ -1384,8 +1381,7 @@
     <p class="kicker">被找到的科學</p>
     <h2 class="serif">讓人搜得到你：SEO・AI 搜尋・AI 引用</h2>
     <p class="sub">
-      流量有兩種：演算法「推」給人的，和別人「搜」到你的。推薦流量像潮水，搜尋流量像地基——
-      而現在多了第三層：<strong>讓 AI（ChatGPT、Perplexity、Google AI 摘要）回答問題時引用你</strong>。三層一起鋪，舊內容才會持續生錢。
+      推薦流量是潮水，搜尋流量是地基，第三層是<strong>讓 AI 回答問題時引用你</strong>。三層一起鋪，舊內容持續生錢。
     </p>
     <div class="seocards">
       <div class="seocard">
@@ -1431,7 +1427,7 @@
   <div class="wrap">
     <p class="kicker">互動工具</p>
     <h2 class="serif">算算你能賺多少</h2>
-    <p class="sub">拉動滑桿，看看不同粉絲規模下，各收入管道大概能貢獻多少。<strong>選了賽道後，試算會改用該賽道的行情參數</strong>（業配單價、導購轉換、團購參與率）。它的用途是幫你排優先順序，不是保證收入。</p>
+    <p class="sub">拉動滑桿，看各收入管道能貢獻多少（用你所選主題的行情）。它幫你排優先順序，不是保證收入。</p>
 
     <div class="calc">
       <div class="inputs">
@@ -1484,8 +1480,8 @@
     <p class="kicker">看見自己的進度</p>
     <h2 class="serif">預期 vs 實際：成效追蹤</h2>
     <p class="sub">
-      藍線是系統依你選的主題推算的<strong>預期軌跡</strong>（中位數，不是保證）；橘線是<strong>你的實際紀錄</strong>——每週或每月記一筆就好。
-      兩條線的差距不是成績單，是<strong>導航</strong>：落後找原因，超前就加碼。系統會自動幫你比對、判斷要不要檢討。
+      藍線是預期，橘線是你的紀錄，每週記一筆就好。
+      差距是<strong>導航</strong>不是成績單——系統會自動判斷要不要檢討。
     </p>
 
     <div class="diagcard neutral" id="diagCard"><b>還沒有數據</b><span>記下第一筆實際成效後，這裡會自動幫你比對進度、判斷要不要檢討。</span></div>
@@ -1528,8 +1524,8 @@
     <p class="kicker">花錢的紀律</p>
     <h2 class="serif">花錢買流量：只放大贏家，不拯救輸家</h2>
     <p class="sub">
-      廣告不是流量的起點，是<strong>放大器</strong>——它把「已經被自然流量驗證過的內容」推到更多人面前。
-      新手燒錢的死法都一樣：內容還沒驗證就投廣告。照下面的階梯走，每一階都有明確的預算與過關數字。
+      廣告是<strong>放大器</strong>，不是起點——只投自然流量已驗證的內容。
+      照階梯走，每一階都有預算與過關數字。
     </p>
     <div class="adsteps">
       <div class="adstep">
@@ -1567,9 +1563,8 @@
     <p class="kicker">立刻開始</p>
     <h2 class="serif">前 90 天行事曆：一天一格，照做就好</h2>
     <p class="sub">
-      前 90 天對應「階段零→階段壹」，任務不是爆紅，是<strong>建立產出習慣、拿到數據、賺到第一筆錢</strong>。
-      設定你的開始日期，系統會標出你今天在哪一格；做完就點一下勾掉，進度自動存檔。
-      節奏跟不上就順延，<strong>順序不要跳</strong>。
+      設定 Day 1，每天做一格，做完勾掉。
+      跟不上就順延，<strong>順序不要跳</strong>。
     </p>
     <div class="syncnote" id="syncNote"><b>策略已調整</b>　<span id="syncText"></span><button type="button" id="syncCopy">複製「重新校準」指令</button></div>
     <div class="calctrl">
@@ -1587,7 +1582,7 @@
   <div class="wrap">
     <p class="kicker">風險控管</p>
     <h2 class="serif">新手陣亡的六種死法</h2>
-    <p class="sub">90% 的新手不是輸給能力，是輸給下面這六件事。先知道坑在哪，比多學十個技巧更值錢。</p>
+    <p class="sub">90% 的新手輸給這六件事，先知道坑在哪。</p>
     <div class="pitfalls">
       <div class="pit"><h3>① 完美主義斷更</h3><p>拍了 3 支覺得不夠好，停更兩週「準備」。<strong>解法：</strong>給自己「爛片配額」——前 30 支允許全爛，發出去就是贏。</p></div>
       <div class="pit"><h3>② 什麼都拍</h3><p>美食、旅遊、心情全上，演算法無法標記帳號。<strong>解法：</strong>回到定位一句話，跟它無關的內容一律不發。</p></div>
@@ -2447,16 +2442,25 @@
   }
 
   /* 掛一個「⚡ 直接生成」按鈕在任意位置：按下去呼叫 API，結果顯示在 outEl 裡 */
+  /* 不滿意重來：三種重生成方向 */
+  var REGEN = [
+    {label:"🔄 換一版", req:"剛才的版本我不滿意。請從一個明顯不同的切角重做一版——不要改寫原句，要換思路。"},
+    {label:"✂ 更精簡", req:"保留重點，但整體精簡 40% 以上：刪掉所有客套、鋪陳與重複，只留可直接使用的部分。"},
+    {label:"💬 更口語", req:"同樣的內容，改成更口語、像真人隨口說出來的版本，去掉所有書面腔與條列味。"}
+  ];
   function wireInlineGenerate(btn, outEl, getText){
     if(!btn || !outEl) return;
-    btn.addEventListener("click", function(){
+    var baseText = null;
+    var round = 0;
+    function run(adjust){
       if(!apiKey){ focusApiSettings(); return; }
-      var text = getText();
+      var text = adjust ? baseText + "\n\n【重生成要求】" + adjust : baseText;
       btn.disabled = true;
       var origLabel = btn.textContent;
       btn.innerHTML = "<span class='spinner'></span>生成中…";
       outEl.innerHTML = "";
       callClaudeAPI(text).then(function(result){
+        round++;
         var out = document.createElement("div");
         out.className = "apiout";
         out.textContent = result;
@@ -2467,15 +2471,28 @@
         cp.type = "button"; cp.className = "inlinegen"; cp.textContent = "複製結果";
         cp.addEventListener("click", function(){ copyText(result, cp, "複製結果"); });
         bar.appendChild(cp);
+        REGEN.forEach(function(r){
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "inlinegen"; b.style.background = "var(--card)";
+          b.style.color = "var(--growth)"; b.style.border = "1.5px solid var(--growth)";
+          b.textContent = r.label;
+          b.addEventListener("click", function(){ run(r.req + "（這是第 " + (round+1) + " 版，請和之前的版本明顯不同）"); });
+          bar.appendChild(b);
+        });
         outEl.appendChild(bar);
       }).catch(function(err){
         var box = document.createElement("div");
         box.className = "apierr";
-        box.textContent = "生成失敗：" + err.message + "。請確認金鑰是否正確、額度是否足夠，或改用複製貼上模式。";
+        box.textContent = "生成失敗：" + err.message + "。請確認金鑰與額度，或改用複製貼上。";
         outEl.appendChild(box);
       }).finally(function(){
         btn.disabled = false; btn.textContent = origLabel;
       });
+    }
+    btn.addEventListener("click", function(){
+      baseText = getText();
+      round = 0;
+      run(null);
     });
   }
 
@@ -2525,7 +2542,12 @@
           +     "<button type='button' class='modebtn' data-m='api' aria-pressed='false'>⚡ 直接生成</button>"
           +     "<button type='button' class='modebtn' data-m='hand' aria-pressed='false'>✋ 手動做法</button>"
           +   "</div>"
-          +   "<div class='mwrap'><button type='button' class='copybtn'>複製指令</button><pre></pre></div>"
+          +   "<div class='mwrap'><button type='button' class='copybtn'>複製指令</button><pre></pre>"
+          +     "<div class='tweakrow'><span>貼過去後不滿意？複製追問句：</span>"
+          +       "<button type='button' class='tweak' data-t='0'>換角度</button>"
+          +       "<button type='button' class='tweak' data-t='1'>更精簡</button>"
+          +       "<button type='button' class='tweak' data-t='2'>更口語</button>"
+          +     "</div></div>"
           +   "<div class='apiwrap' hidden><textarea></textarea><div class='apibar'>"
           +     "<button type='button' class='gobtn'>▶ 產生結果</button><span class='apihint'>會送出上方文字給 Claude API，你可以先編輯再產生</span>"
           +   "</div><div class='apiout-host'></div></div>"
@@ -2550,6 +2572,11 @@
         });
         det.querySelector(".copybtn").addEventListener("click", function(ev){
           copyText(det.querySelector(".mwrap pre").textContent, ev.currentTarget, "複製指令");
+        });
+        det.querySelectorAll(".tweak").forEach(function(tb){
+          tb.addEventListener("click", function(){
+            copyText(REGEN[+tb.getAttribute("data-t")].req, tb, tb.textContent);
+          });
         });
         wireInlineGenerate(det.querySelector(".gobtn"), det.querySelector(".apiout-host"), function(){
           return det.querySelector(".apiwrap textarea").value;
