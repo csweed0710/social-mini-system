@@ -504,6 +504,22 @@
   @keyframes keyshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 
   .apiwrap{padding:4px 0 2px}
+  .imgpicker{margin:0 0 10px}
+  .imgpickbtn{
+    display:inline-block;background:var(--paper);border:1.5px dashed var(--line);color:var(--muted);
+    border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;
+  }
+  .imgpickbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .imgthumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .imgchip{
+    display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--ink);
+    border-radius:999px;padding:5px 6px 5px 14px;font-size:12.5px;
+  }
+  .imgchip button{
+    background:var(--card);border:none;border-radius:50%;width:18px;height:18px;line-height:16px;
+    color:var(--muted);cursor:pointer;font-size:13px;padding:0;
+  }
+  .imgchip button:hover{color:var(--risk)}
   .apiwrap textarea{
     width:100%;min-height:150px;box-sizing:border-box;padding:14px 16px;border:1px solid var(--line);
     border-radius:10px;background:var(--paper);color:var(--ink);font-family:inherit;font-size:13.5px;
@@ -2250,8 +2266,8 @@
      tpl:"你是 AI 圖像指令工程師兼美術指導，精通 Midjourney、DALL·E、Stable Diffusion 的語法差異，也懂社群封面的 CTR 邏輯——好看不等於會被點。\n\n【背景】賽道：{賽道}；人設：{人設}\n【需求】用途：＿＿（封面／貼文圖／九宮格／頭像／縮圖背景）；平台與尺寸：＿＿；我的視覺系統（色碼與風格，做過 STEP 06 就把交棒區貼這裡）：＿＿\n\n請輸出：\n1. 主指令（英文）：完整結構——subject（含人設記憶點）→ environment → composition（指名構圖法則：三分／居中對稱／負空間留字區）→ lighting（光種與方向：柔光箱／黃金時刻／霓虹）→ camera（焦段與景深，例 85mm shallow DOF）→ style & mood → color palette（帶入我的 HEX）\n2. Negative prompt：這個用途最常見的 10 個瑕疵（畸形手、浮水印、多餘文字⋯）\n3. 參數對照：Midjourney 版（--ar／--s／--style raw；用 --sref 或 seed 維持系列一致性的具體做法）與 DALL·E／SD 的對應寫法\n4. 變體策略：同一張圖的 3 個變體方向（改構圖／改光／改情緒），供 A/B\n5. 中文字處理：AI 生圖的中文字必壞——告訴我哪裡留白、標題字區怎麼預留給後製\n6. 紅線判斷：什麼情況不該用 AI 圖（實測類、開箱類內容用 AI 圖＝信任自殺）；該用時需不需要標註"},
     {t:"AI 影片生成工程", d:"導演級文生影片指令：分鏡化、工具選擇、實拍紅線",
      tpl:"你是 AI 影片導演，精通 Runway、Kling、Pika、Veo 等工具的鏡頭語言，並且清楚 AI 影片在創作者工作流的正確位置：B-roll、轉場、概念畫面用 AI；涉及本人與真實體驗的鏡頭必須實拍。\n\n【背景】賽道：{賽道}；人設：{人設}\n【需求】這支影片需要的畫面：＿＿（B-roll／開場動畫／概念示意／產品情境）；時長與比例：＿＿；會搭配的實拍內容：＿＿\n\n請輸出：\n1. 先判斷：這個需求該 AI 生成還是實拍？判斷標準——涉及「我本人、真實測試、真實場地」一律實拍。不該用 AI 就直接告訴我怎麼拍，不要硬給指令\n2. 分鏡化指令（英文）：每個鏡頭一條，含 subject & action → camera movement（push in／orbit／handheld／static）→ shot size → lighting & mood → style reference，每條對應 5–10 秒\n3. 工具選擇：這種畫面用哪個工具最合適（寫實動態／角色一致性／文字動畫各有強項工具），並提醒我發布前自查該工具目前的方案與浮水印政策\n4. 一致性方案：多鏡頭同風格的做法——首幀圖法（先用 STEP 13 生首幀，再 image-to-video）與 style reference 的用法\n5. 聲音層：這段畫面配什麼（旁白／BGM／音效）；若用 AI 配音，語速與斷句怎麼調才不出戲、以及是否需要揭露\n6. 紅線：AI 影片絕不能做的用法——假實測、假到場、深偽他人、假使用心得，任何一項都會一次毀掉人設信任"},
-    {t:"現有帳號健檢", d:"已經在經營的帳號：四層健檢＋30 天處方",
-     tpl:"你是帳號診斷顧問，方法論：定位清晰度 → 漏斗數據 → 內容組合 → 變現配置，四層健檢。只給可執行處方，不給「內容不錯繼續加油」這種空話。\n\n【我的帳號現況】平台與帳號連結或描述：＿＿；粉絲數：＿＿；經營多久：＿＿；最近 10 支內容的數據（題目｜觀看｜完播｜互動｜轉粉）：＿＿；目前收入來源與金額：＿＿\n【背景】賽道：{賽道}；人設：{人設}\n\n請輸出：\n1. 定位健檢：從我的內容清單反推「演算法眼中這個帳號在講什麼」，跟我自認的定位有沒有偏差、偏在哪\n2. 漏斗健檢：觸及→留存→互動→轉粉，哪一層最弱？用我的數據對比證明\n3. 內容組合健檢：流量型／信任型／變現型內容的現況比例與建議比例\n4. 變現健檢：以我目前的粉絲數，對照 16 種變現模式，哪些該開還沒開、哪些開太早\n5. 保留與捨棄：哪些內容繼續做、哪些立刻停（各給理由）\n6. 30 天處方：4 週各自的重點動作與量化目標"},
+    {t:"現有帳號健檢", d:"已經在經營的帳號：四層健檢＋30 天處方（需要質化樣本，不是只丟數字）",
+     tpl:"你是帳號診斷顧問，方法論：定位清晰度 → 漏斗數據 → 內容組合 → 變現配置，四層健檢。只給可執行處方，不給「內容不錯繼續加油」這種空話。\n\n【重要提醒】我沒辦法幫你打開帳號連結去看——你貼連結給我，我看不到裡面的內容。診斷品質完全取決於你貼了多少「質化樣本」，不是只有數字。請照下面盡量填：\n\n【基本數據】平台：＿＿；粉絲數：＿＿；經營多久：＿＿；最近 10 支內容的數據（題目｜觀看｜完播率｜互動｜轉粉）：＿＿；目前收入來源與金額：＿＿\n【質化樣本（愈完整，診斷愈準）】表現最好的 3 支：逐字打出標題／開場第一句／內容大意；表現最差的 3 支：同上；貼 5–10 則有代表性的留言（原文）；封面／視覺風格的文字描述（配色、有無露臉、字卡風格）；若能提供截圖，用「⚡ 直接生成」模式上傳圖片，我才能真正看到畫面\n【背景】賽道：{賽道}；人設：{人設}\n\n請輸出：\n1. 資料完整度自評：以我提供的資料，你能做出幾成把握的診斷？哪些結論是數據撐得住的、哪些只是根據文字描述的合理推測——兩者要分開講，不要混著講得一樣篤定\n2. 定位健檢：從最好／最差內容的標題與開場反推「演算法眼中這個帳號在講什麼」，跟我自認的定位有沒有偏差\n3. 漏斗健檢：觸及→留存→互動→轉粉，哪一層最弱？用數據對比證明；並指出「完播率低」這件事，從我給的開場文字看，最可能是鉤子問題還是題目問題\n4. 內容組合健檢：流量型／信任型／變現型內容的現況比例與建議比例\n5. 變現健檢：以我目前的粉絲數，對照 16 種變現模式，哪些該開還沒開、哪些開太早\n6. 保留與捨棄：哪些內容繼續做、哪些立刻停（各給理由）\n7. 30 天處方：4 週各自的重點動作與量化目標\n8. 缺口清單：如果要把診斷把握度拉到 90%，我還該補哪 3 樣資料"},
     {t:"熱門貼文拆解", d:"拆自己或對手的爆款：可複製的結構＋改編方案",
      tpl:"你是爆款內容分析師，原則：拆結構不拆運氣——同樣的結構可以複製，同樣的時機不能。\n\n【素材】貼上 5–10 則熱門貼文或影片的資料（自己的或同賽道對手的），每則含：標題或開場、形式、數據（觀看／互動／轉發）、內文摘要：\n＿＿\n【背景】賽道：{賽道}；人設：{人設}\n\n請輸出：\n1. 逐則拆解表：鉤子類型｜結構（敘事線）｜情緒觸發點｜CTA 設計｜「可複製的元素」vs「不可複製的時機運氣」\n2. 共同模式：這批爆款的公因數（題材角度、形式、節奏、發布時段）\n3. 遷移方案：每一則給一個「換成我的人設與主題」的改編版（標題＋開場 3 秒逐字稿）\n4. 反面清單：哪些手法不適合我的人設，硬學會翻車，為什麼\n5. 排序：所有改編版按「成功率 × 製作成本」排出先拍順序"},
     {t:"卡關急診室", d:"成效不如預期：分診→病灶→兩週實驗處方",
@@ -2413,7 +2429,14 @@
     if(input){ input.classList.add("keyshake"); input.focus(); setTimeout(function(){ input.classList.remove("keyshake"); }, 500); }
   }
 
-  async function callClaudeAPI(promptText){
+  async function callClaudeAPI(promptText, images){
+    var content = promptText;
+    if(images && images.length){
+      content = images.map(function(img){
+        return { type:"image", source:{ type:"base64", media_type:img.mediaType, data:img.base64 } };
+      });
+      content.push({ type:"text", text: promptText });
+    }
     var resp = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -2425,7 +2448,7 @@
       body: JSON.stringify({
         model: apiModel,
         max_tokens: 4096,
-        messages: [{ role: "user", content: promptText }]
+        messages: [{ role: "user", content: content }]
       })
     });
     var data = null;
@@ -2448,18 +2471,19 @@
     {label:"✂ 更精簡", req:"保留重點，但整體精簡 40% 以上：刪掉所有客套、鋪陳與重複，只留可直接使用的部分。"},
     {label:"💬 更口語", req:"同樣的內容，改成更口語、像真人隨口說出來的版本，去掉所有書面腔與條列味。"}
   ];
-  function wireInlineGenerate(btn, outEl, getText){
+  function wireInlineGenerate(btn, outEl, getText, getImages){
     if(!btn || !outEl) return;
     var baseText = null;
     var round = 0;
     function run(adjust){
       if(!apiKey){ focusApiSettings(); return; }
       var text = adjust ? baseText + "\n\n【重生成要求】" + adjust : baseText;
+      var images = getImages ? getImages() : null;
       btn.disabled = true;
       var origLabel = btn.textContent;
       btn.innerHTML = "<span class='spinner'></span>生成中…";
       outEl.innerHTML = "";
-      callClaudeAPI(text).then(function(result){
+      callClaudeAPI(text, images).then(function(result){
         round++;
         var out = document.createElement("div");
         out.className = "apiout";
@@ -2516,6 +2540,8 @@
     {title:"賺錢與成長（階段到了再開）", ids:[9,11,16]}
   ];
   var CORE_STEPS = {1:1, 2:1, 4:1, 6:1, 10:1};
+  /* 這些站「直接生成」時可以附上截圖／照片，Claude 真的看得到畫面 */
+  var IMAGE_STEPS = {5:1, 12:1, 14:1, 15:1, 17:1, 18:1};
   function renderPrompts(){
     var list = $("promptList");
     var openSet = {};
@@ -2548,8 +2574,10 @@
           +       "<button type='button' class='tweak' data-t='1'>更精簡</button>"
           +       "<button type='button' class='tweak' data-t='2'>更口語</button>"
           +     "</div></div>"
-          +   "<div class='apiwrap' hidden><textarea></textarea><div class='apibar'>"
-          +     "<button type='button' class='gobtn'>▶ 產生結果</button><span class='apihint'>會送出上方文字給 Claude API，你可以先編輯再產生</span>"
+          +   "<div class='apiwrap' hidden>"
+          +     (IMAGE_STEPS[i] ? "<div class='imgpicker'><label class='imgpickbtn'>📎 上傳截圖／照片（選填，AI 真的看得到）<input type='file' accept='image/*' multiple hidden></label><div class='imgthumbs'></div></div>" : "")
+          +     "<textarea></textarea><div class='apibar'>"
+          +     "<button type='button' class='gobtn'>▶ 產生結果</button><span class='apihint'>會送出上方文字"+(IMAGE_STEPS[i]?"與圖片":"")+"給 Claude API，你可以先編輯再產生</span>"
           +   "</div><div class='apiout-host'></div></div>"
           +   "<div class='handbox' hidden></div>"
           + "</div>";
@@ -2558,6 +2586,37 @@
         det.querySelector(".apiwrap textarea").value = promptText;
         det.querySelector(".handbox").textContent = MANUALS[i] || "";
         var mwrap = det.querySelector(".mwrap"), apiwrap = det.querySelector(".apiwrap"), handbox = det.querySelector(".handbox");
+        var stepImages = [];
+        if(IMAGE_STEPS[i]){
+          var fileInput = det.querySelector(".imgpicker input[type=file]");
+          var thumbs = det.querySelector(".imgthumbs");
+          fileInput.addEventListener("change", function(){
+            var files = Array.prototype.slice.call(fileInput.files || []).slice(0, 4 - stepImages.length);
+            files.forEach(function(f){
+              if(!f.type || f.type.indexOf("image/") !== 0) return;
+              var reader = new FileReader();
+              reader.onload = function(){
+                var b64 = String(reader.result).split(",")[1];
+                var item = { mediaType: f.type, base64: b64, name: f.name };
+                stepImages.push(item);
+                var chip = document.createElement("span");
+                chip.className = "imgchip";
+                chip.textContent = f.name.length > 14 ? f.name.slice(0,12)+"…" : f.name;
+                var rm = document.createElement("button");
+                rm.type = "button"; rm.textContent = "×"; rm.setAttribute("aria-label", "移除圖片");
+                rm.addEventListener("click", function(){
+                  var idx = stepImages.indexOf(item);
+                  if(idx >= 0) stepImages.splice(idx, 1);
+                  chip.remove();
+                });
+                chip.appendChild(rm);
+                thumbs.appendChild(chip);
+              };
+              reader.readAsDataURL(f);
+            });
+            fileInput.value = "";
+          });
+        }
         det.querySelectorAll(".modebtn").forEach(function(mb){
           mb.addEventListener("click", function(){
             var mode = mb.getAttribute("data-m");
@@ -2580,7 +2639,7 @@
         });
         wireInlineGenerate(det.querySelector(".gobtn"), det.querySelector(".apiout-host"), function(){
           return det.querySelector(".apiwrap textarea").value;
-        });
+        }, IMAGE_STEPS[i] ? function(){ return stepImages; } : null);
         list.appendChild(det);
       });
     });
