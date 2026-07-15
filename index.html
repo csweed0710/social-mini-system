@@ -1630,9 +1630,10 @@
         <div class="lf"><label for="logDate">日期</label><input type="date" id="logDate"></div>
         <div class="lf"><label for="logFans">粉絲數</label><input type="number" id="logFans" min="0" placeholder="例：1200"></div>
         <div class="lf"><label for="logIncome">當月收入 NT$</label><input type="number" id="logIncome" min="0" placeholder="例：3000"></div>
+        <div class="lf" style="flex:1 1 260px"><label for="logNote">本週一句結論</label><input type="text" id="logNote" maxlength="60" placeholder="例：完播率掉了，開場鉤子要換" style="width:100%"></div>
         <button type="button" class="pbtn" id="logAdd">記錄</button>
       </div>
-      <div class="tablewrap"><table class="logtable"><thead><tr><th>日期</th><th>粉絲數</th><th>當月收入</th><th></th></tr></thead><tbody id="logBody"></tbody></table></div>
+      <div class="tablewrap"><table class="logtable"><thead><tr><th>日期</th><th>粉絲數</th><th>當月收入</th><th>一句結論</th><th></th></tr></thead><tbody id="logBody"></tbody></table></div>
     </div>
   </div>
 </section>
@@ -3363,25 +3364,30 @@
   function renderLogTable(){
     var tb = $("logBody");
     logData.sort(function(a,b){ return a.d < b.d ? -1 : 1; });
-    tb.innerHTML = logData.length ? "" : "<tr><td colspan='4' style='color:var(--muted)'>還沒有紀錄——記下第一筆，橘色的「實際」線就會出現。</td></tr>";
+    tb.innerHTML = logData.length ? "" : "<tr><td colspan='5' style='color:var(--muted)'>還沒有紀錄——記下第一筆，橘色的「實際」線就會出現。</td></tr>";
     logData.forEach(function(e, idx){
       var tr = document.createElement("tr");
-      tr.innerHTML = "<td>"+e.d+"</td><td>"+(+e.f).toLocaleString("zh-TW")+"</td><td>NT$"+(+e.i).toLocaleString("zh-TW")+"</td><td></td>";
+      var tdD = document.createElement("td"); tdD.textContent = e.d;
+      var tdF = document.createElement("td"); tdF.textContent = (+e.f).toLocaleString("zh-TW");
+      var tdI = document.createElement("td"); tdI.textContent = "NT$" + (+e.i).toLocaleString("zh-TW");
+      var tdN = document.createElement("td"); tdN.textContent = e.note || "";
+      var tdX = document.createElement("td");
+      tr.appendChild(tdD); tr.appendChild(tdF); tr.appendChild(tdI); tr.appendChild(tdN); tr.appendChild(tdX);
       var del = document.createElement("button");
       del.type = "button"; del.textContent = "刪除";
       del.addEventListener("click", function(){
         logData.splice(idx, 1); saveLog(); renderLogTable(); renderCharts();
       });
-      tr.lastElementChild.appendChild(del);
+      tdX.appendChild(del);
       tb.appendChild(tr);
     });
   }
   $("logAdd").addEventListener("click", function(){
-    var d = $("logDate").value, f = +$("logFans").value, inc = +$("logIncome").value;
+    var d = $("logDate").value, f = +$("logFans").value, inc = +$("logIncome").value, note = $("logNote").value.trim();
     if(!d){ $("logDate").focus(); return; }
-    logData.push({ d:d, f:isNaN(f)?0:f, i:isNaN(inc)?0:inc });
+    logData.push({ d:d, f:isNaN(f)?0:f, i:isNaN(inc)?0:inc, note:note });
     saveLog(); renderLogTable(); renderCharts();
-    $("logFans").value = ""; $("logIncome").value = "";
+    $("logFans").value = ""; $("logIncome").value = ""; $("logNote").value = "";
   });
   renderLogTable();
   renderCharts();
