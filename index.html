@@ -485,8 +485,16 @@
     background:var(--card);border:1px solid var(--accent);border-radius:18px;
     padding:20px 24px;margin:0 0 26px;box-shadow:var(--shadow);
   }
-  .apisettings h3{margin:0 0 6px;font-size:16px;font-weight:900}
+  .apisettings summary{
+    cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+    font-size:16px;font-weight:900;
+  }
+  .apisettings summary::-webkit-details-marker{display:none}
+  .apisettings summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .apisettings summary .askip{font-size:12.5px;font-weight:400;color:var(--muted)}
+  .apisettings[open] summary{margin-bottom:6px}
   .apisettings > p{margin:0 0 14px;font-size:13.5px;color:var(--muted);max-width:60em}
+  .apisettings > p:first-of-type{margin-top:14px}
   .apiform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
   .apiform input[type=password],.apiform input[type=text]{
     flex:1 1 240px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;
@@ -1443,8 +1451,8 @@
       每條指令都會自動代入你的賽道、人設、目標與階段，產出的尾端附「交棒區」，複製貼進下一步就能接力。
     </p>
 
-    <div class="apisettings" id="apiSettings">
-      <h3>🔌 想要按一下就生成，不用複製貼上？</h3>
+    <details class="apisettings" id="apiSettings">
+      <summary>🔌 想要按一下就生成，不用複製貼上？<span class="askip">新手請先用複製貼上模式，略過此區</span></summary>
       <p>預設「複製給 AI」零成本。想一鍵生成，貼上你自己的 <b>Claude API 金鑰</b>——只存在這台瀏覽器、直連官方，費用算你的帳戶。</p>
       <div class="apiform">
         <input type="password" id="apiKeyInput" placeholder="貼上金鑰：sk-ant-...">
@@ -1458,7 +1466,7 @@
       </div>
       <p class="status" id="apiKeyStatus">尚未設定金鑰——目前所有步驟都是複製貼上模式。</p>
       <p class="help">金鑰在 <b>console.anthropic.com</b> 建立，建議設用量上限。不用金鑰也完全能用。</p>
-    </div>
+    </details>
 
     <div class="aibanner" id="aiBanner"><b>提示</b>　尚未選擇賽道——指令會用通用版。回到上方選定賽道後，所有指令會自動代入你的賽道與定位。</div>
     <div id="promptList"></div>
