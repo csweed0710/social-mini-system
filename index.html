@@ -991,10 +991,55 @@
   </div>
 </section>
 
+<!-- ============ 評估表 ============ -->
+<section id="assessment">
+  <div class="wrap">
+    <p class="kicker">第 1 步 · 進站評估</p>
+    <h2 class="serif">先讓教練知道你的路線</h2>
+    <p class="sub">填完這張表，系統會依你的可投入時數換算「車種」；車種決定接下來課表的強度。<strong>這不是自動分配結果</strong>，路線分配以教練校準為準。</p>
+
+    <div class="pbuilder">
+      <div class="pbform">
+        <div class="pbf">
+          <label for="asGoal">主目標</label>
+          <select id="asGoal">
+            <option value="">請選擇</option>
+            <option value="income">收入型</option>
+            <option value="fame">聲量型</option>
+            <option value="idea">理念型</option>
+          </select>
+        </div>
+        <div class="pbf"><label for="asTarget">目標數字<small>例：月收入 NT$3 萬／粉絲 5,000</small></label><input type="text" id="asTarget" maxlength="40"></div>
+        <div class="pbf"><label for="asDeadline">期限<small>例：6 個月內</small></label><input type="text" id="asDeadline" maxlength="20"></div>
+        <div class="pbf">
+          <label for="asHours">每週可投入時數<small id="asRouteHint">輸入後自動顯示車種</small></label>
+          <input type="number" id="asHours" min="0" step="0.5" placeholder="例：6">
+        </div>
+        <div class="pbf">
+          <label for="asAppear">出鏡意願</label>
+          <select id="asAppear">
+            <option value="">請選擇</option>
+            <option value="show">敢出鏡</option>
+            <option value="voice">只出聲</option>
+            <option value="anon">全匿名</option>
+          </select>
+        </div>
+        <div class="pbf"><label for="asNoGo">禁區<small>不想碰的題材、平台或做法</small></label><input type="text" id="asNoGo" maxlength="60"></div>
+      </div>
+      <div class="pbactions">
+        <button type="button" class="pbtn" id="asSave">儲存評估</button>
+        <button type="button" class="reset" id="asClear">清除</button>
+        <span class="apisettings status" id="asStatus" style="border:none;padding:0;background:none;box-shadow:none"></span>
+      </div>
+      <p class="routenotice" style="margin:0 28px 24px">路線分配後，請與教練完成目標校準再開始。</p>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 選賽道 ============ -->
 <section id="position">
   <div class="wrap">
-    <p class="kicker">第 1 步 · 由你決定</p>
+    <p class="kicker">第 2 步 · 由你決定</p>
     <h2 class="serif">選一個主題（賽道）</h2>
     <p class="sub">
       點一張卡，系統生成該主題的完整計畫：定位、格式、鉤子、賺錢順序與行情。
@@ -1020,7 +1065,7 @@
 <!-- ============ 人設 ============ -->
 <section id="persona">
   <div class="wrap">
-    <p class="kicker">第 2 步 · 別人搶不走的</p>
+    <p class="kicker">第 3 步 · 別人搶不走的</p>
     <h2 class="serif">打造人設：主題可以重複，人設不能</h2>
     <p class="sub">
       同一個主題有一萬個帳號，<strong>人設決定為什麼是你</strong>。
@@ -2137,6 +2182,85 @@
   });
   refreshGoalChips();
 
+  /* ================= 評估表（進站閘門） ================= */
+  var LS_ASSESSMENT = "creator-os-assessment";
+  var assessment = null;
+  try{ assessment = JSON.parse(localStorage.getItem(LS_ASSESSMENT) || "null"); }catch(e){ assessment = null; }
+  var AS_GOAL_LABEL = {income:"收入型", fame:"聲量型", idea:"理念型"};
+  var AS_APPEAR_LABEL = {show:"敢出鏡", voice:"只出聲", anon:"全匿名"};
+  function routeFromHours(h){
+    if(h === null || h === undefined || h === "" || isNaN(h)) return null;
+    h = +h;
+    if(h <= 1) return {key:"walk", name:"步行 ≤1hr"};
+    if(h <= 4) return {key:"bus", name:"公車 2–4hr"};
+    if(h <= 8) return {key:"hsr", name:"高鐵 5–8hr"};
+    return {key:"jet", name:"機票 ≥9hr"};
+  }
+  function currentRoute(){
+    if(!assessment || assessment.hours === "" || assessment.hours === undefined || assessment.hours === null) return null;
+    return routeFromHours(assessment.hours);
+  }
+  var asFields = ["asGoal","asTarget","asDeadline","asHours","asAppear","asNoGo"];
+  function loadAssessmentForm(){
+    if(assessment){
+      if($("asGoal")) $("asGoal").value = assessment.goal || "";
+      if($("asTarget")) $("asTarget").value = assessment.target || "";
+      if($("asDeadline")) $("asDeadline").value = assessment.deadline || "";
+      if($("asHours")) $("asHours").value = (assessment.hours === undefined || assessment.hours === null) ? "" : assessment.hours;
+      if($("asAppear")) $("asAppear").value = assessment.appear || "";
+      if($("asNoGo")) $("asNoGo").value = assessment.noGo || "";
+    }
+    updateRouteHint();
+    updateAsStatus();
+  }
+  function updateRouteHint(){
+    var hEl = $("asHours"), hint = $("asRouteHint");
+    if(!hEl || !hint) return;
+    var r = routeFromHours(hEl.value);
+    hint.textContent = r ? ("車種：" + r.name) : "輸入後自動顯示車種";
+    hint.style.color = r ? "var(--accent)" : "";
+  }
+  function updateAsStatus(){
+    var el = $("asStatus"); if(!el) return;
+    var r = currentRoute();
+    if(assessment && r){
+      el.textContent = "✓ 已儲存 — " + (AS_GOAL_LABEL[assessment.goal]||"未選目標") + "・車種 " + r.name;
+      el.style.color = "var(--growth)";
+    } else if(assessment){
+      el.textContent = "已儲存，但尚未填時數，無法判斷車種。";
+      el.style.color = "var(--risk)";
+    } else {
+      el.textContent = "尚未填寫評估表。";
+      el.style.color = "";
+    }
+  }
+  if($("asHours")) $("asHours").addEventListener("input", updateRouteHint);
+  if($("asSave")) $("asSave").addEventListener("click", function(){
+    assessment = {
+      goal: $("asGoal").value,
+      target: $("asTarget").value.trim(),
+      deadline: $("asDeadline").value.trim(),
+      hours: $("asHours").value === "" ? "" : +$("asHours").value,
+      appear: $("asAppear").value,
+      noGo: $("asNoGo").value.trim()
+    };
+    try{ localStorage.setItem(LS_ASSESSMENT, JSON.stringify(assessment)); }catch(e){}
+    updateAsStatus();
+    if(typeof updateSetup === "function") updateSetup();
+    var btn = $("asSave");
+    btn.textContent = "已儲存 ✓"; setTimeout(function(){ btn.textContent = "儲存評估"; }, 1600);
+  });
+  if($("asClear")) $("asClear").addEventListener("click", function(){
+    if(!confirm("確定要清除評估表資料嗎？")) return;
+    assessment = null;
+    try{ localStorage.removeItem(LS_ASSESSMENT); }catch(e){}
+    asFields.forEach(function(id){ if($(id)) $(id).value = ""; });
+    updateRouteHint();
+    updateAsStatus();
+    if(typeof updateSetup === "function") updateSetup();
+  });
+  loadAssessmentForm();
+
   /* ================= 人設引擎 ================= */
   var LS_PERSONA = "creator-os-persona";
   var ARCH = {
@@ -3218,7 +3342,7 @@
   });
 
   /* ================= 備份與還原 ================= */
-  var LS_KEYS = [LS, LS_TRACK, LS_PERSONA, LS_GOAL, LS_START, LS_LOG];
+  var LS_KEYS = [LS, LS_TRACK, LS_PERSONA, LS_GOAL, LS_START, LS_LOG, LS_ASSESSMENT];
   $("bakExp").addEventListener("click", function(){
     var out = { app:"social-mini-system", exported:new Date().toISOString() };
     LS_KEYS.forEach(function(k){
@@ -3365,7 +3489,7 @@
   var LS_VIEW = "creator-os-view";
   var VIEW_OF = {
     today:"home", goalRow:"home",
-    position:"direction", strategy:"direction", persona:"direction",
+    assessment:"direction", position:"direction", strategy:"direction", persona:"direction",
     learnNav:"learn", logic:"learn", money:"learn", stages:"learn", sop:"learn",
     platforms:"learn", seo:"learn", ads:"learn", pitfalls:"learn",
     ai:"tools",
