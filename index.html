@@ -3227,7 +3227,10 @@
     var blob = new Blob([JSON.stringify(out, null, 2)], {type:"application/json"});
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "社群小系統-備份.json";
+    function pad2(n){ return (n<10?"0":"")+n; }
+    var dt = new Date();
+    var ymd = dt.getFullYear() + pad2(dt.getMonth()+1) + pad2(dt.getDate());
+    a.download = "backup_" + ymd + ".json";
     document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
   });
