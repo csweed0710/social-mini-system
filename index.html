@@ -769,6 +769,21 @@
     font-size:13.5px;color:var(--ink);background:var(--accent-soft);border:1px solid var(--accent);
     border-radius:12px;padding:12px 18px;margin:0 0 22px;max-width:38em;line-height:1.8;
   }
+  .routecard{
+    background:var(--card);border:1px solid var(--accent);border-radius:16px;
+    padding:16px 22px;margin:0 0 22px;box-shadow:var(--shadow);
+  }
+  .routecard .rc-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+  .routecard .rc-badge{
+    background:var(--accent);color:var(--btn-ink);border-radius:999px;padding:3px 14px;
+    font-size:12.5px;font-weight:900;letter-spacing:.04em;
+  }
+  .routecard .rc-head b{font-size:14px;color:var(--muted);font-weight:700}
+  .routecard .rc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 22px;font-size:13.5px}
+  .routecard .rc-grid dt{color:var(--muted);font-size:12px;letter-spacing:.06em;margin-bottom:2px}
+  .routecard .rc-grid dd{margin:0;color:var(--ink);font-weight:700;line-height:1.6}
+  .routecard .rc-empty{font-size:13.5px;color:var(--muted);margin:0}
+  .routecard .rc-empty a{color:var(--accent);font-weight:700;text-decoration:none;border-bottom:1.5px solid var(--accent)}
   .diagcard{
     border-radius:16px;padding:16px 20px;margin:0 0 20px;box-shadow:var(--shadow);
     display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px solid var(--line);
@@ -1178,6 +1193,7 @@
         </div>
         <div class="earn"><b>本階段收入</b><span class="amt" data-earnidx="0">NT$0</span><span class="note">正常。此時想賺錢會毀掉帳號權重，專心餵數據。</span></div>
       </header>
+      <div style="padding:0 28px"><div id="routeCardStage0"></div></div>
       <div class="body">
         <div class="tasks">
           <h4 class="do">任務清單（勾選存檔）</h4>
@@ -1370,6 +1386,7 @@
     <p class="kicker">每週的固定節奏</p>
     <h2 class="serif">每週做內容的流程</h2>
     <p class="sub">斷更不是因為懶，是每支影片都從零想。照固定流程批次做，一週 6–8 小時穩定產出 5 支。</p>
+    <div id="routeCardSOP"></div>
 
     <div class="sop">
       <div class="day"><span class="d">週一 · 1hr</span><h3>選題</h3><p>從選題庫挑 5 題，各配一個鉤子開場</p></div>
@@ -1639,6 +1656,7 @@
       設定 Day 1，每天做一格，做完勾掉。
       跟不上就順延，<strong>順序不要跳</strong>。
     </p>
+    <div id="routeCardPlan90"></div>
     <div class="syncnote" id="syncNote"><b>策略已調整</b>　<span id="syncText"></span><button type="button" id="syncCopy">複製「重新校準」指令</button></div>
     <div class="calctrl">
       <label for="calStart">我的 Day 1 日期</label>
@@ -2247,6 +2265,7 @@
     try{ localStorage.setItem(LS_ASSESSMENT, JSON.stringify(assessment)); }catch(e){}
     updateAsStatus();
     if(typeof updateSetup === "function") updateSetup();
+    if(typeof refreshRouteCards === "function") refreshRouteCards();
     var btn = $("asSave");
     btn.textContent = "已儲存 ✓"; setTimeout(function(){ btn.textContent = "儲存評估"; }, 1600);
   });
@@ -2258,8 +2277,46 @@
     updateRouteHint();
     updateAsStatus();
     if(typeof updateSetup === "function") updateSetup();
+    if(typeof refreshRouteCards === "function") refreshRouteCards();
   });
   loadAssessmentForm();
+
+  /* ================= 課表依車種切換（P1-2，純文案切換，非引擎） ================= */
+  var ROUTES = {
+    jet:  { name:"機票", range:"≥9hr", freq:"短影音每週 5 支", platform:"三平台同發＋一主平台", batch:"週批（一天拍完 5 支）", sample:"30 支／約 6 週", format:"全格式開放" },
+    hsr:  { name:"高鐵", range:"5–8hr", freq:"短影音每週 3 支", platform:"主平台＋1 備援", batch:"雙週批", sample:"24 支／約 8 週", format:"以已驗證格式量產" },
+    bus:  { name:"公車", range:"2–4hr", freq:"短影音每週 1–2 支", platform:"單平台深耕", batch:"月批（一天拍完整月量）", sample:"16 支／約 10–12 週", format:"極簡格式：口播＋字幕、模板化剪輯" },
+    walk: { name:"步行", range:"≤1hr", freq:"圖文每週 1 則；影音每月 1–2 支口播", platform:"單平台", batch:"月批（每月一次 2 小時集中產出，日常只發布與回覆）", sample:"12 則／約 12–16 週", format:"強制複利型：搜尋型、長尾型、觀點型。熱點型內容在此路線不成立" }
+  };
+  var ROUTE_CARD_HOSTS = ["routeCardStage0", "routeCardSOP", "routeCardPlan90"];
+  function routeCardHTML(){
+    var r = currentRoute();
+    var usingDefault = !r;
+    var rt = ROUTES[r ? r.key : "jet"];
+    var badge = usingDefault ? "機票級（預設）" : (rt.name + " " + rt.range);
+    var emptyLine = usingDefault
+      ? "<p class='rc-empty'>尚未完成評估表，暫顯示機票級（最高強度）參數。<a href='#assessment'>請先完成評估</a>，換算你的實際車種。</p>"
+      : "";
+    return "<div class='routecard'>"
+      + "<div class='rc-head'><span class='rc-badge'>" + badge + "</span><b>你的課表參數</b></div>"
+      + emptyLine
+      + "<dl class='rc-grid'>"
+      +   "<div><dt>頻率</dt><dd>" + rt.freq + "</dd></div>"
+      +   "<div><dt>平台</dt><dd>" + rt.platform + "</dd></div>"
+      +   "<div><dt>批次節奏</dt><dd>" + rt.batch + "</dd></div>"
+      +   "<div><dt>冷啟動樣本</dt><dd>" + rt.sample + "</dd></div>"
+      +   "<div><dt>格式偏置</dt><dd>" + rt.format + "</dd></div>"
+      + "</dl>"
+      + "</div>";
+  }
+  function refreshRouteCards(){
+    var html = routeCardHTML();
+    ROUTE_CARD_HOSTS.forEach(function(id){
+      var el = $(id);
+      if(el) el.innerHTML = html;
+    });
+  }
+  refreshRouteCards();
 
   /* ================= 人設引擎 ================= */
   var LS_PERSONA = "creator-os-persona";
