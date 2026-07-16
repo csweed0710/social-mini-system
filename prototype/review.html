@@ -180,6 +180,13 @@ textarea:focus,input:focus{border-color:var(--accent);outline:none;box-shadow:0 
 .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 6px}
 .status{margin:14px 0 0;font-size:12.5px;color:var(--ink-quiet)}
 
+.careline{
+  text-align:center;font-size:13px;color:var(--ink-muted);
+  padding:11px 18px;border-radius:14px;margin:0 4px 16px;
+}
+.careline .dismiss{margin-left:10px;background:none;border:none;color:var(--ink-quiet);font-size:12px;cursor:pointer;text-decoration:underline;text-decoration-color:transparent;font-family:inherit}
+.careline .dismiss:hover{text-decoration-color:var(--glass-border)}
+
 .extend{
   display:flex;align-items:center;gap:14px;margin:22px 4px 0;padding:14px 18px;border-radius:16px;opacity:.9;
 }
@@ -367,6 +374,8 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
   <section class="stage" id="planView" hidden>
     <p class="toplabel">今天</p>
 
+    <p class="careline glass" id="careLine" hidden></p>
+
     <div class="focal glass-strong">
       <p class="eyebrow" id="focalEyebrow">為妳準備的一件事</p>
       <h1 class="serif" id="focalTitle"></h1>
@@ -402,6 +411,7 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
       <button type="button" id="viewJudgmentButton">判斷依據</button>
       <button type="button" id="viewAdjustButton">這個方法不適合我</button>
       <button type="button" id="viewReflectionButton">本週復盤</button>
+      <button type="button" id="viewCircleButton">陪伴圈</button>
     </div>
 
     <p class="note">畫面只留一件事。其他想法都還在，安靜地放在「下一步」，不會用清單或數字提醒妳還剩多少。</p>
@@ -446,12 +456,51 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
       <label>下週只驗證<textarea id="reviewNext" rows="2"></textarea></label>
       <div id="assumptionChecklist"></div>
       <label>想請人幫忙看（選填）<textarea id="reviewHelp" rows="2"></textarea></label>
+      <div id="circleShareRow" hidden style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-muted)">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="shareToCircle" style="accent-color:var(--accent)"> 分享到陪伴圈</label>
+        <select id="shareToCircleType" style="padding:6px 10px;border-radius:10px;font-size:12.5px">
+          <option value="reflection">心得</option>
+          <option value="milestone">成果</option>
+          <option value="stuck">卡點</option>
+        </select>
+      </div>
       <div class="dactions">
         <button class="btn-ghost" id="copyShareButton" type="button">複製分享卡</button>
         <button class="btn-primary" type="submit">存起來</button>
       </div>
       <p class="field-note" id="reviewStatus"></p>
     </form>
+  </div>
+</dialog>
+
+<!-- ===== 陪伴圈 ===== -->
+<dialog id="circleDialog" class="glass-strong">
+  <div class="dcard">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>陪伴圈</h2>
+    <p style="color:var(--ink-muted);font-size:13px;margin-top:0">只有拿到同一組代碼的人看得到——不是公開廣場，也不比較誰做得多。</p>
+
+    <div id="circleSetup">
+      <div class="formgrid">
+        <label>妳的名字（圈子裡顯示用）<input type="text" id="circleNameInput" maxlength="20" placeholder="例如：阿雅"></label>
+        <div class="dactions" style="justify-content:flex-start">
+          <button class="btn-primary" type="button" id="createCircleButton">建立新的圈子</button>
+        </div>
+        <label>或輸入朋友給的代碼<input type="text" id="joinCodeInput" maxlength="6" placeholder="6 碼代號" style="text-transform:uppercase"></label>
+        <div class="dactions" style="justify-content:flex-start">
+          <button class="btn-ghost" type="button" id="joinCircleButton">加入圈子</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="circleJoined" hidden>
+      <p style="font-size:13px;color:var(--ink-muted)">圈子代碼（傳給想邀請的朋友）</p>
+      <p class="mono" id="circleCodeDisplay" style="font-size:22px;font-weight:700;color:var(--accent);letter-spacing:.1em;margin:0 0 16px"></p>
+      <div id="circleFeed"></div>
+      <div class="dactions">
+        <button class="btn-quiet" type="button" id="leaveCircleButton">離開這個圈子</button>
+      </div>
+    </div>
   </div>
 </dialog>
 
@@ -514,8 +563,36 @@ function defaultProfile(){
     stageHistory:[],
     focalItems:[],
     weeklyReflections:[],
-    lastMinutesChoice:30
+    lastMinutesChoice:30,
+    careLog:[],
+    circle:{ code:null, memberCodes:[], displayName:"" }
   };
+}
+
+/* ---- 關心節奏表：輕觸／深談兩層，依類型決定，不是全站同一個數字（週） ---- */
+var CARE_RHYTHM_CONSTRAINT = {
+  cadence:{ light:2, deep:6 },
+  face:{ light:3, deep:8 },
+  voice:{ light:3, deep:8 },
+  outreach:{ light:4, deep:10 },
+  track:{ light:3, deep:8 },
+  weeklyHours:{ light:3, deep:8 }
+};
+var CARE_RHYTHM_STAGE = {
+  direction:{ light:2, deep:4 },
+  reach:{ light:1, deep:3 },
+  trust:{ light:2, deep:4 },
+  revenue:{ light:2, deep:6 },
+  unknown:{ light:2, deep:4 }
+};
+var CARE_RHYTHM_ASSUMPTION = {
+  track:{ light:2, deep:8 },
+  revenueOutlook:{ light:2, deep:6 },
+  audience:{ light:2, deep:5 }
+};
+function weeksSince(iso){
+  if (!iso) return Infinity;
+  return (Date.now() - new Date(iso).getTime()) / (7*24*60*60*1000);
 }
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
@@ -544,10 +621,30 @@ function describeFormat(constraints){
 var STAGE_LABEL = { direction:"方向", reach:"有效觸及", trust:"信任與需求", revenue:"收益驗證", unknown:"還在確認目前位置" };
 
 /* ---- 判斷引擎：代價說明（規則庫，不需要 AI） ---- */
+var RECALIBRATE_PATTERNS = {
+  cadence:/樣本|方向不明/,
+  face:/信任|案例|證據/,
+  voice:/字幕|敘事/,
+  outreach:/詢問|私訊|留言問|主動問/,
+  weeklyHours:/測試|節奏/,
+  track:/反應|回饋|留言/
+};
 function buildConsequences(p, prescription){
   var out = [];
   function add(confidence, text, triggeredBy, recalibrateWhen, isAssumptionBased){
-    out.push({ id: uid(), confidence:confidence, text:text, triggeredBy:triggeredBy, recalibrateWhen:recalibrateWhen||"", isAssumptionBased: Boolean(isAssumptionBased) });
+    var rhythm = CARE_RHYTHM_CONSTRAINT[triggeredBy];
+    var trigger = null;
+    if (recalibrateWhen && rhythm){
+      trigger = {
+        displayText: recalibrateWhen,
+        watchField:"signalText",
+        pattern: RECALIBRATE_PATTERNS[triggeredBy] || null,
+        windowWeeks: rhythm.deep,
+        lightWeeks: rhythm.light,
+        deepWeeks: rhythm.deep
+      };
+    }
+    out.push({ id: uid(), confidence:confidence, text:text, triggeredBy:triggeredBy, recalibrateTrigger:trigger, isAssumptionBased: Boolean(isAssumptionBased) });
   }
   if (p.constraints.cadence === "w1"){
     add("likely","每週一支能降低壓力，但累積樣本、找出有效內容的速度會比較慢——前六週只有六個樣本可以看。","cadence","如果六週後還看不出方向，可以考慮把節奏拉到每週兩支");
@@ -559,7 +656,7 @@ function buildConsequences(p, prescription){
     add("likely","不使用聲音會少一種情感線索，畫面、字幕與敘事順序需要更清楚。","voice");
   }
   if (p.constraints.outreach.value === "no"){
-    add("known","不主動開發時，收入會更依賴自然搜尋、平台推薦與受眾主動詢問——驗證時間可能拉長。","outreach","如果三個月都沒有自然詢問，可以重新考慮這個限制");
+    add("known","不主動開發時，收入會更依賴自然搜尋、平台推薦與受眾主動詢問——驗證時間可能拉長。","outreach","妳說過不想主動開發，但最近好像常聽到有人主動問——要不要一起看看，這個限制還適合現在的妳嗎？");
   }
   var route = routeFromHours(p.constraints.weeklyHours);
   if ((route.key === "walk" || route.key === "bus") && prescription.stage === "revenue"){
@@ -621,6 +718,102 @@ function currentPrescription(){
 function currentConsequences(){
   var pr = currentPrescription();
   return pr ? pr._consequences || [] : [];
+}
+
+/* ================= 關心引擎：輕觸／深談兩層，語氣像朋友，不是系統報告狀態 ================= */
+function lastCareFire(type, level){
+  var hits = profile.careLog.filter(function(c){ return c.type===type && c.level===level; });
+  return hits.length ? hits[hits.length-1] : null;
+}
+function recentReflectionsText(n){
+  return profile.weeklyReflections.slice(-n).map(function(r){ return (r.signalText||"")+" "+(r.conclusionText||""); }).join(" ");
+}
+function checkCare(level){
+  var pr = currentPrescription();
+  if (!pr) return null;
+
+  // 關心 1：訊號在變（優先序最高）
+  for (var i=0;i<currentConsequences().length;i++){
+    var c = currentConsequences()[i];
+    var t = c.recalibrateTrigger;
+    if (!t) continue;
+    var weeks = level==="deep" ? t.deepWeeks : t.lightWeeks;
+    var last = lastCareFire("consequence:"+c.id, level);
+    if (last && weeksSince(last.firedAt) < weeks) continue;
+    if (weeksSince(pr.createdAt) < weeks) continue;
+    if (level==="deep"){
+      if (t.pattern && !t.pattern.test(recentReflectionsText(6))) continue;
+      return { type:"consequence:"+c.id, level:"deep", text:t.displayText };
+    }
+    return { type:"consequence:"+c.id, level:"light", text:"這個限制還在陪著妳，最近感覺怎麼樣？" };
+  }
+
+  // 關心 2：陪妳在這一步走了一段路
+  var stageRhythm = CARE_RHYTHM_STAGE[pr.stage] || CARE_RHYTHM_STAGE.unknown;
+  var weeksOnStage = weeksSince(pr.createdAt);
+  var need = level==="deep" ? stageRhythm.deep : stageRhythm.light;
+  if (weeksOnStage >= need){
+    var lastStage = lastCareFire("stage:"+pr.stage, level);
+    if (!lastStage || weeksSince(lastStage.firedAt) >= need){
+      return level==="deep"
+        ? { type:"stage:"+pr.stage, level:"deep", text:"我們在『"+STAGE_LABEL[pr.stage]+"』這裡陪妳走了一段時間了——要不要一起回頭看看，現在的狀況怎麼樣？" }
+        : { type:"stage:"+pr.stage, level:"light", text:"還在『"+STAGE_LABEL[pr.stage]+"』這裡陪著妳呢。" };
+    }
+  }
+
+  // 關心 3：還記得這個嗎
+  var openAssumptions = profile.assumptions.filter(function(a){ return a.status==="open"; });
+  for (var j=0;j<openAssumptions.length;j++){
+    var a = openAssumptions[j];
+    var arhythm = CARE_RHYTHM_ASSUMPTION[a.relatedTo] || CARE_RHYTHM_ASSUMPTION.track;
+    var aneed = level==="deep" ? arhythm.deep : arhythm.light;
+    if (weeksSince(a.createdAt) < aneed) continue;
+    var lastA = lastCareFire("assumption:"+a.id, level);
+    if (lastA && weeksSince(lastA.firedAt) < aneed) continue;
+    return level==="deep"
+      ? { type:"assumption:"+a.id, level:"deep", text:"還記得這個嗎：『"+a.text+"』——最近有沒有觀察到什麼？" }
+      : { type:"assumption:"+a.id, level:"light", text:"那個假設還放在心上：『"+a.text+"』。" };
+  }
+  return null;
+}
+function getCareForToday(){
+  var deep = checkCare("deep");
+  if (deep) return deep;
+  return checkCare("light");
+}
+function logCareFire(care){
+  profile.careLog.push({ id: uid(), type:care.type, level:care.level, firedAt:new Date().toISOString(), dismissedAt:null });
+  saveProfile();
+}
+function sameDay(iso, d2){
+  if (!iso) return false;
+  var d1 = new Date(iso);
+  return d1.getFullYear()===d2.getFullYear() && d1.getMonth()===d2.getMonth() && d1.getDate()===d2.getDate();
+}
+var activeCare = null;
+function refreshCare(){
+  var care = getCareForToday();
+  if (care){
+    var already = profile.careLog.some(function(c){ return c.type===care.type && c.level===care.level && sameDay(c.firedAt, new Date()); });
+    if (!already) logCareFire(care);
+  }
+  activeCare = care;
+  renderCareUI();
+}
+function renderCareUI(){
+  var line = document.getElementById("careLine");
+  if (!line) return;
+  if (activeCare && activeCare.level==="deep"){
+    line.hidden = false;
+    line.textContent = "";
+    line.appendChild(document.createTextNode(activeCare.text + " "));
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "dismiss"; btn.textContent = "先不用";
+    btn.addEventListener("click", function(){ line.hidden = true; });
+    line.appendChild(btn);
+  } else {
+    line.hidden = true;
+  }
 }
 
 /* ---- 今天的一件事：題庫（沿用既有內容，改掛在 stage 上） ---- */
@@ -757,6 +950,7 @@ function goNext(){
   if (currentStep < TOTAL_STEPS){ currentStep++; showStep(); return; }
   profile.intake.answeredAt = new Date().toISOString();
   generatePrescription(profile, profile.intake.bottleneck);
+  refreshCare();
   renderFocal();
   saveProfile();
   setView("plan");
@@ -818,9 +1012,10 @@ function renderFocal(minutes){
   var doneBtn = document.getElementById("doneTaskButton");
   var statusEl = document.getElementById("focalStatus");
   doneBtn.textContent = item.status==="done" ? "已經存起來了 ✓" : "存起來，這件事做完了";
-  statusEl.textContent = item.status==="done"
+  var normalStatus = item.status==="done"
     ? "已經記下了。明天會重新安排，不會累積。"
     : "還沒開始也沒關係；明天會依當下狀況重新安排。";
+  statusEl.textContent = (activeCare && activeCare.level==="light") ? activeCare.text : normalStatus;
 
   document.getElementById("optionalText").textContent = item.optional;
   var nextTask = tasksForStage(pr.stage, minutes===60?30:60, profile.intake.situationSignal);
@@ -839,7 +1034,7 @@ function renderJudgment(){
   html += "<div class='arow'><b>目前先顧</b><p>"+esc(STAGE_LABEL[pr.stage])+"——這會決定今天安排的事與觀察的訊號。</p></div>";
   html += "<div class='arow'><b>投入路線</b><p>"+esc(pr.route.name+" · "+pr.route.note)+"</p></div>";
   currentConsequences().forEach(function(c){
-    html += "<div class='arow'><b>"+esc(confidenceTagLabel(c.confidence))+"</b><p>"+esc(c.text)+(c.recalibrateWhen?"<br><span style='color:var(--ink-quiet);font-size:12px'>"+esc(c.recalibrateWhen)+"</span>":"")+"</p></div>";
+    html += "<div class='arow'><b>"+esc(confidenceTagLabel(c.confidence))+"</b><p>"+esc(c.text)+(c.recalibrateTrigger?"<br><span style='color:var(--ink-quiet);font-size:12px'>"+esc(c.recalibrateTrigger.displayText)+"</span>":"")+"</p></div>";
   });
   var openAssumptions = profile.assumptions.filter(function(a){return a.status==="open"});
   if (openAssumptions.length){
@@ -871,6 +1066,7 @@ function applyAdjustment(){
   profile.adjustmentLog[profile.adjustmentLog.length-1].resultingPrescriptionId = pr.id;
   // 今天的一件事需要依新處方重排
   profile.focalItems = profile.focalItems.filter(function(f){ return f.date !== todayKey(); });
+  refreshCare();
   renderFocal(profile.lastMinutesChoice);
 
   var resultEl = document.getElementById("adjustmentResult");
@@ -896,6 +1092,8 @@ function hydrateReflection(){
   wrap.innerHTML = open.length ? "<label style='font-weight:700'>這些假設，這週有驗證到嗎？（選填）</label>" + open.map(function(a){
     return "<label style='display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;color:var(--ink-muted)'><input type='checkbox' data-assumption='"+a.id+"' style='margin-top:4px;accent-color:var(--accent)'> "+esc(a.text)+"</label>";
   }).join("") : "";
+  document.getElementById("circleShareRow").hidden = !profile.circle.code;
+  document.getElementById("shareToCircle").checked = false;
 }
 function saveReflection(){
   var checked = Array.prototype.slice.call(document.querySelectorAll("[data-assumption]:checked")).map(function(cb){return cb.dataset.assumption});
@@ -903,18 +1101,32 @@ function saveReflection(){
     var a = profile.assumptions.find(function(x){return x.id===id});
     if (a){ a.status="validated"; a.resolvedNote = document.getElementById("reviewLearning").value.trim(); }
   });
+  var conclusionText = document.getElementById("reviewLearning").value.trim();
   profile.weeklyReflections.push({
     profileId:"local", prescriptionId: profile.currentPrescriptionId, weekOf: todayKey(),
     didText: document.getElementById("reviewAction").value.trim(),
     signalText: document.getElementById("reviewSignal").value.trim(),
-    conclusionText: document.getElementById("reviewLearning").value.trim(),
+    conclusionText: conclusionText,
     nextFocus: document.getElementById("reviewNext").value.trim(),
     resolvedAssumptionIds: checked,
     askHelp: document.getElementById("reviewHelp").value.trim(),
     savedAt: new Date().toISOString()
   });
-  saveProfile(); hydrateReflection();
-  showToast("本週復盤已存起來");
+  saveProfile();
+
+  if (profile.circle.code && document.getElementById("shareToCircle").checked){
+    var type = document.getElementById("shareToCircleType").value;
+    var text = type==="reflection" ? conclusionText : (document.getElementById("reviewAction").value.trim() || conclusionText);
+    if (text){
+      CircleSync.postItem(profile.circle.code, { id: uid(), type:type, authorName: circleDisplayName(), text:text, at:new Date().toISOString(), comments:[] });
+      showToast("本週復盤已存起來，也分享到圈子了");
+    } else {
+      showToast("本週復盤已存起來");
+    }
+  } else {
+    showToast("本週復盤已存起來");
+  }
+  hydrateReflection();
 }
 function buildShareCard(){
   var pr = currentPrescription();
@@ -928,6 +1140,94 @@ function buildShareCard(){
     "這週的結論："+(last.conclusionText||"＿＿")+"\n"+
     "下週只驗證："+(last.nextFocus||"＿＿")+"\n\n"+
     "不比較誰跑得快，只交換真實經驗。";
+}
+
+/* ================= 陪伴圈：本機模擬版（之後可換 Supabase，介面不變） =================
+   CircleSync 是抽換層——現在用 localStorage 當共用空間（同一台裝置上可以模擬「我」跟
+   「朋友」互看），之後接 Supabase 只需要換掉這個物件內部的實作，呼叫方式不用改。 */
+var CircleSync = {
+  _key: function(code){ return "circle-space:" + code; },
+  getFeed: function(code){
+    try{ return JSON.parse(localStorage.getItem(this._key(code)) || "[]"); }catch(e){ return []; }
+  },
+  postItem: function(code, item){
+    var feed = this.getFeed(code);
+    feed.push(item);
+    try{ localStorage.setItem(this._key(code), JSON.stringify(feed)); }catch(e){}
+  },
+  postComment: function(code, itemId, comment){
+    var feed = this.getFeed(code);
+    var target = feed.find(function(f){ return f.id === itemId; });
+    if (target){
+      target.comments = target.comments || [];
+      target.comments.push(comment);
+      try{ localStorage.setItem(this._key(code), JSON.stringify(feed)); }catch(e){}
+    }
+  }
+};
+
+var SHARE_TYPE_LABEL = { reflection:"心得", milestone:"成果", stuck:"卡點" };
+
+function makeCircleCode(){
+  var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  var out = "";
+  for (var i=0;i<6;i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+
+function renderCircleDialog(){
+  var joined = document.getElementById("circleJoined");
+  var setup = document.getElementById("circleSetup");
+  if (!profile.circle.code){
+    setup.hidden = false; joined.hidden = true;
+    return;
+  }
+  setup.hidden = true; joined.hidden = false;
+  document.getElementById("circleCodeDisplay").textContent = profile.circle.code;
+  var feed = CircleSync.getFeed(profile.circle.code);
+  var wrap = document.getElementById("circleFeed");
+  wrap.innerHTML = "";
+  if (!feed.length){
+    var empty = document.createElement("p");
+    empty.style.cssText = "color:var(--ink-quiet);font-size:13px";
+    empty.textContent = "圈子裡還沒有人分享——把代碼給朋友，等她也加入這個圈子。";
+    wrap.appendChild(empty);
+    return;
+  }
+  feed.slice().reverse().forEach(function(item){
+    var row = document.createElement("div");
+    row.className = "arow";
+    var head = document.createElement("b");
+    head.textContent = item.authorName + " · " + SHARE_TYPE_LABEL[item.type];
+    var body = document.createElement("p");
+    body.textContent = item.text;
+    row.appendChild(head); row.appendChild(body);
+    (item.comments||[]).forEach(function(c){
+      var cp = document.createElement("p");
+      cp.style.cssText = "margin:6px 0 0;padding-left:12px;border-left:2px solid var(--glass-border);color:var(--ink-muted);font-size:12.5px";
+      cp.textContent = c.authorName + "：" + c.text;
+      row.appendChild(cp);
+    });
+    var replyRow = document.createElement("div");
+    replyRow.style.cssText = "display:flex;gap:8px;margin-top:8px";
+    var input = document.createElement("input");
+    input.type = "text"; input.placeholder = "回應一句話……"; input.style.cssText = "flex:1;padding:8px 10px;border-radius:10px";
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "btn-quiet"; btn.textContent = "送出";
+    btn.addEventListener("click", function(){
+      var text = input.value.trim();
+      if (!text) return;
+      CircleSync.postComment(profile.circle.code, item.id, { authorName: circleDisplayName(), text:text, at:new Date().toISOString() });
+      input.value = "";
+      renderCircleDialog();
+    });
+    replyRow.appendChild(input); replyRow.appendChild(btn);
+    row.appendChild(replyRow);
+    wrap.appendChild(row);
+  });
+}
+function circleDisplayName(){
+  return profile.circle.displayName || "一位朋友";
 }
 
 /* ================= AI 三種方式 ================= */
@@ -989,8 +1289,10 @@ function restoreProfile(){
     var parsed = JSON.parse(stored);
     if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) return false;
     profile = parsed;
+    profile.careLog = profile.careLog || [];
+    profile.circle = profile.circle || { code:null, memberCodes:[], displayName:"" };
     hydrateForm();
-    if (currentPrescription()){ renderFocal(profile.lastMinutesChoice); setView("plan"); return true; }
+    if (currentPrescription()){ refreshCare(); renderFocal(profile.lastMinutesChoice); setView("plan"); return true; }
     return false;
   }catch(e){ return false; }
 }
@@ -1077,6 +1379,34 @@ document.getElementById("viewReflectionButton").addEventListener("click", functi
 document.getElementById("reflectionForm").addEventListener("submit", function(e){ e.preventDefault(); saveReflection(); });
 document.getElementById("copyShareButton").addEventListener("click", function(){ copyText(buildShareCard(), "分享卡已複製"); });
 document.getElementById("nextPreviewLink").addEventListener("click", function(e){ e.preventDefault(); var m = profile.lastMinutesChoice===60?30:60; renderFocal(m); });
+
+document.getElementById("viewCircleButton").addEventListener("click", function(){ renderCircleDialog(); document.getElementById("circleDialog").showModal(); });
+document.getElementById("createCircleButton").addEventListener("click", function(){
+  var name = document.getElementById("circleNameInput").value.trim();
+  if (!name){ showToast("先留個名字，圈子裡的人才知道是誰。"); return; }
+  profile.circle.code = makeCircleCode();
+  profile.circle.displayName = name;
+  saveProfile();
+  renderCircleDialog();
+  showToast("圈子建立好了，把代碼給朋友吧");
+});
+document.getElementById("joinCircleButton").addEventListener("click", function(){
+  var name = document.getElementById("circleNameInput").value.trim();
+  var code = document.getElementById("joinCodeInput").value.trim().toUpperCase();
+  if (!name){ showToast("先留個名字，圈子裡的人才知道是誰。"); return; }
+  if (!code){ showToast("輸入朋友給的代碼。"); return; }
+  profile.circle.code = code;
+  profile.circle.displayName = name;
+  saveProfile();
+  renderCircleDialog();
+  showToast("已加入圈子");
+});
+document.getElementById("leaveCircleButton").addEventListener("click", function(){
+  profile.circle = { code:null, memberCodes:[], displayName:"" };
+  saveProfile();
+  renderCircleDialog();
+  showToast("已離開圈子；之前分享的內容還在圈子裡，不會被收回");
+});
 
 document.querySelectorAll("[data-method]").forEach(function(b){ b.addEventListener("click", function(){ renderMethod(b.dataset.method); }); });
 
