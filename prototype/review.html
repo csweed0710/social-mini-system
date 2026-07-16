@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="一個照你的現況安排下一步的私人社群工作台。">
+  <meta name="theme-color" content="#f4f2ec">
+  <title>社群小系統 2.0｜單檔預覽</title>
+  <style>
+/* Visual system v5 — midnight companion studio */
+:root {
+  color-scheme: dark;
+  --cream: #0f1815;
+  --paper: #18241f;
+  --ink: #f2efe6;
+  --muted: #a8b2ac;
+  --line: rgba(226, 239, 231, .12);
+  --violet: #8dd4af;
+  --violet-deep: #b1e4c8;
+  --violet-soft: rgba(141, 212, 175, .12);
+  --sky: #1d332b;
+  --sky-strong: #75b99a;
+  --mint: #233a31;
+  --mint-strong: #8dd4af;
+  --peach: #342f27;
+  --coral: #d49a78;
+  --sun: #d8c69f;
+  --rose: #3b2e31;
+  --danger: #ef9b8e;
+  --shadow: 0 30px 80px rgba(0, 0, 0, .3), 0 5px 18px rgba(0, 0, 0, .18);
+  --shadow-small: 0 14px 38px rgba(0, 0, 0, .22);
+  --max: 1220px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255, 226, 118, .25), transparent 27rem),
+    radial-gradient(circle at 94% 12%, rgba(223, 241, 255, .8), transparent 34rem),
+    var(--cream);
+  font-family: "Avenir Next", Inter, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .34;
+  background-image: radial-gradient(rgba(36, 50, 47, .11) .6px, transparent .6px);
+  background-size: 14px 14px;
+  mask-image: linear-gradient(to bottom, #000, transparent 78%);
+}
+button, textarea, input { font: inherit; }
+button { min-height: 44px; }
+button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid rgba(103, 92, 231, .25); outline-offset: 3px; }
+[hidden] { display: none !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+.topbar {
+  width: min(calc(100% - 40px), var(--max));
+  min-height: 82px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+.brand { display: inline-flex; width: max-content; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; }
+.brand-mark { width: 39px; height: 39px; display: grid; place-items: center; color: #fff; background: var(--violet); border-radius: 12px 12px 12px 4px; box-shadow: 4px 4px 0 var(--sun); font-size: 13px; font-weight: 900; }
+.brand-copy { display: grid; line-height: 1.05; }
+.brand-copy b { font-size: 14px; letter-spacing: .04em; }
+.brand-copy small { margin-top: 5px; color: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .16em; }
+.topbar-note { margin: 0; color: var(--muted); font-size: 11px; letter-spacing: .04em; }
+.topbar > .text-button { justify-self: end; }
+main { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; }
+h1, h2, h3, p { text-wrap: pretty; }
+h1, h2, h3 { margin-top: 0; line-height: 1.18; }
+.lead { color: var(--muted); }
+
+.eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 17px; color: var(--violet-deep); font-size: 10px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.eyebrow > span { padding: 5px 9px; color: var(--ink); background: var(--sun); border-radius: 7px; letter-spacing: .08em; }
+
+.primary-button, .secondary-button, .danger-button, .quiet-button, .text-button, .back-button { border: 0; cursor: pointer; transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease, border-color 150ms ease; }
+.primary-button { padding: 12px 21px; color: #fff; background: var(--violet); border-radius: 12px; box-shadow: 0 9px 24px rgba(103,92,231,.22); font-weight: 850; }
+.primary-button:hover { background: var(--violet-deep); transform: translateY(-2px); box-shadow: 0 13px 28px rgba(103,92,231,.25); }
+.primary-button i { margin-left: 12px; font-style: normal; }
+.primary-button.large { min-width: 232px; padding: 16px 24px; }
+.secondary-button { padding: 11px 18px; color: var(--violet-deep); background: #fff; border: 1px solid rgba(73,63,183,.28); border-radius: 11px; font-weight: 800; }
+.secondary-button:hover { background: var(--violet-soft); }
+.danger-button { padding: 11px 18px; color: var(--danger); background: #fbe5e1; border-radius: 11px; font-weight: 800; }
+.quiet-button, .text-button { padding: 9px 5px; color: var(--muted); background: transparent; text-decoration: underline; text-decoration-color: rgba(104,115,111,.35); text-underline-offset: 5px; }
+.quiet-button { display: block; margin-top: 8px; }
+.quiet-button.inline { display: inline-flex; margin: 0; }
+.text-button { color: var(--violet-deep); font-weight: 800; }
+.back-button { width: 46px; height: 46px; padding: 0; color: var(--violet-deep); background: #fff; border: 1px solid var(--line); border-radius: 50%; box-shadow: var(--shadow-small); font-size: 18px; }
+
+/* Opening composition */
+.welcome { min-height: calc(100vh - 82px); display: grid; grid-template-columns: minmax(0, .93fr) minmax(480px, 1.07fr); align-items: center; gap: clamp(54px, 7vw, 94px); padding: 58px 0 80px; }
+.welcome-intro { max-width: 650px; position: relative; z-index: 2; }
+.welcome-intro h1 { margin-bottom: 27px; font-size: clamp(3.25rem, 6vw, 5.65rem); font-weight: 900; line-height: 1.03; letter-spacing: -.062em; }
+.welcome-intro h1 em { display: inline; color: var(--violet); font-style: normal; box-shadow: inset 0 -.16em 0 var(--sun); }
+.welcome-intro .lead { max-width: 590px; margin: 0 0 31px; font-size: 16px; line-height: 1.9; }
+.welcome-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; }
+.welcome-actions .quiet-button { margin: 0; }
+
+.studio-canvas { min-height: 570px; position: relative; overflow: hidden; padding: 22px; background: rgba(255,255,255,.8); border: 1px solid rgba(36,50,47,.09); border-radius: 38px 38px 38px 12px; box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+.studio-canvas::before { content: ""; position: absolute; width: 230px; height: 230px; right: -70px; top: -60px; border-radius: 50%; background: var(--sky); }
+.studio-canvas::after { content: ""; position: absolute; width: 130px; height: 130px; left: -55px; bottom: 45px; border-radius: 50%; background: var(--peach); }
+.canvas-title { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 14px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .13em; }
+.canvas-title b { display: flex; align-items: center; gap: 7px; padding: 7px 10px; color: #216654; background: var(--mint); border-radius: 999px; letter-spacing: .04em; }
+.canvas-title b i { width: 7px; height: 7px; border-radius: 50%; background: var(--mint-strong); box-shadow: 0 0 0 4px rgba(42,155,127,.12); }
+.growth-scene { width: 100%; height: 415px; position: relative; z-index: 1; display: block; overflow: visible; }
+.canvas-message { position: absolute; z-index: 3; left: 50%; bottom: 64px; width: 64%; transform: translateX(-50%); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 12px; padding: 13px 15px; background: rgba(255,255,255,.94); border: 1px solid var(--line); border-radius: 15px; box-shadow: var(--shadow-small); }
+.canvas-message span { padding: 7px 9px; color: #fff; background: var(--violet); border-radius: 8px; font-size: 9px; font-weight: 900; }
+.canvas-message p { margin: 0; font-size: 11px; line-height: 1.55; }
+.member-tags { position: absolute; z-index: 4; left: 22px; right: 22px; bottom: 17px; display: flex; justify-content: center; gap: 10px; color: var(--muted); font-size: 9px; }
+.member-tags span { display: flex; align-items: center; gap: 5px; }.member-tags i { width: 6px; height: 6px; border-radius: 50%; background: var(--violet); }.member-tags span:nth-child(2) i { background: var(--mint-strong); }.member-tags span:nth-child(3) i { background: var(--coral); }
+
+.operating-rules { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); margin-top: -22px; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-small); }
+.operating-rules > div { min-height: 92px; display: grid; align-content: center; padding: 17px 22px; border-right: 1px solid var(--line); }
+.operating-rules > div:last-child { border-right: 0; }.operating-rules span { color: var(--violet-deep); font-size: 9px; font-weight: 900; letter-spacing: .12em; }.operating-rules b { margin-top: 4px; font-size: 13px; }
+
+/* Onboarding workspace */
+.onboarding { min-height: calc(100vh - 82px); display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: clamp(42px, 6vw, 78px); padding: 44px 0 84px; }
+.context-rail { min-height: 690px; padding: 29px; color: #fff; background: linear-gradient(155deg, #6257df, #493fb7); border-radius: 28px 28px 28px 9px; box-shadow: 0 24px 60px rgba(73,63,183,.2); }
+.rail-head { display: grid; gap: 4px; padding-bottom: 21px; border-bottom: 1px solid rgba(255,255,255,.2); }.rail-head span { color: #d7d3ff; font-size: 10px; }.rail-head b { font-size: 14px; }
+.context-rail ol { display: grid; gap: 2px; margin: 26px 0; padding: 0; list-style: none; }.context-rail li { display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 10px; min-height: 56px; color: #c3beef; font-size: 12px; }.context-rail li i { width: 27px; height: 27px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.28); border-radius: 50%; font-size: 9px; font-style: normal; }.context-rail li[aria-current="step"] { color: #fff; font-weight: 850; }.context-rail li[aria-current="step"] i { color: var(--ink); background: var(--sun); border-color: var(--sun); box-shadow: 0 0 0 5px rgba(255,226,118,.12); }
+.rail-note { display: grid; grid-template-columns: 26px 1fr; gap: 8px; margin-top: 38px; padding: 16px; color: var(--ink); background: var(--sun); border-radius: 13px 13px 13px 4px; }.rail-note p { margin: 0; font-size: 11px; line-height: 1.55; }
+.question-workspace { max-width: 860px; padding: 26px 0; }.step-meta { display: grid; grid-template-columns: 46px 1fr; gap: 16px; align-items: center; margin-bottom: 27px; }.step-track { height: 5px; overflow: hidden; background: #e4e1db; border-radius: 999px; }.step-track i { display: block; width: 20%; height: 100%; background: linear-gradient(90deg, var(--violet), #8b83f2); border-radius: inherit; transition: width 220ms ease; }
+.advisor-presence { display: flex; align-items: baseline; gap: 13px; margin-bottom: 35px; padding: 12px 15px; background: var(--mint); border-radius: 12px; }.advisor-presence > span { flex: 0 0 auto; color: #23735f; font-size: 9px; font-weight: 900; letter-spacing: .08em; }.advisor-presence p { margin: 0; color: #4a625b; font-size: 12px; }.advisor-presence b { color: var(--ink); }
+.question-step { min-height: 480px; animation: enter 230ms ease; }.question-step h2 { max-width: 760px; margin-bottom: 12px; font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 900; line-height: 1.1; letter-spacing: -.052em; }.question-help { max-width: 650px; margin: 0 0 27px; color: var(--muted); }
+textarea { width: 100%; resize: vertical; padding: 18px 19px; color: var(--ink); background: rgba(255,255,255,.82); border: 1px solid var(--line); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.7); line-height: 1.65; }textarea::placeholder { color: #9a9f9d; }textarea:focus { border-color: var(--violet); outline: 0; box-shadow: 0 0 0 5px rgba(103,92,231,.08); }
+.suggestion-row, .segmented, .mini-choice, .time-switcher { display: flex; flex-wrap: wrap; gap: 8px; }.suggestion-row { margin-top: 13px; }.choice-chip, .segmented button, .mini-choice button, .time-switcher button { padding: 8px 13px; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 9px; cursor: pointer; }.choice-chip:hover, .segmented button:hover, .mini-choice button:hover, .time-switcher button:hover { color: var(--violet-deep); border-color: rgba(103,92,231,.45); }button[aria-pressed="true"] { color: var(--violet-deep); background: var(--violet-soft); border-color: var(--violet); box-shadow: 0 4px 14px rgba(103,92,231,.1); }
+.choice-list, .choice-grid { display: grid; gap: 10px; }.choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.choice-card { width: 100%; min-height: 82px; display: grid; grid-template-columns: 34px 1fr; align-content: center; gap: 1px 10px; padding: 14px 16px; text-align: left; color: var(--ink); background: rgba(255,255,255,.78); border: 1px solid var(--line); border-radius: 13px; cursor: pointer; transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease; }.choice-card i { grid-row: 1 / span 2; width: 25px; height: 25px; display: grid; place-items: center; color: var(--violet-deep); background: var(--violet-soft); border-radius: 8px; font-size: 8px; font-style: normal; }.choice-card b { font-size: 13px; }.choice-card span { color: var(--muted); font-size: 11px; }.choice-card:hover { transform: translateY(-2px); border-color: rgba(103,92,231,.35); box-shadow: var(--shadow-small); }.choice-card[aria-pressed="true"] { color: var(--ink); background: var(--violet-soft); border-color: var(--violet); box-shadow: inset 4px 0 0 var(--violet), var(--shadow-small); }.choice-card.gentle { background: var(--mint); }.choice-card.compact { min-height: 93px; }
+.choice-block { padding: 0; margin: 0 0 27px; border: 0; }.choice-block legend { margin-bottom: 12px; font-weight: 850; }.choice-block legend span { margin-right: 10px; color: var(--violet); font-size: 9px; }.preference-list { display: grid; gap: 11px; }.preference-row { display: grid; grid-template-columns: minmax(180px, 1fr) auto; gap: 11px 18px; align-items: center; padding: 17px; background: rgba(255,255,255,.76); border: 1px solid var(--line); border-radius: 13px; }.preference-row > div:first-child { display: grid; gap: 2px; }.preference-row span { color: var(--muted); font-size: 11px; }.lock-choice { grid-column: 1 / -1; color: var(--muted); font-size: 10px; }.lock-choice input { width: 16px; height: 16px; vertical-align: -3px; accent-color: var(--violet); }.form-actions { display: flex; justify-content: flex-end; margin-top: 28px; }.field-error { color: var(--danger); font-size: 11px; }
+.route-block { padding: 18px; background: var(--sky); border-radius: 14px; }
+.route-input-row { display: grid; grid-template-columns: auto 120px 1fr; gap: 12px; align-items: center; }
+.route-input-row label { font-size: 12px; font-weight: 850; }
+.route-input-row input, .calibration-grid input { min-height: 44px; padding: 9px 12px; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 10px; }
+.route-input-row output { color: #285f79; font-size: 12px; font-weight: 850; }
+.route-help { margin: 10px 0 0; color: var(--muted); font-size: 10px; }
+.calibration-details { margin: -10px 0 27px; padding: 14px 16px; background: rgba(255,255,255,.7); border: 1px solid var(--line); border-radius: 12px; }
+.calibration-details summary { cursor: pointer; color: var(--violet-deep); font-size: 12px; font-weight: 850; }
+.calibration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.calibration-grid label { display: grid; gap: 5px; color: var(--muted); font-size: 10px; }
+.calibration-grid .wide { grid-column: 1 / -1; }
+
+/* Personal plan */
+.plan-view { padding: 54px 0 100px; }.plan-header { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 38px; margin-bottom: 28px; }.plan-header h1 { margin-bottom: 16px; font-size: clamp(3rem, 5.5vw, 5rem); font-weight: 900; line-height: 1.03; letter-spacing: -.06em; }.plan-header .lead { max-width: 760px; margin: 0; }.plan-grid { display: grid; grid-template-columns: minmax(0, 1.38fr) minmax(300px, .7fr); gap: 20px; }
+.plan-header-actions { display: grid; justify-items: end; gap: 10px; }
+.route-badge { padding: 7px 11px; color: #246650; background: var(--mint); border-radius: 999px; font-size: 10px; font-weight: 850; }
+.today-card { position: relative; overflow: hidden; padding: clamp(30px, 5vw, 52px); color: #fff; background: linear-gradient(145deg, #655ae0 0%, #4b42b9 100%); border-radius: 26px 26px 26px 8px; box-shadow: 0 28px 70px rgba(73,63,183,.23); }.today-card::after { content: ""; position: absolute; width: 280px; height: 280px; right: -105px; top: -130px; border: 50px solid rgba(255,255,255,.055); border-radius: 50%; }.card-label { display: flex; justify-content: space-between; color: #fce786; font-size: 9px; font-weight: 900; letter-spacing: .12em; }.today-card h2 { position: relative; z-index: 1; max-width: 680px; margin: 31px 0 19px; font-size: clamp(2.2rem, 4vw, 3.9rem); line-height: 1.09; letter-spacing: -.048em; }.today-card > p { max-width: 630px; color: #d9d6ff; }.time-switcher { align-items: center; margin: 25px 0; color: #ccc8f6; font-size: 11px; }.time-switcher button { min-height: 36px; padding: 5px 10px; color: #fff; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); }.today-card .time-switcher button[aria-pressed="true"] { color: var(--ink); background: var(--sun); border-color: var(--sun); }.task-why { max-width: 660px; padding: 16px 18px; background: rgba(255,255,255,.1); border-radius: 13px; }.task-why p { margin: 4px 0 0; color: #dedbff; }.task-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 17px; margin-top: 24px; }.today-card .primary-button { color: var(--violet-deep); background: var(--sun); box-shadow: none; }.today-card .quiet-button { color: #eeecff; text-decoration-color: rgba(255,255,255,.3); }.optional-task { margin-top: 20px; color: #d7d4f8; }.optional-task summary { color: #f8e485; cursor: pointer; font-weight: 800; }
+.task-done-button { padding: 10px 15px; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,.32); border-radius: 11px; cursor: pointer; font-weight: 800; }
+.task-done-button[aria-pressed="true"] { color: #174d3d; background: var(--mint); border-color: var(--mint); }
+.task-status { margin: 8px 0 0; color: #d9d6ff!important; font-size: 10px; }
+.decision-column { display: grid; gap: 20px; }.decision-block { padding: 27px; background: rgba(255,255,255,.86); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow-small); }.decision-block h3 { font-size: 21px; }.decision-block > p:not(.card-kicker) { color: var(--muted); font-size: 12px; }.card-kicker { margin: 0 0 10px; color: var(--violet-deep); font-size: 9px; font-weight: 900; letter-spacing: .1em; }.consequence-card { background: var(--peach); }.consequence-item { padding: 10px 0; border-bottom: 1px solid rgba(36,50,47,.12); }.consequence-item:last-child { border-bottom: 0; }.consequence-item b { display: block; font-size: 10px; }.consequence-item p { margin: 3px 0 0; color: #685245; font-size: 11px; }
+.adjust-section { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(48px,8vw,105px); margin-top: 22px; padding: clamp(30px,5vw,50px); background: rgba(255,255,255,.72); border: 1px solid var(--line); border-radius: 22px; }.adjust-section h2 { max-width: 520px; font-size: clamp(2rem,3.4vw,3.25rem); letter-spacing: -.04em; }.adjust-section p { color: var(--muted); }.adjust-box { display: grid; align-content: center; gap: 13px; }.adjust-box .primary-button { justify-self: end; }.adjustment-result { margin: 0; padding: 13px; color: var(--violet-deep)!important; background: var(--violet-soft); border-radius: 10px; }
+.share-section { display: grid; grid-template-columns: 96px 1fr auto; align-items: center; gap: 29px; margin-top: 22px; padding: 32px; color: var(--ink); background: var(--mint); border-radius: 22px 22px 22px 7px; }.share-index { align-self: stretch; display: grid; place-items: center; color: #24735f; border-right: 1px solid rgba(36,50,47,.14); font-size: 8px; font-weight: 900; letter-spacing: .12em; writing-mode: vertical-rl; }.share-section h2 { margin: 0; font-size: clamp(1.5rem,2.8vw,2.4rem); letter-spacing: -.035em; }.share-section .eyebrow { margin-bottom: 8px; }
+.share-section { grid-template-columns: 76px minmax(240px,.72fr) minmax(360px,1.28fr); align-items: start; }
+.review-copy > p:last-child { color: #4f6f65; font-size: 11px; }
+.review-form { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.review-form label { display: grid; gap: 4px; color: #37685a; font-size: 10px; font-weight: 850; }
+.review-form textarea { min-height: 76px; padding: 11px 12px; background: rgba(255,255,255,.86); border-radius: 10px; font-size: 12px; }
+.review-form .wide, .review-actions, .review-status { grid-column: 1 / -1; }
+.review-actions { display: flex; flex-wrap: wrap; gap: 9px; justify-content: flex-end; }
+.review-status { margin: 0; color: #416e61; font-size: 10px; }
+
+dialog { border: 0; }.dialog-card { width: min(calc(100% - 32px), 720px); max-height: calc(100vh - 40px); overflow: auto; padding: 31px; color: var(--ink); background: #fff; border-radius: 23px 23px 23px 7px; box-shadow: 0 26px 80px rgba(36,50,47,.25); }.dialog-card::backdrop { background: rgba(34,39,47,.52); backdrop-filter: blur(4px); }.dialog-close { float: right; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--violet-soft); cursor: pointer; font-size: 21px; }.dialog-card h2 { font-size: 2rem; }.small-dialog { max-width: 520px; }.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }.analysis-list { display: grid; gap: 11px; margin-top: 20px; }.analysis-row { padding: 15px; background: var(--cream); border: 1px solid var(--line); border-radius: 11px; }.analysis-row b { display: block; margin-bottom: 3px; color: var(--violet-deep); }.analysis-row p { margin: 0; color: var(--muted); }.ai-methods { display: grid; gap: 9px; margin: 22px 0; }.method-card { display: grid; grid-template-columns: 34px 1fr; gap: 2px 10px; width: 100%; min-height: 78px; align-content: center; padding: 14px; text-align: left; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; }.method-card:hover { border-color: rgba(103,92,231,.45); background: var(--violet-soft); }.method-card i { grid-row: 1 / span 2; color: var(--violet); font-size: 9px; font-style: normal; }.method-card span { color: var(--muted); font-size: 11px; }.method-output { padding: 18px; background: var(--sky); border-radius: 13px; }.method-output textarea { margin: 10px 0; background: rgba(255,255,255,.8); }.method-output .output-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px; }.toast { position: fixed; z-index: 50; left: 50%; bottom: 24px; transform: translateX(-50%); max-width: calc(100% - 32px); padding: 11px 17px; color: #fff; background: var(--ink); border-radius: 10px; box-shadow: var(--shadow); font-size: 12px; }
+@keyframes enter { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 980px) { .welcome { grid-template-columns: minmax(0,.9fr) minmax(420px,1.1fr); gap: 38px; }.studio-canvas { min-height: 535px; }.operating-rules { grid-template-columns: repeat(2,1fr); }.operating-rules > div:nth-child(2) { border-right: 0; }.operating-rules > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }.onboarding { grid-template-columns: 230px minmax(0,1fr); gap: 34px; }.plan-grid { grid-template-columns: 1fr; }.decision-column { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 760px) { .topbar { grid-template-columns: 1fr auto; }.topbar-note { display: none; }.welcome { grid-template-columns: 1fr; }.welcome-intro { max-width: 720px; }.studio-canvas { width: min(100%,580px); margin: 0 auto; }.onboarding { grid-template-columns: 1fr; }.context-rail { min-height: auto; padding: 20px; }.context-rail ol { grid-template-columns: repeat(5,1fr); margin: 15px 0 0; }.context-rail li { grid-template-columns: 1fr; min-height: 35px; justify-items: center; }.context-rail li span, .rail-note { display: none; }.question-workspace { padding-top: 0; }.adjust-section { grid-template-columns: 1fr; gap: 24px; } }
+@media (max-width: 620px) { body { font-size: 15px; }.topbar, main { width: min(calc(100% - 28px),var(--max)); }.topbar { min-height: 68px; }.brand-copy small { display: none; }.welcome { min-height: auto; padding: 40px 0 60px; }.welcome-intro h1 { font-size: clamp(2.8rem,14vw,4.15rem); }.studio-canvas { min-height: 465px; padding: 16px; border-radius: 26px 26px 26px 9px; }.canvas-title > span { display: none; }.growth-scene { height: 350px; }.canvas-message { width: 82%; bottom: 52px; }.operating-rules { grid-template-columns: 1fr; margin-top: 28px; }.operating-rules > div { min-height: 75px; border-right: 0; border-bottom: 1px solid var(--line); }.operating-rules > div:last-child { border-bottom: 0; }.onboarding { padding-top: 25px; }.question-step { min-height: 430px; }.question-step h2 { font-size: clamp(2.25rem,11.8vw,3.35rem); }.advisor-presence { display: block; }.advisor-presence > span { display: block; margin-bottom: 4px; }.choice-grid { grid-template-columns: 1fr; }.preference-row { grid-template-columns: 1fr; }.lock-choice { grid-column: auto; }.mini-choice button { flex: 1 1 72px; }.form-actions .primary-button { width: 100%; }.plan-view { padding-top: 38px; }.plan-header { grid-template-columns: 1fr; align-items: start; }.plan-header h1 { font-size: clamp(2.75rem,13vw,4.1rem); }.plan-header .secondary-button { justify-self: start; }.decision-column { grid-template-columns: 1fr; }.adjust-section { padding: 25px 19px; }.share-section { grid-template-columns: 1fr; padding: 25px; }.share-index { display: none; }.share-section .secondary-button { justify-self: start; }.dialog-card { padding: 24px 19px; } }
+
+@media (max-width: 980px) {
+  .share-section { grid-template-columns: 64px 1fr; }
+  .review-form { grid-column: 2; }
+}
+
+@media (max-width: 620px) {
+  .route-input-row, .calibration-grid { grid-template-columns: 1fr; }
+  .calibration-grid .wide { grid-column: auto; }
+  .plan-header-actions { justify-items: start; }
+  .review-form { grid-column: auto; grid-template-columns: 1fr; }
+  .review-form .wide, .review-actions, .review-status { grid-column: auto; }
+}
+
+/* Visual system v5 — midnight companion studio
+   Reference qualities: deep pine canvas, frosted green surfaces, mint guidance,
+   literary Traditional Chinese typography, and quiet architectural symbols. */
+body {
+  background:
+    radial-gradient(circle at 84% 8%, rgba(172, 157, 117, .14), transparent 28rem),
+    radial-gradient(circle at 5% 34%, rgba(88, 150, 120, .12), transparent 34rem),
+    var(--cream);
+}
+body::before {
+  opacity: .2;
+  background-image: radial-gradient(rgba(229, 237, 231, .13) .55px, transparent .55px);
+  mask-image: linear-gradient(to bottom, #000, transparent 86%);
+}
+
+.topbar {
+  min-height: 88px;
+  border-bottom: 1px solid var(--line);
+}
+.brand-mark {
+  color: #102019;
+  background: var(--violet);
+  border-radius: 50% 50% 50% 10px;
+  box-shadow: none;
+}
+.brand-copy small, .topbar-note { color: #829189; }
+.topbar .text-button { color: var(--muted); }
+.eyebrow { color: var(--violet); }
+.eyebrow > span { color: #102019; background: var(--violet); }
+
+.primary-button {
+  color: #102019;
+  background: var(--violet);
+  box-shadow: 0 10px 28px rgba(87, 158, 124, .2);
+}
+.primary-button:hover { color: #09120f; background: #a5dfc0; box-shadow: 0 14px 32px rgba(87, 158, 124, .25); }
+.secondary-button { color: var(--ink); background: #1c2a25; border-color: rgba(173, 219, 195, .25); }
+.secondary-button:hover { background: #263a32; }
+.quiet-button, .text-button { color: var(--muted); text-decoration-color: rgba(180, 203, 190, .28); }
+.text-button { color: var(--violet-deep); }
+.back-button { color: var(--violet); background: #192720; border-color: var(--line); }
+
+.welcome { min-height: calc(100vh - 88px); padding-top: 72px; }
+.welcome-intro h1,
+.question-step h2,
+.plan-header h1,
+.today-card h2,
+.adjust-section h2,
+.share-section h2,
+.dialog-card h2 {
+  font-family: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  font-weight: 700;
+}
+.welcome-intro h1 { max-width: 720px; font-size: clamp(3.15rem, 6vw, 5.5rem); letter-spacing: -.045em; }
+.welcome-intro h1 em { color: var(--violet); box-shadow: none; }
+.welcome-intro .lead { color: #abb5af; }
+
+.studio-canvas {
+  min-height: 560px;
+  background: linear-gradient(155deg, rgba(34, 51, 43, .9), rgba(18, 30, 25, .78));
+  border-color: rgba(173, 219, 195, .14);
+  border-radius: 30px 30px 30px 8px;
+  backdrop-filter: blur(18px);
+}
+.studio-canvas::before { width: 260px; height: 260px; right: -74px; top: -94px; background: rgba(216, 198, 159, .09); }
+.studio-canvas::after { width: 170px; height: 170px; left: -75px; bottom: 20px; background: rgba(75, 124, 101, .11); }
+.canvas-title { color: #8f9d96; }
+.canvas-title b { color: #b8e3cd; background: rgba(141, 212, 175, .1); border: 1px solid rgba(141, 212, 175, .12); }
+.canvas-title b i { background: var(--violet); box-shadow: 0 0 0 4px rgba(141, 212, 175, .1); }
+.growth-scene { height: 420px; }
+.scene-moon { fill: rgba(216, 198, 159, .17); }
+.scene-route { fill: none; stroke: rgba(159, 209, 183, .32); stroke-width: 2; stroke-dasharray: 7 11; }
+.scene-arch { fill: url(#archFade); opacity: .88; }
+.scene-window { fill: #17251f; }
+.scene-stairs rect { fill: #526b60; opacity: .85; }
+.scene-signals circle { fill: var(--violet); stroke: #1b2a24; stroke-width: 5; }
+.canvas-message { bottom: 62px; background: rgba(20, 32, 27, .92); border-color: rgba(173, 219, 195, .15); }
+.canvas-message span { color: #102019; background: var(--violet); }
+.canvas-message p { color: #dce5df; }
+.member-tags { color: #8c9b93; }
+.member-tags i, .member-tags span:nth-child(2) i, .member-tags span:nth-child(3) i { background: var(--violet); }
+.member-tags span:nth-child(2) i { opacity: .7; }
+.member-tags span:nth-child(3) i { opacity: .45; }
+
+.operating-rules { background: rgba(27, 42, 35, .88); border-color: var(--line); }
+.operating-rules span { color: var(--violet); }
+.operating-rules b { color: #dde6e0; }
+
+.context-rail {
+  color: var(--ink);
+  background: linear-gradient(160deg, #22352d, #15231d);
+  border: 1px solid rgba(173, 219, 195, .14);
+  box-shadow: var(--shadow);
+}
+.rail-head span, .context-rail li { color: #8fa098; }
+.context-rail li[aria-current="step"] { color: var(--ink); }
+.context-rail li[aria-current="step"] i { color: #102019; background: var(--violet); border-color: var(--violet); box-shadow: 0 0 0 5px rgba(141, 212, 175, .1); }
+.rail-note { color: #dce5df; background: rgba(141, 212, 175, .1); border: 1px solid rgba(141, 212, 175, .14); }
+.advisor-presence { background: rgba(141, 212, 175, .1); border: 1px solid rgba(141, 212, 175, .1); }
+.advisor-presence > span { color: var(--violet); }
+.advisor-presence p { color: #aab8b0; }
+.advisor-presence b { color: var(--ink); }
+.step-track { background: #26342e; }
+.step-track i { background: linear-gradient(90deg, #5da980, var(--violet)); }
+
+textarea,
+.route-input-row input,
+.calibration-grid input {
+  color: var(--ink);
+  background: rgba(26, 40, 34, .9);
+  border-color: var(--line);
+  box-shadow: none;
+}
+textarea::placeholder, input::placeholder { color: #6f7d76; }
+textarea:focus { border-color: var(--violet); box-shadow: 0 0 0 4px rgba(141, 212, 175, .08); }
+.choice-chip, .segmented button, .mini-choice button, .time-switcher button { color: var(--muted); background: #192720; border-color: var(--line); }
+.choice-chip:hover, .segmented button:hover, .mini-choice button:hover, .time-switcher button:hover { color: var(--violet-deep); border-color: rgba(141, 212, 175, .42); }
+button[aria-pressed="true"] { color: var(--violet-deep); background: rgba(141, 212, 175, .12); border-color: var(--violet); box-shadow: none; }
+.choice-card, .preference-row { color: var(--ink); background: rgba(26, 40, 34, .84); border-color: var(--line); }
+.choice-card i { color: var(--violet); background: rgba(141, 212, 175, .1); }
+.choice-card span, .preference-row span { color: var(--muted); }
+.choice-card:hover { border-color: rgba(141, 212, 175, .34); box-shadow: var(--shadow-small); }
+.choice-card[aria-pressed="true"] { color: var(--ink); background: #22382e; border-color: var(--violet); box-shadow: inset 4px 0 0 var(--violet), var(--shadow-small); }
+.choice-card.gentle { background: #202f29; }
+.route-block { background: #1b3028; border: 1px solid rgba(141, 212, 175, .12); }
+.route-input-row output { color: var(--violet-deep); }
+.calibration-details { background: rgba(24, 36, 31, .75); }
+.calibration-details summary { color: var(--violet-deep); }
+
+.route-badge { color: #b8e3cd; background: #21372e; border: 1px solid rgba(141, 212, 175, .14); }
+.today-card {
+  background:
+    radial-gradient(circle at 96% 0, rgba(216, 198, 159, .12), transparent 18rem),
+    linear-gradient(145deg, #20362d, #172720);
+  border: 1px solid rgba(141, 212, 175, .16);
+  box-shadow: var(--shadow);
+}
+.today-card::after { border-color: rgba(141, 212, 175, .04); }
+.card-label { color: var(--violet); }
+.today-card > p, .task-why p, .task-status { color: #b4c1ba!important; }
+.today-card .time-switcher button[aria-pressed="true"], .today-card .primary-button { color: #102019; background: var(--violet); border-color: var(--violet); }
+.task-why { background: rgba(141, 212, 175, .08); border: 1px solid rgba(141, 212, 175, .08); }
+.optional-task, .optional-task summary { color: #a9cfbc; }
+.decision-block, .adjust-section { background: rgba(25, 39, 33, .88); border-color: var(--line); }
+.decision-block > p:not(.card-kicker), .adjust-section p { color: var(--muted); }
+.card-kicker { color: var(--violet); }
+.consequence-card { background: #302d26; }
+.consequence-item p { color: #c7bfb0; }
+.adjustment-result { color: var(--violet-deep)!important; background: rgba(141, 212, 175, .1); }
+
+.share-section { background: #1d322a; border: 1px solid rgba(141, 212, 175, .12); }
+.share-index, .review-copy > p:last-child, .review-form label, .review-status { color: #9fc8b4; }
+.review-form textarea { color: var(--ink); background: #16251f; }
+
+.dialog-card { color: var(--ink); background: #182720; border: 1px solid var(--line); }
+.dialog-close { color: var(--ink); background: #23372e; }
+.analysis-row { background: #111c18; border-color: var(--line); }
+.analysis-row b { color: var(--violet); }
+.analysis-row p { color: var(--muted); }
+.method-card { color: var(--ink); background: #1b2b24; border-color: var(--line); }
+.method-card:hover { background: #22372e; border-color: rgba(141, 212, 175, .4); }
+.method-card i { color: var(--violet); }
+.method-output { background: #1d332b; }
+.toast { color: #102019; background: var(--violet); }
+
+@media (max-width: 620px) {
+  .topbar { min-height: 72px; }
+  .welcome { padding-top: 44px; }
+  .welcome-intro h1 { font-size: clamp(2.65rem, 13.6vw, 4rem); line-height: 1.12; }
+  .studio-canvas { min-height: 430px; }
+  .growth-scene { height: 330px; }
+  .canvas-message { bottom: 48px; }
+  .question-step h2 { line-height: 1.16; }
+}
+
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="社群小系統首頁">
+      <span class="brand-mark" aria-hidden="true">小</span>
+      <span class="brand-copy"><b>社群小系統</b><small>V2.0 · PRIVATE PRACTICE</small></span>
+    </a>
+    <p class="topbar-note">不追趕。只處理現在最重要的事。</p>
+    <button class="text-button" id="resetButton" type="button" hidden>清除這次設定</button>
+  </header>
+
+  <main>
+    <section class="welcome" id="welcomeView" aria-labelledby="welcomeTitle">
+      <div class="welcome-intro">
+        <p class="eyebrow"><span>01</span> 開始之前</p>
+        <h1 id="welcomeTitle">不用先很厲害。<br><em>今天，我陪你走一步。</em></h1>
+        <p class="lead">這不是課程，也不是固定賽道清單。把你的想法、時間和不願妥協的選擇告訴我，我會把複雜的策略收好，只留下今天真的做得完的一件事。</p>
+        <div class="welcome-actions">
+          <button class="primary-button large" id="startButton" type="button">建立我的工作台 <i aria-hidden="true">↗</i></button>
+          <button class="quiet-button" id="noIdeaButton" type="button">沒有想法也可以開始</button>
+        </div>
+      </div>
+
+      <aside class="studio-canvas" aria-label="三位朋友各自經營、一起成長的工作室">
+        <div class="canvas-title"><span>PRIVATE SOCIAL STUDIO</span><b><i></i> 3 位夥伴，各自走自己的路</b></div>
+        <svg class="growth-scene" viewBox="0 0 520 420" role="img" aria-label="安靜的拱門、月亮與階梯，象徵每個人用自己的速度持續前進">
+          <defs><linearGradient id="archFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ad9b8"/><stop offset="1" stop-color="#315949"/></linearGradient></defs>
+          <circle class="scene-moon" cx="348" cy="92" r="78"/>
+          <path class="scene-route" d="M62 336 C154 305 169 234 237 218 S355 259 447 151"/>
+          <path class="scene-arch" d="M151 352V214c0-82 51-132 125-132s125 50 125 132v138z"/>
+          <circle class="scene-window" cx="276" cy="205" r="28"/>
+          <g class="scene-stairs"><rect x="407" y="286" width="44" height="66"/><rect x="451" y="242" width="44" height="110"/><rect x="495" y="188" width="25" height="164"/></g>
+          <g class="scene-signals"><circle cx="92" cy="320" r="8"/><circle cx="237" cy="218" r="8"/><circle cx="447" cy="151" r="8"/></g>
+        </svg>
+        <div class="canvas-message"><span>暖心專家</span><p>「你決定怎麼走；我記住你的限制，再陪你安排下一步。」</p></div>
+        <div class="member-tags" aria-label="夥伴狀態"><span><i></i>你的方向</span><span><i></i>朋友 A</span><span><i></i>朋友 B</span></div>
+      </aside>
+
+      <div class="operating-rules" aria-label="系統原則">
+        <div><span>時間</span><b>必要任務 ≤ 60 分鐘</b></div>
+        <div><span>方向</span><b>新想法不受分類限制</b></div>
+        <div><span>決定</span><b>你調整，策略就重排</b></div>
+        <div><span>結果</span><b>說明風險，不做保證</b></div>
+      </div>
+    </section>
+
+    <section class="onboarding" id="onboardingView" hidden aria-live="polite">
+      <aside class="context-rail">
+        <div class="rail-head">
+          <span>設定你的工作方式</span>
+          <b id="stepLabel">第 1 步，共 5 步</b>
+        </div>
+        <ol aria-label="設定進度">
+          <li data-rail-step="1"><i>1</i><span>正在想什麼</span></li>
+          <li data-rail-step="2"><i>2</i><span>現在的位置</span></li>
+          <li data-rail-step="3"><i>3</i><span>卡住的環節</span></li>
+          <li data-rail-step="4"><i>4</i><span>你的限制</span></li>
+          <li data-rail-step="5"><i>5</i><span>想幫助的人</span></li>
+        </ol>
+        <div class="rail-note"><span aria-hidden="true">✦</span><p><b>不用答得完美。</b><br>答案只是第一版，之後可以改。</p></div>
+      </aside>
+
+      <div class="question-workspace">
+        <div class="step-meta">
+          <button class="back-button" id="backButton" type="button" aria-label="回到上一題">←</button>
+          <div class="step-track" aria-hidden="true"><i id="stepBar"></i></div>
+        </div>
+
+        <div class="advisor-presence">
+          <span aria-hidden="true">給你一個判斷</span>
+          <p><b>只問會改變建議的問題。</b> 其餘細節等真正需要時再問。</p>
+        </div>
+
+        <form id="onboardingForm" novalidate>
+          <section class="question-step" data-step="1" aria-labelledby="ideaTitle">
+            <p class="eyebrow"><span>問題 01</span> 想法</p>
+            <h2 id="ideaTitle" tabindex="-1">你現在想做什麼？</h2>
+            <p class="question-help">可以很模糊，也可以是一個還沒有名字的新方向。</p>
+            <label class="visually-hidden" for="ideaInput">描述你的想法</label>
+            <textarea id="ideaInput" rows="5" placeholder="例如：我想記錄一種新的生活方式，但不知道誰會需要。"></textarea>
+            <div class="suggestion-row" aria-label="想法狀態">
+              <button class="choice-chip" type="button" data-idea-mode="clear">我有明確想法</button>
+              <button class="choice-chip" type="button" data-idea-mode="partial">只有一點輪廓</button>
+              <button class="choice-chip" type="button" data-idea-mode="explore">完全不知道</button>
+            </div>
+            <p class="field-error" id="ideaError" hidden>簡單寫下一句即可；如果還不知道，選「完全不知道」。</p>
+          </section>
+
+          <section class="question-step" data-step="2" aria-labelledby="stageTitle" hidden>
+            <p class="eyebrow"><span>問題 02</span> 現況</p>
+            <h2 id="stageTitle" tabindex="-1">哪一句最接近現在的你？</h2>
+            <p class="question-help">這只決定從哪裡開始，不是能力評分。</p>
+            <div class="choice-list" id="stageChoices" role="group" aria-label="目前狀態">
+              <button class="choice-card" type="button" data-value="start"><i>01</i><b>還沒有帳號</b><span>從想法與第一篇內容開始</span></button>
+              <button class="choice-card" type="button" data-value="paused"><i>02</i><b>有帳號，但常常停下來</b><span>需要可長期維持的節奏</span></button>
+              <button class="choice-card" type="button" data-value="publishing"><i>03</i><b>持續發布，但效果不明顯</b><span>想找出哪一環出了問題</span></button>
+              <button class="choice-card" type="button" data-value="audience"><i>04</i><b>有人看，但還沒有收入</b><span>想驗證適合自己的收入方式</span></button>
+              <button class="choice-card" type="button" data-value="earning"><i>05</i><b>已經有收入</b><span>改善時間、價格、成交或回購</span></button>
+              <button class="choice-card gentle" type="button" data-value="unknown"><i>?</i><b>我不確定</b><span>請依後面的回答協助判斷</span></button>
+            </div>
+          </section>
+
+          <section class="question-step" data-step="3" aria-labelledby="goalTitle" hidden>
+            <p class="eyebrow"><span>問題 03</span> 目前卡點</p>
+            <h2 id="goalTitle" tabindex="-1">現在最需要先改善哪一環？</h2>
+            <p class="question-help">這不是終極目標。它只決定系統先處理什麼。</p>
+            <div class="choice-grid" id="goalChoices" role="radiogroup" aria-label="目前卡點">
+              <button class="choice-card compact" type="button" role="radio" data-value="direction"><i>01</i><b>方向</b><span>還不清楚要幫誰、解決什麼</span></button>
+              <button class="choice-card compact" type="button" role="radio" data-value="reach"><i>02</i><b>有效觸及</b><span>有內容，但對的人還沒看見</span></button>
+              <button class="choice-card compact" type="button" role="radio" data-value="trust"><i>03</i><b>信任與需求</b><span>有人看，但還沒有形成具體需要</span></button>
+              <button class="choice-card compact" type="button" role="radio" data-value="revenue"><i>04</i><b>收益驗證</b><span>已有需求，想測試合適的交換方式</span></button>
+              <button class="choice-card compact gentle" type="button" role="radio" data-value="unknown"><i>?</i><b>我還不知道</b><span>先用現況與第一個任務協助判斷</span></button>
+            </div>
+          </section>
+
+          <section class="question-step" data-step="4" aria-labelledby="wayTitle" hidden>
+            <p class="eyebrow"><span>問題 04</span> 工作方式</p>
+            <h2 id="wayTitle" tabindex="-1">哪些條件需要系統配合？</h2>
+            <p class="question-help">這些不是缺點。系統會調整路徑，並說明可能代價。</p>
+
+            <fieldset class="choice-block">
+              <legend><span>01</span> 每天必要任務最多多久？</legend>
+              <div class="segmented" id="timeChoices">
+                <button type="button" data-value="15">15 分鐘</button><button type="button" data-value="30">30 分鐘</button><button type="button" data-value="60">60 分鐘</button><button type="button" data-value="flex">每天不同</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-block">
+              <legend><span>02</span> 目前想要的內容節奏？</legend>
+              <div class="segmented" id="cadenceChoices">
+                <button type="button" data-value="weekly1">每週 1 支</button><button type="button" data-value="weekly2">每週 2 支</button><button type="button" data-value="weekly3">每週 3 支</button><button type="button" data-value="unknown">請幫我判斷</button>
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-block route-block">
+              <legend><span>03</span> 每週總共能投入幾小時？</legend>
+              <div class="route-input-row">
+                <label for="weeklyHours">每週時數</label>
+                <input id="weeklyHours" type="number" min="0" max="80" step="0.5" inputmode="decimal" placeholder="例如：4">
+                <output id="routeOutput" for="weeklyHours">輸入後顯示路線</output>
+              </div>
+              <p class="route-help">步行 ≤1 小時／公車 2–4 小時／高鐵 5–8 小時／機票 ≥9 小時。這只調整工作量，不代表能力高低。</p>
+            </fieldset>
+
+            <details class="calibration-details">
+              <summary>有明確目標或期限，再補充校準</summary>
+              <div class="calibration-grid">
+                <label for="targetInput">目標數字<input id="targetInput" type="text" maxlength="40" placeholder="例如：每月 3 位付費客戶"></label>
+                <label for="deadlineInput">希望檢查的日期<input id="deadlineInput" type="date"></label>
+                <label class="wide" for="tabooInput">不能接受的做法<input id="tabooInput" type="text" maxlength="80" placeholder="例如：不碰爭議話題、不做醫療宣稱"></label>
+              </div>
+            </details>
+
+            <div class="preference-list">
+              <div class="preference-row" data-pref="face">
+                <div><b>內容中露臉</b><span>不露臉時，改用畫面、文字與證據建立信任。</span></div>
+                <div class="mini-choice" role="group" aria-label="是否露臉"><button type="button" data-value="yes">可以</button><button type="button" data-value="no">不想</button><button type="button" data-value="unknown">未決定</button></div>
+                <label class="lock-choice"><input type="checkbox" data-lock="face"> 記住這個選擇，不要反覆詢問</label>
+              </div>
+              <div class="preference-row" data-pref="voice">
+                <div><b>使用自己的聲音</b><span>不說話時，改用字幕、節奏與視覺敘事。</span></div>
+                <div class="mini-choice" role="group" aria-label="是否使用聲音"><button type="button" data-value="yes">可以</button><button type="button" data-value="no">不想</button><button type="button" data-value="unknown">未決定</button></div>
+                <label class="lock-choice"><input type="checkbox" data-lock="voice"> 記住這個選擇，不要反覆詢問</label>
+              </div>
+              <div class="preference-row" data-pref="outreach">
+                <div><b>主動聯絡客戶或品牌</b><span>不主動開發時，改用搜尋、內容入口與被動成交。</span></div>
+                <div class="mini-choice" role="group" aria-label="是否主動開發"><button type="button" data-value="yes">可以</button><button type="button" data-value="no">不想</button><button type="button" data-value="unknown">未決定</button></div>
+                <label class="lock-choice"><input type="checkbox" data-lock="outreach"> 記住這個選擇，不要反覆詢問</label>
+              </div>
+            </div>
+          </section>
+
+          <section class="question-step" data-step="5" aria-labelledby="audienceTitle" hidden>
+            <p class="eyebrow"><span>問題 05</span> 對象</p>
+            <h2 id="audienceTitle" tabindex="-1">你最希望誰因此得到幫助？</h2>
+            <p class="question-help">描述一種真實的人或情境，不用寫年齡和性別。</p>
+            <label class="visually-hidden" for="audienceInput">想幫助的對象</label>
+            <textarea id="audienceInput" rows="4" placeholder="例如：和我一樣很忙，但仍想好好照顧流浪動物的人。"></textarea>
+            <button class="quiet-button inline" id="audienceUnknownButton" type="button">我還不知道，先從測試中找</button>
+          </section>
+
+          <div class="form-actions"><button class="primary-button" id="nextButton" type="button">下一步 <i aria-hidden="true">→</i></button></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="plan-view" id="planView" hidden aria-labelledby="planTitle">
+      <header class="plan-header">
+        <div>
+          <p class="eyebrow"><span>你的工作台</span> 第一版策略</p>
+          <h1 id="planTitle">今天，只做一件對的事。</h1>
+          <p class="lead" id="profileSummary"></p>
+        </div>
+        <div class="plan-header-actions"><span class="route-badge" id="routeBadge"></span><button class="secondary-button" id="adjustProfileButton" type="button">調整基本設定</button></div>
+      </header>
+
+      <div class="plan-grid">
+        <article class="today-card">
+          <div class="card-label"><span>NOW / 今天</span><span id="taskTimeLabel">30 分鐘</span></div>
+          <h2 id="todayTaskTitle"></h2>
+          <p id="todayTaskDescription"></p>
+          <div class="time-switcher" aria-label="調整今天可用時間"><span>今天有</span><button type="button" data-minutes="15">15 分鐘</button><button type="button" data-minutes="30">30 分鐘</button><button type="button" data-minutes="60">60 分鐘</button></div>
+          <div class="task-why"><b>為什麼是這件事</b><p id="taskWhy"></p></div>
+          <div class="task-actions"><button class="primary-button" id="startTaskButton" type="button">開始處理 <i aria-hidden="true">↗</i></button><button class="task-done-button" id="completeTaskButton" type="button">標記今天完成</button><button class="quiet-button inline" id="changeTaskButton" type="button">今天不適合，換一件</button></div>
+          <p class="task-status" id="taskStatus" role="status"></p>
+          <details class="optional-task"><summary>有時間再做</summary><p id="optionalTask"></p></details>
+        </article>
+
+        <aside class="decision-column">
+          <article class="decision-block"><p class="card-kicker">系統目前的判斷</p><h3 id="directionTitle"></h3><p id="directionDescription"></p><button class="text-button" id="viewStrategyButton" type="button">查看判斷依據 →</button></article>
+          <article class="decision-block consequence-card"><p class="card-kicker">你選擇的代價</p><div id="consequenceList"></div><button class="text-button" id="viewAllConsequencesButton" type="button">查看完整分析 →</button></article>
+        </aside>
+      </div>
+
+      <section class="adjust-section" aria-labelledby="adjustTitle">
+        <div><p class="eyebrow"><span>ADJUST</span> 隨時改變</p><h2 id="adjustTitle">策略不是命令。直接告訴我哪裡不合用。</h2><p>例如：「每週只做一支、不露臉，也不主動開發。」</p></div>
+        <div class="adjust-box"><label class="visually-hidden" for="adjustmentInput">想調整的策略</label><textarea id="adjustmentInput" rows="3" placeholder="寫下你想改變的事情……"></textarea><button class="primary-button" id="applyAdjustmentButton" type="button">重新分析</button><p class="adjustment-result" id="adjustmentResult" hidden></p></div>
+      </section>
+
+      <section class="share-section" aria-labelledby="shareTitle">
+        <span class="share-index">WEEKLY REVIEW</span>
+        <div class="review-copy"><p class="eyebrow"><span>和朋友一起成長</span></p><h2 id="shareTitle">先留下真實結果，再分享這週學到什麼。</h2><p>只比較自己的前後變化；沒有成果也可以記下「不成立」。</p></div>
+        <form class="review-form" id="reviewForm">
+          <label>我實際做了<textarea id="reviewAction" rows="2" placeholder="只寫實際發生的事"></textarea></label>
+          <label>觀察到的訊號<textarea id="reviewSignal" rows="2" placeholder="例如：兩位目標對象提出同一個問題"></textarea></label>
+          <label>這週的結論<textarea id="reviewLearning" rows="2" placeholder="把事實和推測分開"></textarea></label>
+          <label>下週只驗證<textarea id="reviewNext" rows="2" placeholder="只保留一個變因"></textarea></label>
+          <label class="wide">想請夥伴幫我看<textarea id="reviewHelp" rows="2" placeholder="可以留白"></textarea></label>
+          <div class="review-actions"><button class="primary-button" id="saveReviewButton" type="submit">儲存本週復盤</button><button class="secondary-button" id="copyShareButton" type="button">複製分享卡</button></div>
+          <p class="review-status" id="reviewStatus" role="status"></p>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="strategyDialog" class="dialog-card"><button class="dialog-close" type="button" data-close-dialog aria-label="關閉">×</button><p class="eyebrow"><span>STRATEGY</span> 第一版策略</p><h2>目前的判斷與未知</h2><div id="strategyDialogBody"></div></dialog>
+
+  <dialog id="taskDialog" class="dialog-card ai-dialog"><button class="dialog-close" type="button" data-close-dialog aria-label="關閉">×</button><p class="eyebrow"><span>ACTION</span> 選擇完成方式</p><h2>你想怎麼處理今天的任務？</h2><div class="ai-methods" role="tablist" aria-label="AI使用方式"><button type="button" class="method-card" data-method="included"><i>01</i><b>直接在系統完成</b><span>正式方案內含 AI 額度，最省事</span></button><button type="button" class="method-card" data-method="external"><i>02</i><b>使用其他AI</b><span>複製指令，再把答案貼回來</span></button><button type="button" class="method-card" data-method="manual"><i>03</i><b>我想自己做</b><span>提供簡單步驟，不需要 AI</span></button></div><div class="method-output" id="methodOutput" hidden></div></dialog>
+
+  <dialog id="resetDialog" class="dialog-card small-dialog"><p class="eyebrow"><span>RESET</span> 重新開始</p><h2>要清除這份原型資料嗎？</h2><p>只會清除目前瀏覽器中的原型設定，不影響正式網站。</p><div class="dialog-actions"><button class="secondary-button" type="button" data-close-dialog>先不要</button><button class="danger-button" id="confirmResetButton" type="button">清除並重新開始</button></div></dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "social-mini-v2-prototype";
+  var SCHEMA_VERSION = 2;
+  var TOTAL_STEPS = 5;
+  var currentStep = 1;
+  var profile = defaultProfile();
+  var currentTaskMinutes = 30;
+
+  var welcomeView = document.getElementById("welcomeView");
+  var onboardingView = document.getElementById("onboardingView");
+  var planView = document.getElementById("planView");
+  var onboardingForm = document.getElementById("onboardingForm");
+  var nextButton = document.getElementById("nextButton");
+  var backButton = document.getElementById("backButton");
+  var resetButton = document.getElementById("resetButton");
+  var toast = document.getElementById("toast");
+
+  function defaultProfile() {
+    return {
+      schemaVersion: SCHEMA_VERSION,
+      idea: "",
+      ideaMode: "",
+      stage: "",
+      bottleneck: "",
+      minutes: 30,
+      cadence: "unknown",
+      weeklyHours: "",
+      target: "",
+      deadline: "",
+      taboo: "",
+      preferences: { face: "unknown", voice: "unknown", outreach: "unknown" },
+      locks: { face: false, voice: false, outreach: false },
+      audience: "",
+      adjustment: "",
+      adjustments: [],
+      externalAnswer: "",
+      taskDone: false,
+      taskDate: "",
+      review: { action: "", signal: "", learning: "", next: "", help: "", savedAt: "" }
+    };
+  }
+
+  function setView(name) {
+    welcomeView.hidden = name !== "welcome";
+    onboardingView.hidden = name !== "onboarding";
+    planView.hidden = name !== "plan";
+    resetButton.hidden = name === "welcome";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function beginOnboarding(noIdea) {
+    setView("onboarding");
+    currentStep = 1;
+    if (noIdea) {
+      profile.ideaMode = "explore";
+      document.getElementById("ideaInput").value = "我還沒有明確想法，希望先找到適合自己的方向。";
+      profile.idea = document.getElementById("ideaInput").value;
+    }
+    hydrateForm();
+    showStep();
+  }
+
+  function hydrateForm() {
+    document.getElementById("ideaInput").value = profile.idea || "";
+    document.getElementById("audienceInput").value = profile.audience || "";
+    document.getElementById("weeklyHours").value = profile.weeklyHours === "" ? "" : profile.weeklyHours;
+    document.getElementById("targetInput").value = profile.target || "";
+    document.getElementById("deadlineInput").value = profile.deadline || "";
+    document.getElementById("tabooInput").value = profile.taboo || "";
+    setPressedByValue(document.getElementById("stageChoices"), profile.stage);
+    setPressedByValue(document.getElementById("timeChoices"), String(profile.minutes));
+    setPressedByValue(document.getElementById("cadenceChoices"), profile.cadence);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-idea-mode]"), function (button) {
+      button.setAttribute("aria-pressed", button.dataset.ideaMode === profile.ideaMode ? "true" : "false");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#goalChoices button[data-value]"), function (button) {
+      var selected = profile.bottleneck === button.dataset.value;
+      button.setAttribute("aria-pressed", selected ? "true" : "false");
+      button.setAttribute("aria-checked", selected ? "true" : "false");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".preference-row"), function (row) {
+      setPressedByValue(row.querySelector(".mini-choice"), profile.preferences[row.dataset.pref]);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-lock]"), function (checkbox) {
+      checkbox.checked = Boolean(profile.locks[checkbox.dataset.lock]);
+    });
+    updateRouteOutput();
+    hydrateReview();
+  }
+
+  function setPressedByValue(container, value) {
+    if (!container) return;
+    Array.prototype.forEach.call(container.querySelectorAll("button[data-value]"), function (button) {
+      button.setAttribute("aria-pressed", button.dataset.value === value ? "true" : "false");
+    });
+  }
+
+  function showStep() {
+    Array.prototype.forEach.call(document.querySelectorAll(".question-step"), function (section) {
+      section.hidden = Number(section.dataset.step) !== currentStep;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rail-step]"), function (item) {
+      if (Number(item.dataset.railStep) === currentStep) item.setAttribute("aria-current", "step");
+      else item.removeAttribute("aria-current");
+    });
+    document.getElementById("stepLabel").textContent = "第 " + currentStep + " 步，共 " + TOTAL_STEPS + " 步";
+    document.getElementById("stepBar").style.width = (currentStep / TOTAL_STEPS * 100) + "%";
+    backButton.style.visibility = currentStep === 1 ? "hidden" : "visible";
+    nextButton.innerHTML = (currentStep === TOTAL_STEPS ? "整理我的第一步" : "下一步") + ' <i aria-hidden="true">→</i>';
+    var heading = document.querySelector('.question-step[data-step="' + currentStep + '"] h2');
+    if (heading) heading.focus({ preventScroll: true });
+  }
+
+  function validateStep() {
+    if (currentStep === 1) {
+      profile.idea = document.getElementById("ideaInput").value.trim();
+      var validIdea = Boolean(profile.idea || profile.ideaMode === "explore");
+      document.getElementById("ideaError").hidden = validIdea;
+      return validIdea;
+    }
+    if (currentStep === 2) return Boolean(profile.stage);
+    if (currentStep === 3) return Boolean(profile.bottleneck);
+    if (currentStep === 4) {
+      profile.weeklyHours = readWeeklyHours();
+      profile.target = document.getElementById("targetInput").value.trim();
+      profile.deadline = document.getElementById("deadlineInput").value;
+      profile.taboo = document.getElementById("tabooInput").value.trim();
+      return Boolean(profile.minutes && profile.cadence);
+    }
+    if (currentStep === 5) {
+      profile.audience = document.getElementById("audienceInput").value.trim();
+      return Boolean(profile.audience);
+    }
+    return true;
+  }
+
+  function goNext() {
+    if (!validateStep()) {
+      showToast("這題可以很簡單；選一個最接近的答案就好。");
+      return;
+    }
+    if (currentStep < TOTAL_STEPS) {
+      currentStep += 1;
+      showStep();
+      return;
+    }
+    currentTaskMinutes = profile.minutes === "flex" ? 30 : Number(profile.minutes);
+    saveProfile();
+    renderPlan();
+    setView("plan");
+  }
+
+  function selectSingle(container, button, key, value) {
+    Array.prototype.forEach.call(container.querySelectorAll("button[data-value]"), function (item) {
+      item.setAttribute("aria-pressed", item === button ? "true" : "false");
+    });
+    if (key === "stage") profile.stage = value;
+    if (key === "minutes") profile.minutes = value === "flex" ? "flex" : Number(value);
+    if (key === "cadence") profile.cadence = value;
+  }
+
+  function selectPreference(row, button) {
+    var pref = row.dataset.pref;
+    Array.prototype.forEach.call(row.querySelectorAll(".mini-choice button"), function (item) {
+      item.setAttribute("aria-pressed", item === button ? "true" : "false");
+    });
+    profile.preferences[pref] = button.dataset.value;
+  }
+
+  function selectGoal(button) {
+    profile.bottleneck = button.dataset.value;
+    Array.prototype.forEach.call(document.querySelectorAll("#goalChoices button[data-value]"), function (item) {
+      var selected = item === button;
+      item.setAttribute("aria-pressed", selected ? "true" : "false");
+      item.setAttribute("aria-checked", selected ? "true" : "false");
+    });
+  }
+
+  function bottleneckLabel() {
+    var labels = {
+      direction: "方向",
+      reach: "有效觸及",
+      trust: "信任與需求",
+      revenue: "收益驗證",
+      unknown: "等待第一個行動協助判斷"
+    };
+    return labels[profile.bottleneck] || labels.unknown;
+  }
+
+  function stageLabel() {
+    var labels = {
+      start: "還沒有帳號",
+      paused: "有帳號，但經營容易中斷",
+      publishing: "持續發布，但效果尚不明顯",
+      audience: "已經有人看，正在尋找收入方式",
+      earning: "已經有收入，準備改善經營效率",
+      unknown: "還在確認目前位置"
+    };
+    return labels[profile.stage] || labels.unknown;
+  }
+
+  function ideaTitle() {
+    if (profile.ideaMode === "explore" && profile.idea.indexOf("沒有明確想法") >= 0) return "先找到值得繼續探索的方向";
+    var cleaned = profile.idea.replace(/[。！？\n]/g, " ").trim();
+    if (cleaned.length > 30) cleaned = cleaned.slice(0, 30) + "…";
+    return cleaned || "還在形成中的新方向";
+  }
+
+  function describeFormat() {
+    var face = profile.preferences.face;
+    var voice = profile.preferences.voice;
+    if (face === "no" && voice === "no") return "圖文、照片紀錄、螢幕示範或純文字敘事";
+    if (face === "no") return "旁白、螢幕示範、照片紀錄或固定角色";
+    if (voice === "no") return "露臉搭配字幕、動作示範或圖文";
+    return "你願意長期使用的內容形式";
+  }
+
+  function readWeeklyHours() {
+    var raw = document.getElementById("weeklyHours").value;
+    if (raw === "") return "";
+    var value = Number(raw);
+    return Number.isFinite(value) && value >= 0 ? value : "";
+  }
+
+  function routeFromHours(hours) {
+    if (hours === "" || hours === null || hours === undefined || !Number.isFinite(Number(hours))) {
+      return { key: "unassigned", name: "路線待確認", note: "先用今天的時間安排，不做速度比較" };
+    }
+    var value = Number(hours);
+    if (value <= 1) return { key: "walk", name: "步行路線", note: "每週 1 小時以下" };
+    if (value <= 4) return { key: "bus", name: "公車路線", note: "每週 2–4 小時" };
+    if (value <= 8) return { key: "rail", name: "高鐵路線", note: "每週 5–8 小時" };
+    return { key: "flight", name: "機票路線", note: "每週 9 小時以上" };
+  }
+
+  function updateRouteOutput() {
+    var hours = readWeeklyHours();
+    var route = routeFromHours(hours);
+    var output = document.getElementById("routeOutput");
+    if (output) output.textContent = route.name + " · " + route.note;
+  }
+
+  function consequences() {
+    var result = [];
+    if (profile.cadence === "weekly1") {
+      result.push({ level: "合理推測", text: "每週一支可以降低壓力，但累積樣本與找出有效內容的速度會比較慢；前六週只能得到六個樣本。" });
+    }
+    if (profile.preferences.face === "no") {
+      result.push({ level: "尚待驗證", text: "不露臉仍能經營；信任需要更多依靠一致紀錄、案例、文字觀點或可驗證成果。" });
+    }
+    if (profile.preferences.voice === "no") {
+      result.push({ level: "合理推測", text: "不使用聲音會減少一種情感線索，因此畫面、字幕與敘事順序需要更清楚。" });
+    }
+    if (profile.preferences.outreach === "no") {
+      result.push({ level: "高度可能", text: "不主動開發時，收入會更依賴自然搜尋、平台推薦與受眾主動詢問，驗證時間可能拉長。" });
+    }
+    if (profile.bottleneck === "revenue" && profile.stage === "start") {
+      result.push({ level: "尚待驗證", text: "目前還沒有足夠資料預測收入；第一階段先確認受眾需求與可持續的內容方式。" });
+    }
+    var route = routeFromHours(profile.weeklyHours);
+    if ((route.key === "walk" || route.key === "bus") && profile.deadline) {
+      result.push({ level: "需要校準", text: "目前是" + route.name + "，若期限很近，應縮小目標、延長期限或增加可用時間；系統不會用高強度課表假裝可行。" });
+    }
+    if (!result.length) {
+      result.push({ level: "目前判斷", text: "你的選擇暫時沒有明顯衝突。先用少量內容取得真實反應，再決定是否加速。" });
+    }
+    return result;
+  }
+
+  function tasksForStage(minutes) {
+    var data = {
+      direction: {
+        15: ["寫下一個最想驗證的問題", "用一句話寫：我想知道哪一種人，會在什麼情境需要這個方向。", "先縮小未知，不急著完成完整定位。"],
+        30: ["整理三個真實使用情境", "不要先分類賽道。寫出三種人真正遇到問題的時刻，再選一個最想理解的情境。", "方向應該從真實情境長出來，不是從內建分類挑答案。"],
+        60: ["完成第一個方向假設", "寫出「我想幫誰、在什麼情境、用什麼形式、先驗證什麼」，並整理成一份可發布草稿。", "第一版方向是待驗證假設，不是永久定位。"]
+      },
+      paused: {
+        15: ["找出上次停下來的原因", "只寫一個最主要原因：太花時間、沒方向、沒回應，或做法不適合。", "先移除中斷原因，比再排一份高強度計畫重要。"],
+        30: ["設計最低可持續版本", "把原本的內容做法縮小一半，保留最重要的部分，寫出下次能完成的版本。", "能穩定完成的小版本，才有資格逐步加量。"],
+        60: ["重做一份不容易中斷的流程", "回看最近一次內容，拆成選題、製作、發布三段，各找一個可以省力的地方。", "系統需要配合你的生活，而不是要求你追趕進度。"]
+      },
+      reach: {
+        15: ["找出一個受眾真的會用的問句", "從搜尋、留言或日常對話選一句原話，作為下一則內容的題目。", "有效觸及先從對方會辨認的問題開始，不追求空泛曝光。"],
+        30: ["比較三個觸及線索", "比較最近內容的題目、開場與來源；沒有內容時，就比較三個受眾常用問句。只選一個差異繼續測。", "一次只改一個變因，才知道什麼讓對的人停下來。"],
+        60: ["完成一個有效觸及實驗", "用受眾原話做開場，完成一則內容草稿，並先寫下要觀察的唯一訊號。", "發布不是完成；能否接觸到相關的人，才是這一輪要看的結果。"]
+      },
+      trust: {
+        15: ["補上一個能被驗證的證據", "替目前內容加入一項案例、過程、前後差異或資料來源，不用增加更多觀點。", "信任不是語氣更有自信，而是對方有東西可以判斷。"],
+        30: ["整理三個需求訊號", "從留言、私訊、提問或日常對話中，分開記錄事實與你的推測；資料不足就設計一個明確提問。", "有人看不等於有人需要，先找對方願意投入時間或資訊的訊號。"],
+        60: ["完成一份信任素材", "選一個真實問題，整理處理過程、限制、證據與下一步，做成案例、示範或問答草稿。", "讓人理解你怎麼判斷，比單純宣稱專業更能驗證信任。"]
+      },
+      revenue: {
+        15: ["寫下一個最低成本收益假設", "用一句話寫：誰可能為哪個具體結果付費，以及目前有什麼證據。沒有證據就標成推測。", "先看需求與交換，不用先做完整商品。"],
+        30: ["設計一個不違反選擇的需求測試", "從候補名單、內容回覆、預約入口或小型服務選一種；不主動開發時，改用公開入口等待真實行動。", "使用者的限制不會被取消，但會影響取得付費證據的速度。"],
+        60: ["完成第一個收益實驗草稿", "寫清楚對象、問題、最小交付、價格假設、成本上限，以及繼續、調整或停止的條件。", "沒有成交也是資料；先避免在需求未知時投入大量製作。"]
+      },
+      unknown: {
+        15: ["記下目前最想釐清的一件事", "只寫一個問題，不需要先知道答案。", "先找到真正的未知，系統才知道從哪裡陪你開始。"],
+        30: ["整理你已經擁有的三種素材", "列出三件你能分享的經驗、能力、故事或資源。", "適合的方向通常從現有資源與願意長期做的事交會而來。"],
+        60: ["完成三個方向的輕量探索", "各寫一個可能的受眾、內容與收入想法，不急著選唯一答案。", "先比較三條小路，比一開始逼自己選終身方向更實際。"]
+      }
+    };
+    var taskStage = profile.stage === "paused" ? "paused" : (profile.bottleneck || "unknown");
+    var stage = data[taskStage] || data.unknown;
+    return stage[minutes] || stage[30];
+  }
+
+  function renderPlan() {
+    var route = routeFromHours(profile.weeklyHours);
+    document.getElementById("profileSummary").textContent = stageLabel() + "；想做的是「" + ideaTitle() + "」；目前先處理「" + bottleneckLabel() + "」。";
+    document.getElementById("routeBadge").textContent = route.name + " · " + route.note;
+    document.getElementById("directionTitle").textContent = ideaTitle();
+    document.getElementById("directionDescription").textContent = "先以「" + describeFormat() + "」測試，服務「" + (profile.audience || "仍在確認中的對象") + "」。這是第一版方向，不是永久分類。";
+    renderConsequences();
+    renderTask(currentTaskMinutes);
+    document.getElementById("strategyDialogBody").innerHTML = strategyDialogHtml();
+    renderTaskStatus();
+    hydrateReview();
+    saveProfile();
+  }
+
+  function renderConsequences() {
+    var list = consequences();
+    document.getElementById("consequenceList").innerHTML = list.slice(0, 2).map(function (item) {
+      return '<div class="consequence-item"><b>' + escapeHtml(item.level) + '</b><p>' + escapeHtml(item.text) + '</p></div>';
+    }).join("");
+  }
+
+  function renderTask(minutes) {
+    currentTaskMinutes = minutes;
+    var task = tasksForStage(minutes);
+    document.getElementById("taskTimeLabel").textContent = minutes + " 分鐘";
+    document.getElementById("todayTaskTitle").textContent = task[0];
+    document.getElementById("todayTaskDescription").textContent = task[1];
+    document.getElementById("taskWhy").textContent = task[2];
+    document.getElementById("optionalTask").textContent = "如果今天還有餘力，再把成果整理成可以和朋友分享的版本；不做也不影響進度。";
+    Array.prototype.forEach.call(document.querySelectorAll(".time-switcher button"), function (button) {
+      button.setAttribute("aria-pressed", Number(button.dataset.minutes) === minutes ? "true" : "false");
+    });
+    renderTaskStatus();
+  }
+
+  function localDateKey() {
+    var now = new Date();
+    var month = String(now.getMonth() + 1).padStart(2, "0");
+    var day = String(now.getDate()).padStart(2, "0");
+    return now.getFullYear() + "-" + month + "-" + day;
+  }
+
+  function normalizeDailyTask() {
+    var today = localDateKey();
+    if (profile.taskDate !== today) {
+      profile.taskDate = today;
+      profile.taskDone = false;
+    }
+  }
+
+  function renderTaskStatus() {
+    normalizeDailyTask();
+    var button = document.getElementById("completeTaskButton");
+    var status = document.getElementById("taskStatus");
+    if (!button || !status) return;
+    button.textContent = profile.taskDone ? "今天已完成 ✓" : "標記今天完成";
+    button.setAttribute("aria-pressed", profile.taskDone ? "true" : "false");
+    status.textContent = profile.taskDone ? "已記下今天的完成。明天會重新安排，不會累積欠債。" : "今天沒有完成也沒關係；明天會依當下狀況重新安排。";
+  }
+
+  function strategyDialogHtml() {
+    var uncertainty = profile.ideaMode === "explore" ? "方向、受眾與內容形式都仍是假設，先做小型探索。" : "受眾反應、平台適配與收入方式仍需要真實資料驗證。";
+    return '<div class="analysis-list">' +
+      '<div class="analysis-row"><b>目前理解</b><p>' + escapeHtml(profile.idea) + '</p></div>' +
+      '<div class="analysis-row"><b>建議形式</b><p>' + escapeHtml(describeFormat()) + '</p></div>' +
+      '<div class="analysis-row"><b>目前先處理</b><p>' + escapeHtml(bottleneckLabel()) + '；這會改變今天的任務與觀察訊號。</p></div>' +
+      '<div class="analysis-row"><b>投入路線</b><p>' + escapeHtml(routeFromHours(profile.weeklyHours).name + " · " + routeFromHours(profile.weeklyHours).note) + '</p></div>' +
+      '<div class="analysis-row"><b>目前未知</b><p>' + escapeHtml(uncertainty) + '</p></div>' +
+      '<div class="analysis-row"><b>第一個判斷標準</b><p>不是粉絲數，而是目標對象能否看懂、回應或提出下一個真實問題。</p></div>' +
+      '</div>';
+  }
+
+  function applyNaturalLanguageAdjustment() {
+    var text = document.getElementById("adjustmentInput").value.trim();
+    if (!text) {
+      showToast("先寫下一件想改變的事情。");
+      return;
+    }
+    profile.adjustment = text;
+    profile.adjustments.push({ text: text, savedAt: new Date().toISOString() });
+    var recognized = [];
+    if (/不露臉|不要露臉/.test(text)) { profile.preferences.face = "no"; profile.locks.face = true; recognized.push("不露臉"); }
+    if (/可以露臉|願意露臉/.test(text)) { profile.preferences.face = "yes"; recognized.push("可以露臉"); }
+    if (/不說話|不用聲音|不要聲音/.test(text)) { profile.preferences.voice = "no"; profile.locks.voice = true; recognized.push("不使用聲音"); }
+    if (/可以說話|使用聲音|願意說話/.test(text)) { profile.preferences.voice = "yes"; recognized.push("可以使用聲音"); }
+    if (/不主動開發|不要開發|不聯絡品牌/.test(text)) { profile.preferences.outreach = "no"; profile.locks.outreach = true; recognized.push("不主動開發"); }
+    if (/每週\s*(只)?\s*(做|發)?\s*一|一週\s*(只)?\s*(做|發)?\s*一/.test(text)) { profile.cadence = "weekly1"; recognized.push("每週一支"); }
+    if (/15\s*分鐘|十五分鐘/.test(text)) { profile.minutes = 15; currentTaskMinutes = 15; recognized.push("每天15分鐘"); }
+    if (/30\s*分鐘|三十分鐘/.test(text)) { profile.minutes = 30; currentTaskMinutes = 30; recognized.push("每天30分鐘"); }
+    if (/60\s*分鐘|一小時|1\s*小時/.test(text)) { profile.minutes = 60; currentTaskMinutes = 60; recognized.push("每天60分鐘"); }
+    var weeklyHoursMatch = text.match(/每週\s*(\d+(?:\.\d+)?)\s*(?:個)?小時/);
+    if (weeklyHoursMatch) { profile.weeklyHours = Number(weeklyHoursMatch[1]); recognized.push("每週" + weeklyHoursMatch[1] + "小時"); }
+    if (/方向|定位|不知道做什麼/.test(text)) { profile.bottleneck = "direction"; recognized.push("先處理方向"); }
+    if (/觸及|沒人看|看見/.test(text)) { profile.bottleneck = "reach"; recognized.push("先處理有效觸及"); }
+    if (/信任|需求|有人看.*沒有/.test(text)) { profile.bottleneck = "trust"; recognized.push("先處理信任與需求"); }
+    if (/收益|收入|成交|付費/.test(text)) { profile.bottleneck = "revenue"; recognized.push("先處理收益驗證"); }
+    renderPlan();
+    var result = document.getElementById("adjustmentResult");
+    result.hidden = false;
+    if (recognized.length) {
+      result.textContent = "我已記下「" + recognized.join("、") + "」，並重新整理今天的任務與影響分析。其他內容會保留在策略備註中。";
+    } else {
+      result.textContent = "我已保留這項調整。原型目前無法完整理解所有自然語言；正式版會交由方案內AI分析，再由你確認後更新策略。";
+    }
+  }
+
+  function buildExternalPrompt() {
+    var task = tasksForStage(currentTaskMinutes);
+    return "你是一位暖心、專業、誠實的社群經營顧問。請尊重我的選擇，不要強迫我採用主流做法，也不要保證流量或收入。\n\n" +
+      "【我的情況】\n" +
+      "想做的方向：" + profile.idea + "\n" +
+      "目前狀態：" + stageLabel() + "\n" +
+      "目前卡點：" + bottleneckLabel() + "\n" +
+      "想幫助的人：" + profile.audience + "\n" +
+      "目標與檢查日期：" + (profile.target || "尚未設定") + "；" + (profile.deadline || "尚未設定") + "\n" +
+      "不能接受的做法：" + (profile.taboo || "尚未設定") + "\n" +
+      "每天時間：" + (profile.minutes === "flex" ? "每天不同，必要任務最多60分鐘" : profile.minutes + "分鐘") + "\n" +
+      "每週總時數與路線：" + (profile.weeklyHours === "" ? "尚未確認" : profile.weeklyHours + "小時，" + routeFromHours(profile.weeklyHours).name) + "\n" +
+      "內容頻率：" + cadenceLabel() + "\n" +
+      "露臉：" + preferenceLabel(profile.preferences.face) + "；聲音：" + preferenceLabel(profile.preferences.voice) + "；主動開發：" + preferenceLabel(profile.preferences.outreach) + "\n\n" +
+      "【今天的任務】\n" + task[0] + "：" + task[1] + "\n\n" +
+      "請只協助我完成今天這項任務。若資料不足，最多問我3個關鍵問題。把推測標成推測；若我的選擇可能使時間拉長或難以產生收入，請清楚但不責備地說明。最後給我一份可以在" + currentTaskMinutes + "分鐘內完成的結果。";
+  }
+
+  function cadenceLabel() {
+    var labels = { weekly1: "每週1支", weekly2: "每週2支", weekly3: "每週3支", unknown: "尚未決定" };
+    return labels[profile.cadence] || labels.unknown;
+  }
+
+  function preferenceLabel(value) {
+    return value === "yes" ? "可以" : value === "no" ? "不想" : "尚未決定";
+  }
+
+  function renderMethod(method) {
+    var output = document.getElementById("methodOutput");
+    output.hidden = false;
+    if (method === "included") {
+      output.innerHTML = '<b>正式版會直接在這裡陪你完成</b><p>付費方案內含AI額度，不需要自行申請金鑰。這份原型目前不會傳送任何資料到AI服務。</p>';
+    } else if (method === "external") {
+      output.innerHTML = '<b>複製到任何外部免費AI</b><textarea id="externalPrompt" rows="9" readonly></textarea>' +
+        '<div class="output-actions"><button class="secondary-button" type="button" id="copyPromptButton">複製指令</button></div>' +
+        '<label for="externalAnswer"><b>把AI回答貼回來</b></label><textarea id="externalAnswer" rows="6" placeholder="貼上答案後，系統會保留並在正式版進行一致性檢查。"></textarea>' +
+        '<div class="output-actions"><button class="primary-button" type="button" id="saveExternalAnswerButton">儲存回答</button></div>';
+      document.getElementById("externalPrompt").value = buildExternalPrompt();
+      document.getElementById("externalAnswer").value = profile.externalAnswer || "";
+      document.getElementById("copyPromptButton").addEventListener("click", function () { copyText(buildExternalPrompt(), "指令已複製"); });
+      document.getElementById("saveExternalAnswerButton").addEventListener("click", function () {
+        profile.externalAnswer = document.getElementById("externalAnswer").value.trim();
+        saveProfile();
+        showToast("已保存外部AI回答；原型不會自動把它當成正確答案。");
+      });
+    } else {
+      var task = tasksForStage(currentTaskMinutes);
+      output.innerHTML = '<b>不用AI也能完成</b><p>' + escapeHtml(task[1]) + '</p><ol><li>先寫出最直覺的版本。</li><li>刪掉不是今天必要的部分。</li><li>完成後記下一個意外發現或卡點。</li></ol>';
+    }
+  }
+
+  function buildShareCard() {
+    var task = tasksForStage(currentTaskMinutes);
+    var review = profile.review || defaultProfile().review;
+    return "【本週經營分享】\n" +
+      "我的方向：" + ideaTitle() + "\n" +
+      "目前先處理：" + bottleneckLabel() + "\n" +
+      "投入路線：" + routeFromHours(profile.weeklyHours).name + "\n" +
+      "這週主要實驗：" + task[0] + "\n" +
+      "我實際做了：" + (review.action || "＿＿") + "\n" +
+      "觀察到的訊號：" + (review.signal || "＿＿") + "\n" +
+      "這週的結論：" + (review.learning || "＿＿") + "\n" +
+      "下週只驗證：" + (review.next || "＿＿") + "\n" +
+      "想請大家幫我看：" + (review.help || "＿＿") + "\n\n" +
+      "不比較誰跑得快，只交換真實經驗。";
+  }
+
+  function hydrateReview() {
+    var review = profile.review || defaultProfile().review;
+    var fields = { reviewAction: "action", reviewSignal: "signal", reviewLearning: "learning", reviewNext: "next", reviewHelp: "help" };
+    Object.keys(fields).forEach(function (id) {
+      var field = document.getElementById(id);
+      if (field) field.value = review[fields[id]] || "";
+    });
+    var status = document.getElementById("reviewStatus");
+    if (status) status.textContent = review.savedAt ? "已儲存本週復盤。分享前仍可修改。" : "復盤只存在這台裝置；夥伴只會看到你主動分享的內容。";
+  }
+
+  function saveReview() {
+    profile.review = {
+      action: document.getElementById("reviewAction").value.trim(),
+      signal: document.getElementById("reviewSignal").value.trim(),
+      learning: document.getElementById("reviewLearning").value.trim(),
+      next: document.getElementById("reviewNext").value.trim(),
+      help: document.getElementById("reviewHelp").value.trim(),
+      savedAt: new Date().toISOString()
+    };
+    saveProfile();
+    hydrateReview();
+    showToast("本週復盤已儲存");
+  }
+
+  function saveProfile() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); } catch (error) { /* prototype still works without storage */ }
+  }
+
+  function restoreProfile() {
+    try {
+      var stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return false;
+      var parsed = JSON.parse(stored);
+      profile = Object.assign(defaultProfile(), parsed);
+      if (!profile.bottleneck && Array.isArray(parsed.goals)) {
+        var legacyMap = { steady: "direction", seen: "reach", idea: "trust", people: "trust", brand: "trust", income: "revenue", unknown: "unknown" };
+        profile.bottleneck = legacyMap[parsed.goals[0]] || "unknown";
+      }
+      profile.preferences = Object.assign(defaultProfile().preferences, profile.preferences || {});
+      profile.locks = Object.assign(defaultProfile().locks, profile.locks || {});
+      profile.review = Object.assign(defaultProfile().review, profile.review || {});
+      profile.adjustments = Array.isArray(profile.adjustments) ? profile.adjustments : [];
+      profile.schemaVersion = SCHEMA_VERSION;
+      normalizeDailyTask();
+      currentTaskMinutes = profile.minutes === "flex" ? 30 : Number(profile.minutes || 30);
+      hydrateForm();
+      renderPlan();
+      setView("plan");
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function showToast(message) {
+    toast.textContent = message;
+    toast.hidden = false;
+    window.clearTimeout(showToast.timer);
+    showToast.timer = window.setTimeout(function () { toast.hidden = true; }, 2600);
+  }
+
+  function copyText(text, successMessage) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { showToast(successMessage); }, function () { fallbackCopy(text, successMessage); });
+    } else fallbackCopy(text, successMessage);
+  }
+
+  function fallbackCopy(text, successMessage) {
+    var area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+    showToast(successMessage);
+  }
+
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>'"]/g, function (character) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[character];
+    });
+  }
+
+  document.getElementById("startButton").addEventListener("click", function () { beginOnboarding(false); });
+  document.getElementById("noIdeaButton").addEventListener("click", function () { beginOnboarding(true); });
+  nextButton.addEventListener("click", goNext);
+  backButton.addEventListener("click", function () { if (currentStep > 1) { currentStep -= 1; showStep(); } });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-idea-mode]"), function (button) {
+    button.addEventListener("click", function () {
+      profile.ideaMode = button.dataset.ideaMode;
+      Array.prototype.forEach.call(document.querySelectorAll("[data-idea-mode]"), function (item) { item.setAttribute("aria-pressed", item === button ? "true" : "false"); });
+      if (profile.ideaMode === "explore" && !document.getElementById("ideaInput").value.trim()) {
+        document.getElementById("ideaInput").value = "我還沒有明確想法，希望先找到適合自己的方向。";
+      }
+    });
+  });
+
+  document.getElementById("stageChoices").addEventListener("click", function (event) {
+    var button = event.target.closest("button[data-value]");
+    if (button) selectSingle(event.currentTarget, button, "stage", button.dataset.value);
+  });
+
+  document.getElementById("goalChoices").addEventListener("click", function (event) {
+    var button = event.target.closest("button[data-value]");
+    if (button) selectGoal(button);
+  });
+
+  document.getElementById("timeChoices").addEventListener("click", function (event) {
+    var button = event.target.closest("button[data-value]");
+    if (button) selectSingle(event.currentTarget, button, "minutes", button.dataset.value);
+  });
+
+  document.getElementById("cadenceChoices").addEventListener("click", function (event) {
+    var button = event.target.closest("button[data-value]");
+    if (button) selectSingle(event.currentTarget, button, "cadence", button.dataset.value);
+  });
+
+  document.getElementById("weeklyHours").addEventListener("input", function () {
+    profile.weeklyHours = readWeeklyHours();
+    updateRouteOutput();
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll(".preference-row"), function (row) {
+    row.querySelector(".mini-choice").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-value]");
+      if (button) selectPreference(row, button);
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-lock]"), function (checkbox) {
+    checkbox.addEventListener("change", function () { profile.locks[checkbox.dataset.lock] = checkbox.checked; });
+  });
+
+  document.getElementById("audienceUnknownButton").addEventListener("click", function () {
+    document.getElementById("audienceInput").value = "目前還不知道，先從第一批真實反應中找。";
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll(".time-switcher button"), function (button) {
+    button.addEventListener("click", function () { renderTask(Number(button.dataset.minutes)); });
+  });
+
+  document.getElementById("adjustProfileButton").addEventListener("click", function () { setView("onboarding"); currentStep = 1; hydrateForm(); showStep(); });
+  document.getElementById("applyAdjustmentButton").addEventListener("click", applyNaturalLanguageAdjustment);
+  document.getElementById("viewStrategyButton").addEventListener("click", function () {
+    document.getElementById("strategyDialogBody").innerHTML = strategyDialogHtml();
+    document.getElementById("strategyDialog").showModal();
+  });
+  document.getElementById("viewAllConsequencesButton").addEventListener("click", function () {
+    document.getElementById("strategyDialogBody").innerHTML = '<div class="analysis-list">' + consequences().map(function (item) {
+      return '<div class="analysis-row"><b>' + escapeHtml(item.level) + '</b><p>' + escapeHtml(item.text) + '</p></div>';
+    }).join("") + '</div>';
+    document.getElementById("strategyDialog").showModal();
+  });
+
+  document.getElementById("startTaskButton").addEventListener("click", function () { document.getElementById("taskDialog").showModal(); });
+  document.getElementById("completeTaskButton").addEventListener("click", function () {
+    normalizeDailyTask();
+    profile.taskDone = !profile.taskDone;
+    saveProfile();
+    renderTaskStatus();
+    showToast(profile.taskDone ? "已記下今天的完成" : "已取消完成標記");
+  });
+  document.getElementById("changeTaskButton").addEventListener("click", function () {
+    currentTaskMinutes = currentTaskMinutes === 15 ? 30 : 15;
+    renderTask(currentTaskMinutes);
+    showToast("已換成另一個更輕的版本；今天不需要追趕。");
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-method]"), function (button) {
+    button.addEventListener("click", function () { renderMethod(button.dataset.method); });
+  });
+
+  document.getElementById("reviewForm").addEventListener("submit", function (event) { event.preventDefault(); saveReview(); });
+  document.getElementById("copyShareButton").addEventListener("click", function () { copyText(buildShareCard(), "本週分享卡已複製"); });
+
+  resetButton.addEventListener("click", function () { document.getElementById("resetDialog").showModal(); });
+  document.getElementById("confirmResetButton").addEventListener("click", function () {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* ignore */ }
+    profile = defaultProfile();
+    document.getElementById("resetDialog").close();
+    window.location.reload();
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-close-dialog]"), function (button) {
+    button.addEventListener("click", function () { button.closest("dialog").close(); });
+  });
+
+  onboardingForm.addEventListener("submit", function (event) { event.preventDefault(); goNext(); });
+
+  if (!restoreProfile()) setView("welcome");
+}());
+
+</script>
+</body>
+</html>
