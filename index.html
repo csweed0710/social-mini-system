@@ -1,57 +1,77 @@
 <title>社群小系統</title>
 <style>
-  /* 視覺語彙：編輯質感——暖瓷白紙、深松綠、沙金、霧灰藍、玫瑰灰，安靜而篤定 */
+  /* 視覺語彙：玻璃質感——墨綠×米白×玻璃球體，柔光攝影棚，安靜而篤定 */
   :root{
-    --paper:#F7F5EF;
-    --card:#FFFFFF;
-    --ink:#262825;
-    --muted:#8B8578;
-    --line:rgba(38,40,37,.11);
-    --accent:#2F6B52;
-    --accent-soft:rgba(47,107,82,.09);
-    --growth:#3E7D5E;
-    --growth-soft:rgba(62,125,94,.11);
+    --paper:#F5F0E3;
+    --card:rgba(255,255,255,.58);
+    --card-strong:rgba(255,255,255,.78);
+    --ink:#132923;
+    --muted:#5C6B63;
+    --line:rgba(15,38,34,.14);
+    --accent:#A9793B;
+    --accent-soft:rgba(169,121,59,.11);
+    --growth:#2F7A5C;
+    --growth-soft:rgba(47,122,92,.10);
     --risk:#B4556A;
     --risk-soft:rgba(180,85,106,.08);
-    --sky:#AFC3CE;
-    --butter:#E7D6B0;
-    --btn-ink:#FFFFFF;
-    --shadow:0 12px 32px rgba(38,40,37,.07);
+    --sky:#9FD1B7;
+    --butter:#DBBB80;
+    --btn-ink:#1B140A;
+    --btn-ink-2:#FFFFFF;
+    --glass-tint:15,38,34;
+    --ground-a:#F5F0E3;
+    --ground-b:#EDE4CF;
+    --ring:rgba(169,121,59,.28);
+    --blur:18px;
+    --shadow:0 20px 50px rgba(15,38,34,.12);
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --paper:#202622;
-      --card:#2A322C;
-      --ink:#ECEAE2;
-      --muted:#A5A294;
-      --line:rgba(236,234,226,.13);
-      --accent:#8CC7A9;
-      --accent-soft:rgba(140,199,169,.13);
+      --paper:#0A211E;
+      --card:rgba(245,240,227,.08);
+      --card-strong:rgba(245,240,227,.14);
+      --ink:#F5F0E3;
+      --muted:#B9C4AE;
+      --line:rgba(245,240,227,.20);
+      --accent:#C9A15C;
+      --accent-soft:rgba(201,161,92,.14);
       --growth:#7FBF9E;
       --growth-soft:rgba(127,191,158,.14);
       --risk:#D48CA0;
       --risk-soft:rgba(212,140,160,.12);
-      --sky:#93AEBD;
-      --butter:#D9C79A;
-      --btn-ink:#202622;
-      --shadow:0 12px 32px rgba(0,0,0,.3);
+      --sky:#6FAF8E;
+      --butter:#DBBB80;
+      --btn-ink:#1B140A;
+      --btn-ink-2:#0A211E;
+      --glass-tint:245,240,227;
+      --ground-a:#0A211E;
+      --ground-b:#123B36;
+      --ring:rgba(201,161,92,.35);
+      --blur:18px;
+      --shadow:0 24px 60px rgba(0,0,0,.4);
     }
   }
   :root[data-theme="light"]{
-    --paper:#F7F5EF; --card:#FFFFFF; --ink:#262825; --muted:#8B8578;
-    --line:rgba(38,40,37,.11); --accent:#2F6B52; --accent-soft:rgba(47,107,82,.09);
-    --growth:#3E7D5E; --growth-soft:rgba(62,125,94,.11);
+    --paper:#F5F0E3; --card:rgba(255,255,255,.58); --card-strong:rgba(255,255,255,.78);
+    --ink:#132923; --muted:#5C6B63;
+    --line:rgba(15,38,34,.14); --accent:#A9793B; --accent-soft:rgba(169,121,59,.11);
+    --growth:#2F7A5C; --growth-soft:rgba(47,122,92,.10);
     --risk:#B4556A; --risk-soft:rgba(180,85,106,.08);
-    --sky:#AFC3CE; --butter:#E7D6B0; --btn-ink:#FFFFFF;
-    --shadow:0 12px 32px rgba(38,40,37,.07);
+    --sky:#9FD1B7; --butter:#DBBB80; --btn-ink:#1B140A; --btn-ink-2:#FFFFFF;
+    --glass-tint:15,38,34; --ground-a:#F5F0E3; --ground-b:#EDE4CF;
+    --ring:rgba(169,121,59,.28); --blur:18px;
+    --shadow:0 20px 50px rgba(15,38,34,.12);
   }
   :root[data-theme="dark"]{
-    --paper:#202622; --card:#2A322C; --ink:#ECEAE2; --muted:#A5A294;
-    --line:rgba(236,234,226,.13); --accent:#8CC7A9; --accent-soft:rgba(140,199,169,.13);
+    --paper:#0A211E; --card:rgba(245,240,227,.08); --card-strong:rgba(245,240,227,.14);
+    --ink:#F5F0E3; --muted:#B9C4AE;
+    --line:rgba(245,240,227,.20); --accent:#C9A15C; --accent-soft:rgba(201,161,92,.14);
     --growth:#7FBF9E; --growth-soft:rgba(127,191,158,.14);
     --risk:#D48CA0; --risk-soft:rgba(212,140,160,.12);
-    --sky:#93AEBD; --butter:#D9C79A; --btn-ink:#202622;
-    --shadow:0 12px 32px rgba(0,0,0,.3);
+    --sky:#6FAF8E; --butter:#DBBB80; --btn-ink:#1B140A; --btn-ink-2:#0A211E;
+    --glass-tint:245,240,227; --ground-a:#0A211E; --ground-b:#123B36;
+    --ring:rgba(201,161,92,.35); --blur:18px;
+    --shadow:0 24px 60px rgba(0,0,0,.4);
   }
 
   *{box-sizing:border-box}
@@ -85,18 +105,71 @@
   nav.stagenav .brand b{color:var(--accent)}
 
   /* ---------- hero ---------- */
-  header.hero{padding:72px 0 48px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
-  .heroart{position:absolute;right:4%;top:48px;width:330px;height:310px;pointer-events:none}
-  .heroart span{display:block;position:absolute}
-  .heroart .sun{width:140px;height:140px;border-radius:50%;background:var(--butter);top:0;right:36px}
-  .heroart .archshape{bottom:0;right:104px;width:150px;height:196px;background:var(--accent);border-radius:75px 75px 0 0}
-  .heroart .archshape::after{content:"";position:absolute;left:50%;top:40px;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:var(--paper)}
-  .heroart .stairs{right:8px;bottom:0;width:84px;height:40px;background:var(--sky)}
-  .heroart .stairs::before{content:"";position:absolute;bottom:40px;right:0;width:56px;height:40px;background:var(--sky)}
-  .heroart .stairs::after{content:"";position:absolute;bottom:80px;right:0;width:28px;height:40px;background:var(--sky)}
+  header.hero{
+    padding:72px 0 48px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 12% -10%, color-mix(in srgb, var(--growth) 22%, transparent), transparent 60%),
+      linear-gradient(160deg, var(--ground-a), var(--ground-b) 65%, var(--ground-a));
+  }
   .hero .wrap{position:relative;z-index:1}
-  @media (max-width:1180px){ .heroart{opacity:.35} }
-  @media (max-width:860px){ .heroart{display:none} }
+
+  /* ---- 3D glass orbs: layered specular + core-shadow + rim-light + cast shadow ----
+     .orb (parallax layer, JS-controlled translate) > .float (ambient drift, CSS-animated)
+     > .body/.rim/.cast (visual shading). Splitting parallax from drift keeps the two
+     transform sources from fighting on the same element. */
+  .orbwrap{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .orb{position:absolute;will-change:transform}
+  .orb .float{position:relative;width:100%;height:100%}
+  .orb .obody{
+    position:absolute;inset:0;border-radius:50%;
+    background:
+      radial-gradient(circle at 30% 24%, rgba(255,255,255,.95), rgba(255,255,255,0) 13%),
+      radial-gradient(circle at 40% 32%, rgba(255,255,255,.4), rgba(255,255,255,0) 36%),
+      radial-gradient(circle at 72% 76%, rgba(4,16,15,.55), transparent 58%),
+      radial-gradient(circle at 78% 20%, color-mix(in srgb, var(--butter) 55%, transparent), transparent 42%),
+      linear-gradient(155deg, color-mix(in srgb, var(--sky) 55%, white 10%) 0%, var(--growth) 48%, color-mix(in srgb, var(--paper) 40%, black 30%) 100%);
+    box-shadow:
+      inset -22px -26px 50px rgba(0,0,0,.35),
+      inset 14px 14px 30px rgba(255,255,255,.15),
+      inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .orb .orim{
+    position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 200deg at 50% 50%, transparent 0deg, rgba(255,255,255,.28) 18deg, transparent 50deg, transparent 300deg, color-mix(in srgb, var(--butter) 70%, transparent) 335deg, transparent 360deg);
+    mix-blend-mode:screen;opacity:.8;
+  }
+  .orb .ocast{
+    position:absolute;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(2,10,9,.5), transparent 72%);
+    filter:blur(24px);
+  }
+  .orb.o1{width:360px;height:360px;top:-110px;right:-70px;filter:blur(1px)}
+  .orb.o1 .float{animation:orbdrift1 30s ease-in-out infinite}
+  .orb.o1 .ocast{width:300px;height:90px;left:30px;top:310px}
+  .orb.o2{width:170px;height:170px;bottom:10px;left:-30px}
+  .orb.o2 .float{animation:orbdrift2 24s ease-in-out infinite}
+  .orb.o2 .ocast{width:140px;height:46px;left:15px;top:150px}
+  .orb.o3{width:100px;height:100px;top:210px;right:220px;filter:blur(.3px);opacity:.9}
+  .orb.o3 .float{animation:orbdrift3 20s ease-in-out infinite}
+  .orb.o3 .ocast{width:76px;height:28px;left:12px;top:92px}
+  .oribbon{position:absolute;z-index:0;pointer-events:none;right:-120px;top:150px;will-change:transform}
+  .oribbon .rband{
+    width:560px;height:112px;border-radius:999px;position:relative;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,.05) 22%, transparent 40%, rgba(4,14,13,.35) 78%, rgba(4,14,13,.5) 100%),
+      linear-gradient(100deg, var(--growth), color-mix(in srgb, var(--butter) 55%, transparent) 55%, var(--paper));
+    box-shadow:inset 0 2px 0 rgba(255,255,255,.32), inset 0 -10px 20px rgba(0,0,0,.3), 0 40px 60px -30px rgba(0,0,0,.55);
+    filter:blur(.5px);transform:rotate(-16deg);opacity:.8;
+  }
+  .oribbon .rband::after{
+    content:"";position:absolute;inset:0;border-radius:999px;
+    background:linear-gradient(100deg, transparent 15%, rgba(255,255,255,.45) 32%, transparent 46%);opacity:.7;
+  }
+  @keyframes orbdrift1{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(-18px,20px) rotate(3deg)}}
+  @keyframes orbdrift2{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(14px,-16px) rotate(-4deg)}}
+  @keyframes orbdrift3{0%,100%{transform:translate(0,0)}50%{transform:translate(-10px,12px)}}
+  @media (prefers-reduced-motion: reduce){ .orb .float,.oribbon .rband{animation:none!important} }
+  @media (max-width:860px){ .orbwrap,.oribbon{opacity:.5} .orb.o3{display:none} }
   .eyebrow{
     text-transform:uppercase;letter-spacing:.22em;font-size:12px;color:var(--accent);
     font-weight:700;margin:0 0 18px;
@@ -536,7 +609,7 @@
   .apiwrap textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
   .apibar{display:flex;gap:10px;align-items:center;margin:10px 0 0;flex-wrap:wrap}
   .gobtn{
-    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink-2);border:none;border-radius:999px;
     padding:9px 20px;font-family:inherit;font-size:13.5px;font-weight:900;cursor:pointer;
   }
   .gobtn:hover{opacity:.85}
@@ -566,7 +639,7 @@
   }
   .tweak:hover{border-color:var(--accent);color:var(--accent)}
   .inlinegen{
-    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink-2);border:none;border-radius:999px;
     padding:6px 16px;font-family:inherit;font-size:12.5px;font-weight:900;cursor:pointer;
   }
   .inlinegen:hover{opacity:.85}
@@ -625,49 +698,73 @@
   .calday.today{box-shadow:inset 0 0 0 2px var(--accent);background:var(--accent-soft)}
   .calday.today .dn::before{content:"今天 · ";color:var(--growth)}
 
-  /* ---------- 療癒皮膚：柔光、呼吸感、慢動作 ---------- */
+  /* ---------- 玻璃皮膚：半透明卡面、模糊透光、柔光暈 ---------- */
   h1{font-weight:700}
   h2{font-weight:700}
   body{line-height:1.85}
   main section{padding:64px 0 12px}
   .card,.trackcard,.arch,.mm,.seocard,.adstep,.phase,.sop .day,.pstep,.hookbox,
-  .stage,.calc,.platpanel,.stratwrap,.pbuilder,.tablewrap,.calweek,.progressbox{
-    box-shadow:var(--shadow);
+  .stage,.calc,.platpanel,.stratwrap,.pbuilder,.tablewrap,.calweek,.progressbox,
+  .mstep,.goalchip,.chartcard,.todaycard,.routecard,.diagcard,.personacard,
+  .apisettings,.calday{
+    background:var(--card);
+    box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.14);
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(150%);
+    backdrop-filter:blur(var(--blur)) saturate(150%);
   }
   .card,.trackcard,.arch,.mm,.seocard,.adstep,.phase,.sop .day,.hookbox{border-radius:20px}
   .stage,.calc,.platpanel,.stratwrap,.pbuilder,.calweek{border-radius:22px}
   .pstep{border-radius:18px}
   .progressbox{border-radius:20px}
   @media (prefers-reduced-motion: no-preference){
-    .trackcard,.arch,.mm,.card,.seocard,.adstep{transition:transform .25s ease, box-shadow .25s ease, border-color .2s ease}
-    .trackcard:hover,.arch:hover,.mm:hover{transform:translateY(-3px)}
+    .trackcard,.arch,.mm,.card,.seocard,.adstep,.goalchip{
+      transition:transform .22s ease, box-shadow .22s ease, border-color .2s ease, background .22s ease, backdrop-filter .22s ease;
+    }
+    .trackcard:hover,.arch:hover,.mm:hover{
+      transform:translateY(-3px);background:var(--card-strong);
+      -webkit-backdrop-filter:blur(calc(var(--blur) + 10px)) saturate(180%);
+      backdrop-filter:blur(calc(var(--blur) + 10px)) saturate(180%);
+    }
   }
-  header.hero::before{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background:
-      radial-gradient(640px 420px at 88% 8%, color-mix(in srgb, var(--butter) 40%, transparent), transparent 70%),
-      radial-gradient(600px 480px at -4% 100%, color-mix(in srgb, var(--sky) 32%, transparent), transparent 70%),
-      radial-gradient(400px 300px at 55% 110%, color-mix(in srgb, var(--growth) 14%, transparent), transparent 70%);
+  /* 選中／啟用狀態（半透明款）：模糊、飽和度、外圍暈光一起加強，不用讀文字也感覺得到。
+     viewbtn／modebtn／goalchip 走實心金底樣式，不套用這條，避免半透明底配深色字看不清。 */
+  .trackcard[aria-pressed="true"],.arch[aria-pressed="true"],
+  .platbtn[aria-pressed="true"]{
+    background:var(--accent-soft);
+    -webkit-backdrop-filter:blur(calc(var(--blur) + 12px)) saturate(190%);
+    backdrop-filter:blur(calc(var(--blur) + 12px)) saturate(190%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.4),
+      inset 0 -1px 6px rgba(0,0,0,.1),
+      0 6px 20px -6px var(--ring),
+      0 0 0 1px var(--ring);
   }
-  .heroart .sun{
-    background:radial-gradient(circle at 38% 34%, color-mix(in srgb, var(--butter) 100%, white 12%), var(--butter));
-    box-shadow:0 0 90px 34px color-mix(in srgb, var(--butter) 55%, transparent);
+  /* 實心 CTA 按鈕：hover 時一道光斜掃過玻璃表面，按下去有壓進去的內凹感 */
+  .copybtn,.gobtn,.pbtn,.ctgo,.inlinegen,.icsbtn,.todaycard .donebtn,.diagbtn,
+  .goalchip[aria-pressed="true"],.modebtn[aria-pressed="true"],.viewbtn[aria-pressed="true"]{
+    position:relative;overflow:hidden;isolation:isolate;
+    transition:transform .16s ease, box-shadow .16s ease;
   }
-  .heroart .archshape{
-    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, white 14%), var(--accent));
-    box-shadow:var(--shadow);
-  }
-  .heroart .stairs, .heroart .stairs::before, .heroart .stairs::after{
-    background:var(--sky);border-radius:6px 6px 0 0;
-    box-shadow:0 8px 24px color-mix(in srgb, var(--sky) 40%, transparent);
+  .copybtn::after,.gobtn::after,.pbtn::after,.ctgo::after,.inlinegen::after,.icsbtn::after,
+  .todaycard .donebtn::after,.diagbtn::after,
+  .goalchip[aria-pressed="true"]::after,.modebtn[aria-pressed="true"]::after,.viewbtn[aria-pressed="true"]::after{
+    content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.45) 46%, transparent 62%);
+    transform:translateX(-130%);transition:transform .5s ease;
   }
   @media (prefers-reduced-motion: no-preference){
-    @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-    .heroart .sun{animation:floaty 9s ease-in-out infinite}
-    .heroart .archshape{animation:floaty 13s ease-in-out infinite}
-    .heroart .stairs{animation:floaty 11s ease-in-out infinite}
+    .copybtn:hover::after,.gobtn:hover::after,.pbtn:hover::after,.ctgo:hover::after,.inlinegen:hover::after,
+    .icsbtn:hover::after,.todaycard .donebtn:hover::after,.diagbtn:hover::after{transform:translateX(130%)}
   }
-  nav.stagenav{background:color-mix(in srgb, var(--paper) 88%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .copybtn:active,.gobtn:active,.pbtn:active,.ctgo:active,.inlinegen:active,.icsbtn:active,
+  .todaycard .donebtn:active,.diagbtn:active{
+    transform:scale(.96);box-shadow:inset 0 2px 8px rgba(0,0,0,.22);
+  }
+  nav.stagenav{
+    background:rgba(var(--glass-tint),.10);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    backdrop-filter:blur(20px) saturate(160%);
+  }
 
   /* ---------- goal chips ---------- */
   .goalrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 30px}
@@ -730,7 +827,7 @@
     padding:6px 16px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-left:10px;
   }
   .icsbtn{
-    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink-2);border:none;border-radius:999px;
     padding:8px 18px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;
   }
     .icsbtn:hover{opacity:.85}
@@ -757,7 +854,7 @@
   .todaycard .task.done{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(128,128,128,.5)}
   .todaycard .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .todaycard .donebtn{
-    background:var(--growth);color:var(--btn-ink);border:none;border-radius:999px;
+    background:var(--growth);color:var(--btn-ink-2);border:none;border-radius:999px;
     padding:12px 34px;font-family:inherit;font-size:15.5px;font-weight:900;cursor:pointer;
   }
     .todaycard .donebtn:hover{opacity:.85}
@@ -804,7 +901,7 @@
   .diagcard.good{background:var(--growth-soft);border-color:var(--growth)}
   .diagcard.good b{color:var(--growth)}
   .diagbtn{
-    background:var(--risk);color:var(--btn-ink);border:none;border-radius:999px;
+    background:var(--risk);color:var(--btn-ink-2);border:none;border-radius:999px;
     padding:8px 18px;font-family:inherit;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;
   }
   .diagbtn:hover{opacity:.85}
@@ -921,7 +1018,7 @@
     font-family:inherit;cursor:pointer;margin-left:8px;vertical-align:middle;letter-spacing:.04em;
     line-height:1.7;
   }
-  .aichip:hover{background:var(--growth);color:var(--btn-ink)}
+  .aichip:hover{background:var(--growth);color:var(--btn-ink-2)}
   .aichip:focus-visible{outline:2px solid var(--growth);outline-offset:2px}
   .calday .aichip{position:absolute;top:8px;right:8px;margin:0}
 </style>
@@ -938,7 +1035,12 @@
 </nav>
 
 <header class="hero">
-  <div class="heroart" aria-hidden="true"><span class="sun"></span><span class="archshape"></span><span class="stairs"></span></div>
+  <div class="orbwrap" id="heroOrbs" aria-hidden="true">
+    <div class="orb o1" data-depth="14"><div class="float"><div class="ocast"></div><div class="obody"></div><div class="orim"></div></div></div>
+    <div class="orb o2" data-depth="24"><div class="float"><div class="ocast"></div><div class="obody"></div><div class="orim"></div></div></div>
+    <div class="orb o3" data-depth="36"><div class="float"><div class="ocast"></div><div class="obody"></div><div class="orim"></div></div></div>
+    <div class="oribbon" data-depth="10"><div class="rband"></div></div>
+  </div>
   <div class="wrap">
     <p class="eyebrow">社群小系統 · 陪妳從 0 開始</p>
     <h1 class="serif">不用很厲害，<br>我會<span class="gold">陪著妳</span>。</h1>
@@ -1740,6 +1842,28 @@
 </footer>
 
 <script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var orbwrap = document.getElementById("heroOrbs");
+  if (orbwrap && !reduceMotion){
+    var items = Array.prototype.slice.call(orbwrap.querySelectorAll("[data-depth]"));
+    var raf = null, tx = 0, ty = 0;
+    window.addEventListener("pointermove", function(e){
+      var w = window.innerWidth, h = window.innerHeight;
+      tx = (e.clientX / w - .5) * 2;
+      ty = (e.clientY / h - .5) * 2;
+      if (!raf) raf = requestAnimationFrame(applyParallax);
+    });
+    function applyParallax(){
+      raf = null;
+      items.forEach(function(el){
+        var depth = parseFloat(el.getAttribute("data-depth")) || 20;
+        el.style.transform = "translate(" + (-tx * depth).toFixed(1) + "px, " + (-ty * depth).toFixed(1) + "px)";
+      });
+    }
+  }
+})();
 (function(){
   "use strict";
   var LS = "creator-os-v1";
