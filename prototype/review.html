@@ -491,6 +491,10 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
           <button class="btn-ghost" type="button" id="joinCircleButton">加入圈子</button>
         </div>
       </div>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--glass-border)">
+        <button class="btn-quiet" type="button" id="testConnectionButton" style="padding-left:0">先測一下連線通不通</button>
+        <p class="field-note" id="testConnectionResult"></p>
+      </div>
     </div>
 
     <div id="circleJoined" hidden>
@@ -1204,6 +1208,34 @@ function makeCircleCode(){
   return out;
 }
 
+/* 一鍵連線測試：自己發一筆、自己讀回來，不用開兩個分頁、不用找朋友配合。
+   用一組專屬代碼，不會出現在任何真正的圈子裡。 */
+async function testCircleConnection(){
+  var out = document.getElementById("testConnectionResult");
+  var btn = document.getElementById("testConnectionButton");
+  btn.disabled = true;
+  out.style.color = "var(--ink-quiet)";
+  out.textContent = "測試中……";
+  var testCode = "PING-" + Date.now().toString(36);
+  var testId = uid();
+  try{
+    await CircleSync.postItem(testCode, { id:testId, type:"reflection", authorName:"連線測試", text:"這是自動連線測試留下的資料，可以忽略。" });
+    var feed = await CircleSync.getFeed(testCode);
+    var found = feed.some(function(i){ return i.id === testId; });
+    if (found){
+      out.style.color = "var(--accent)";
+      out.textContent = "✓ 連線正常，可以放心用陪伴圈了。";
+    } else {
+      out.style.color = "var(--risk)";
+      out.textContent = "寫進去了，但讀不回來——可能是 circle_items 的讀取權限（RLS policy）沒設對，检查 supabase_setup.sql 有沒有整段執行成功。";
+    }
+  }catch(e){
+    out.style.color = "var(--risk)";
+    out.textContent = "連不上：" + e.message + "——常見原因：SQL 還沒執行、URL 或 key 貼錯、或這個網路環境擋住了 Supabase。";
+  }
+  btn.disabled = false;
+}
+
 var circlePollTimer = null;
 async function renderCircleDialog(){
   var joined = document.getElementById("circleJoined");
@@ -1443,6 +1475,7 @@ document.getElementById("viewCircleButton").addEventListener("click", function()
   startCirclePolling();
 });
 document.getElementById("circleDialog").addEventListener("close", stopCirclePolling);
+document.getElementById("testConnectionButton").addEventListener("click", testCircleConnection);
 document.getElementById("createCircleButton").addEventListener("click", function(){
   var name = document.getElementById("circleNameInput").value.trim();
   if (!name){ showToast("先留個名字，圈子裡的人才知道是誰。"); return; }
