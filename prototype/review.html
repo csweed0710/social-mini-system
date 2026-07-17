@@ -252,6 +252,7 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
       <button type="button" data-theme="light" aria-pressed="false" aria-label="淺色">☀</button>
       <button type="button" data-theme="dark" aria-pressed="false" aria-label="深色">☾</button>
     </div>
+    <button class="btn-quiet" id="accountButton" type="button">帳號</button>
     <button class="btn-quiet" id="backupButton" type="button" hidden>備份</button>
     <button class="btn-quiet" id="resetButton" type="button" hidden>重新開始</button>
   </div>
@@ -518,6 +519,67 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
     <button type="button" class="methodcard" data-method="external"><b>02</b><span class="t">用其他 AI</span><span class="d">複製指令，再把答案貼回來</span></button>
     <button type="button" class="methodcard" data-method="manual"><b>03</b><span class="t">我想自己做</span><span class="d">提供簡單步驟，不需要 AI</span></button>
     <div class="methodout" id="methodOutput" hidden></div>
+  </div>
+</dialog>
+
+<!-- ===== 帳號與雲端同步（可選） ===== -->
+<dialog id="accountDialog" class="glass-strong">
+  <div class="dcard" style="max-width:480px">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>帳號</h2>
+
+    <div id="accountLoggedOut">
+      <p style="color:var(--ink-muted);font-size:13.5px;margin-top:0">帳號是<b>可選的</b>——不用帳號，這台裝置上的一切照常運作。建立帳號後，妳的處方與紀錄會存到雲端，換裝置也接得回來，只有登入這個帳號的人看得到。</p>
+      <div class="formgrid">
+        <label>Email<input type="email" id="authEmail" autocomplete="email" placeholder="you@example.com"></label>
+        <label>密碼（至少 6 個字）<input type="password" id="authPassword" autocomplete="current-password" placeholder="••••••"></label>
+        <div class="dactions" style="justify-content:flex-start">
+          <button class="btn-primary" type="button" id="signInButton">登入</button>
+          <button class="btn-ghost" type="button" id="signUpButton">建立帳號</button>
+        </div>
+        <p class="field-note" id="authStatus"></p>
+        <p class="field-note">按「建立帳號」表示妳同意把處方與紀錄存到雲端（<button type="button" class="btn-quiet" id="viewTermsButton" style="padding:0;font-size:inherit">看資料怎麼被使用</button>）。陪伴圈的分享是另一回事——只有妳按「分享」的內容才會給圈子看到。</p>
+      </div>
+    </div>
+
+    <div id="accountLoggedIn" hidden>
+      <p style="font-size:13.5px;color:var(--ink-muted);margin-top:0">已登入：<b id="accountEmail" style="color:var(--ink)"></b></p>
+      <p class="field-note" id="syncStatus"></p>
+      <div class="dactions" style="justify-content:flex-start">
+        <button class="btn-ghost" type="button" id="syncNowButton">立即同步</button>
+        <button class="btn-quiet" type="button" id="signOutButton">登出</button>
+      </div>
+      <p class="field-note" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--glass-border)">登出後這台裝置的紀錄還在，只是不再同步。想把雲端那份整個刪掉：</p>
+      <button class="btn-quiet" type="button" id="deleteCloudButton" style="color:var(--risk)">刪除雲端資料（這台裝置的紀錄會保留）</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 雲端／本機衝突選擇 ===== -->
+<dialog id="conflictDialog" class="glass-strong">
+  <div class="dcard" style="max-width:460px">
+    <h2>兩邊都有紀錄</h2>
+    <p style="color:var(--ink-muted);font-size:13.5px;margin-top:0">這台裝置和雲端各有一份不一樣的紀錄。要用哪一份繼續？被蓋掉的那份不會再找得回來，猶豫的話可以先按右上角備份再決定。</p>
+    <div class="formgrid">
+      <button class="btn-ghost" type="button" id="useLocalButton">用這台裝置的<span style="display:block;font-size:11.5px;color:var(--ink-quiet)" id="localStamp"></span></button>
+      <button class="btn-ghost" type="button" id="useCloudButton">用雲端的<span style="display:block;font-size:11.5px;color:var(--ink-quiet)" id="cloudStamp"></span></button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 資料使用說明（草稿） ===== -->
+<dialog id="termsDialog" class="glass-strong">
+  <div class="dcard" style="max-width:500px">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>資料怎麼被使用</h2>
+    <p class="field-note" style="color:var(--risk)">這是測試期草稿，正式開放前會經過法律確認。</p>
+    <div style="font-size:13.5px;color:var(--ink-muted);line-height:1.9">
+      <p><b style="color:var(--ink)">存什麼：</b>建立帳號後，妳的進站回答、處方、每日紀錄、復盤與關心紀錄會存到雲端資料庫，只有登入這個帳號的人讀得到。</p>
+      <p><b style="color:var(--ink)">不存什麼：</b>沒有按「分享」的內容不會給任何其他人看到；系統不推測、不記錄政治、宗教、健康、性向等敏感身分。</p>
+      <p><b style="color:var(--ink)">陪伴圈：</b>只有妳勾選「分享到陪伴圈」的那則內容會被圈子成員看到，其餘一律私密。</p>
+      <p><b style="color:var(--ink)">刪除權：</b>「刪除雲端資料」立即生效；「匯出備份」隨時可以把完整資料帶走。</p>
+      <p><b style="color:var(--ink)">不做的事：</b>原始資料不用於模型訓練；不因為妳不常登入而催促；不做排名。</p>
+    </div>
   </div>
 </dialog>
 
@@ -1398,6 +1460,150 @@ function circleDisplayName(){
   return profile.circle.displayName || "一位朋友";
 }
 
+/* ================= 帳號與雲端同步（可選——不用帳號，本機一切照常） =================
+   直接打 Supabase Auth（GoTrue）與 PostgREST 的 REST API，不引入 supabase-js，
+   維持單檔、零依賴。anon key 本來就是設計給前端用的；每人資料的隔離靠
+   user_profiles 的 RLS（auth.uid() = user_id），不是靠把 key 藏起來。 */
+var AUTH_KEY = "social-mini-v2-auth";
+var auth = null;            // { access_token, refresh_token, expires_at(秒), user:{id,email} }
+var lastSyncAt = null;      // ISO 字串
+var cloudState = "idle";    // idle | syncing | synced | offline | error
+function loadAuth(){ try{ auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); }catch(e){ auth = null; } }
+function persistAuth(){ try{ if (auth) localStorage.setItem(AUTH_KEY, JSON.stringify(auth)); else localStorage.removeItem(AUTH_KEY); }catch(e){} }
+
+function authErrText(raw){
+  var s = String(raw || "");
+  if (/invalid.*credential|invalid_grant|Invalid login/i.test(s)) return "帳號或密碼不對——再試一次？";
+  if (/already.*registered|already.*exists/i.test(s)) return "這個 email 已經有帳號了——直接按「登入」試試。";
+  if (/at least|password.*short|weak/i.test(s)) return "密碼至少要 6 個字。";
+  if (/rate limit|too many/i.test(s)) return "試太多次了，休息一下再試。";
+  if (/confirm/i.test(s)) return "這個帳號還沒點過確認信——收一下信箱？";
+  return "雲端暫時連不上，這台裝置的紀錄不受影響，等一下再試。";
+}
+
+async function authRequest(path, body){
+  var res = await fetch(SUPABASE_URL + path, {
+    method: "POST",
+    headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  var data = null;
+  try{ data = await res.json(); }catch(e){}
+  if (!res.ok){
+    var msg = data && (data.error_description || data.msg || data.error) || ("HTTP " + res.status);
+    throw new Error(msg);
+  }
+  return data;
+}
+function adoptSession(data){
+  auth = {
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+    expires_at: data.expires_at || Math.floor(Date.now()/1000) + (data.expires_in || 3600),
+    user: { id: data.user.id, email: data.user.email }
+  };
+  persistAuth();
+}
+async function ensureFreshToken(){
+  if (!auth) throw new Error("not-signed-in");
+  if (Math.floor(Date.now()/1000) < auth.expires_at - 60) return;
+  var data = await authRequest("/auth/v1/token?grant_type=refresh_token", { refresh_token: auth.refresh_token });
+  adoptSession(data);
+}
+async function apiSignUp(email, password){
+  var data = await authRequest("/auth/v1/signup", { email: email, password: password });
+  if (data && data.access_token){ adoptSession(data); return { session: true }; }
+  return { session: false };  // 需要先收確認信
+}
+async function apiSignIn(email, password){
+  var data = await authRequest("/auth/v1/token?grant_type=password", { email: email, password: password });
+  adoptSession(data);
+}
+function signOutLocal(){
+  auth = null; persistAuth(); lastSyncAt = null; cloudState = "idle";
+  updateAccountUI();
+}
+
+/* ---- 雲端 profile：整份 JSON 一列，last-write-wins ---- */
+async function cloudHeaders(extra){
+  await ensureFreshToken();
+  return Object.assign({ apikey: SUPABASE_KEY, Authorization: "Bearer " + auth.access_token }, extra || {});
+}
+async function pullCloudProfile(){
+  var res = await fetch(SUPABASE_URL + "/rest/v1/user_profiles?select=data,updated_at&user_id=eq." + auth.user.id, {
+    headers: await cloudHeaders()
+  });
+  if (!res.ok) throw new Error("pull-failed:" + res.status);
+  var rows = await res.json();
+  return rows.length ? rows[0] : null;
+}
+async function pushCloudProfile(){
+  cloudState = "syncing"; updateAccountUI();
+  var res = await fetch(SUPABASE_URL + "/rest/v1/user_profiles", {
+    method: "POST",
+    headers: await cloudHeaders({ "Content-Type":"application/json", Prefer:"resolution=merge-duplicates,return=minimal" }),
+    body: JSON.stringify([{ user_id: auth.user.id, data: profile, updated_at: new Date().toISOString() }])
+  });
+  if (!res.ok){ cloudState = "error"; updateAccountUI(); throw new Error("push-failed:" + res.status); }
+  lastSyncAt = new Date().toISOString();
+  cloudState = "synced"; updateAccountUI();
+}
+async function deleteCloudProfile(){
+  var res = await fetch(SUPABASE_URL + "/rest/v1/user_profiles?user_id=eq." + auth.user.id, {
+    method: "DELETE",
+    headers: await cloudHeaders()
+  });
+  if (!res.ok) throw new Error("delete-failed:" + res.status);
+}
+
+var cloudPushTimer = null;
+function scheduleCloudPush(){
+  if (!auth) return;
+  window.clearTimeout(cloudPushTimer);
+  cloudPushTimer = window.setTimeout(function(){
+    pushCloudProfile().catch(function(){ cloudState = "offline"; updateAccountUI(); });
+  }, 2500);
+}
+
+/* ---- 登入後的三岔路：只有雲端、只有本機、兩邊都有 ---- */
+var pendingRemote = null;
+async function afterLogin(){
+  var remote = null;
+  try{ remote = await pullCloudProfile(); }catch(e){ /* 拉不到就先當作沒有，稍後推本機上去 */ }
+  var hasLocal = profile.prescriptions.length > 0;
+  if (remote && hasLocal && JSON.stringify(remote.data) !== JSON.stringify(profile)){
+    pendingRemote = remote;
+    document.getElementById("localStamp").textContent = "最後使用：" + (profile.intake.answeredAt ? profile.intake.answeredAt.slice(0,10) : "不明");
+    document.getElementById("cloudStamp").textContent = "最後同步：" + (remote.updated_at ? remote.updated_at.slice(0,10) : "不明");
+    document.getElementById("conflictDialog").showModal();
+    return;
+  }
+  if (remote){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProfile(remote.data)));
+    window.location.reload();
+    return;
+  }
+  try{ await pushCloudProfile(); }catch(e){}
+  updateAccountUI();
+}
+
+function updateAccountUI(){
+  var loggedOut = document.getElementById("accountLoggedOut");
+  var loggedIn = document.getElementById("accountLoggedIn");
+  if (!loggedOut) return;
+  loggedOut.hidden = Boolean(auth);
+  loggedIn.hidden = !auth;
+  if (auth){
+    document.getElementById("accountEmail").textContent = auth.user.email;
+    var s = document.getElementById("syncStatus");
+    if (cloudState === "syncing") s.textContent = "同步中……";
+    else if (cloudState === "synced" && lastSyncAt) s.textContent = "已同步（" + lastSyncAt.slice(11,16) + "）——之後每次儲存都會自動跟上。";
+    else if (cloudState === "offline" || cloudState === "error") s.textContent = "雲端暫時連不上；紀錄安全地留在這台裝置，連上後會自動補同步。";
+    else s.textContent = "已登入——每次儲存會自動同步到雲端。";
+  }
+  document.getElementById("accountButton").textContent = auth ? "帳號 ✓" : "帳號";
+}
+
 /* ================= AI 三種方式 ================= */
 function buildExternalPrompt(){
   var pr = currentPrescription();
@@ -1465,7 +1671,10 @@ function fallbackCopy(text,msg){
   var a = document.createElement("textarea"); a.value=text; a.style.position="fixed"; a.style.opacity="0";
   document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove(); showToast(msg);
 }
-function saveProfile(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }catch(e){} }
+function saveProfile(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }catch(e){}
+  scheduleCloudPush();  /* 有登入才會真的推；沒登入時什麼都不做 */
+}
 /* 把任何來源（localStorage、備份檔）的資料補齊成完整結構，缺欄位不會炸 */
 function normalizeProfile(parsed){
   var base = defaultProfile();
@@ -1665,6 +1874,94 @@ document.querySelectorAll("[data-method]").forEach(function(b){ b.addEventListen
 
 resetButton.addEventListener("click", function(){ document.getElementById("resetDialog").showModal(); });
 document.getElementById("backupButton").addEventListener("click", function(){ document.getElementById("backupDialog").showModal(); });
+
+/* ---- 帳號 ---- */
+document.getElementById("accountButton").addEventListener("click", function(){
+  updateAccountUI();
+  document.getElementById("authStatus").textContent = "";
+  document.getElementById("accountDialog").showModal();
+});
+document.getElementById("viewTermsButton").addEventListener("click", function(){ document.getElementById("termsDialog").showModal(); });
+function readAuthInputs(){
+  var email = document.getElementById("authEmail").value.trim();
+  var pw = document.getElementById("authPassword").value;
+  var status = document.getElementById("authStatus");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ status.textContent = "Email 看起來不太對——再確認一下？"; return null; }
+  if (pw.length < 6){ status.textContent = "密碼至少要 6 個字。"; return null; }
+  return { email: email, pw: pw };
+}
+document.getElementById("signInButton").addEventListener("click", async function(){
+  var input = readAuthInputs(); if (!input) return;
+  var status = document.getElementById("authStatus");
+  var btn = this; btn.disabled = true;
+  status.textContent = "登入中……";
+  try{
+    await apiSignIn(input.email, input.pw);
+    status.textContent = "";
+    updateAccountUI();
+    await afterLogin();
+  }catch(e){ status.textContent = authErrText(e.message); }
+  btn.disabled = false;
+});
+document.getElementById("signUpButton").addEventListener("click", async function(){
+  var input = readAuthInputs(); if (!input) return;
+  var status = document.getElementById("authStatus");
+  var btn = this; btn.disabled = true;
+  status.textContent = "建立中……";
+  try{
+    var result = await apiSignUp(input.email, input.pw);
+    if (result.session){
+      status.textContent = "";
+      updateAccountUI();
+      await afterLogin();
+    } else {
+      status.textContent = "確認信已寄到 " + input.email + "——點過信裡的連結後，回來按「登入」。";
+    }
+  }catch(e){ status.textContent = authErrText(e.message); }
+  btn.disabled = false;
+});
+document.getElementById("signOutButton").addEventListener("click", function(){
+  signOutLocal();
+  showToast("已登出；這台裝置的紀錄都還在。");
+});
+document.getElementById("syncNowButton").addEventListener("click", function(){
+  pushCloudProfile().then(function(){ showToast("同步好了。"); }).catch(function(){ showToast("雲端暫時連不上，等一下會自動再試。"); });
+});
+document.getElementById("deleteCloudButton").addEventListener("click", async function(){
+  var btn = this;
+  if (btn.dataset.confirming !== "1"){
+    btn.dataset.confirming = "1";
+    btn.textContent = "再按一次，確定刪除雲端那份";
+    window.setTimeout(function(){ btn.dataset.confirming = ""; btn.textContent = "刪除雲端資料（這台裝置的紀錄會保留）"; }, 6000);
+    return;
+  }
+  try{
+    await deleteCloudProfile();
+    signOutLocal();
+    showToast("雲端資料已刪除；這台裝置的紀錄完整保留。");
+  }catch(e){ showToast("刪除沒有成功——雲端暫時連不上，等一下再試。"); }
+  btn.dataset.confirming = ""; btn.textContent = "刪除雲端資料（這台裝置的紀錄會保留）";
+});
+document.getElementById("useLocalButton").addEventListener("click", async function(){
+  pendingRemote = null;  /* 先清再關——close 事件的守門邏輯以此判斷「有沒有做出選擇」 */
+  document.getElementById("conflictDialog").close();
+  try{ await pushCloudProfile(); showToast("以這台裝置的紀錄為準，雲端已更新。"); }
+  catch(e){ showToast("雲端暫時連不上，等下次儲存時會自動再試。"); }
+});
+document.getElementById("useCloudButton").addEventListener("click", function(){
+  if (!pendingRemote) return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProfile(pendingRemote.data)));
+  window.location.reload();
+});
+/* 按 ESC 逃出衝突選擇＝沒有選——那就先登出，兩份紀錄都原封不動，
+   絕不能讓「沒選」默默變成「本機蓋掉雲端」 */
+document.getElementById("conflictDialog").addEventListener("close", function(){
+  if (pendingRemote){
+    pendingRemote = null;
+    signOutLocal();
+    showToast("先登出了——兩份紀錄都原封不動，想好要用哪份再登入。");
+  }
+});
 document.getElementById("exportBackupButton").addEventListener("click", exportBackup);
 document.getElementById("importBackupInput").addEventListener("change", function(){
   if (this.files && this.files[0]) importBackup(this.files[0]);
@@ -1691,6 +1988,8 @@ document.querySelectorAll(".themepick button").forEach(function(b){ b.addEventLi
     var savedTheme = localStorage.getItem("social-mini-theme");
     if (savedTheme) applyTheme(savedTheme);
   }catch(e){}
+  loadAuth();
+  updateAccountUI();
   if (!restoreProfile()) setView("welcome");
 })();
 
