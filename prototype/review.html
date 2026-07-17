@@ -252,6 +252,7 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
       <button type="button" data-theme="light" aria-pressed="false" aria-label="淺色">☀</button>
       <button type="button" data-theme="dark" aria-pressed="false" aria-label="深色">☾</button>
     </div>
+    <button class="btn-quiet" id="backupButton" type="button" hidden>備份</button>
     <button class="btn-quiet" id="resetButton" type="button" hidden>重新開始</button>
   </div>
 </header>
@@ -520,6 +521,20 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
   </div>
 </dialog>
 
+<!-- ===== 備份與還原 ===== -->
+<dialog id="backupDialog" class="glass-strong">
+  <div class="dcard" style="max-width:460px">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>備份與還原</h2>
+    <p style="color:var(--ink-muted);font-size:13.5px;margin-top:0">所有紀錄都存在這台裝置的瀏覽器裡。換裝置、清瀏覽器資料之前，先匯出一份存好——這些紀錄是累積起來最值錢的東西。</p>
+    <div class="dactions" style="justify-content:flex-start">
+      <button class="btn-primary" type="button" id="exportBackupButton">匯出備份</button>
+      <label class="btn-ghost" style="cursor:pointer">匯入備份<input type="file" id="importBackupInput" accept=".json,application/json" hidden></label>
+    </div>
+    <p class="field-note">匯入會蓋掉目前這台裝置上的紀錄，換成備份檔裡的內容。</p>
+  </div>
+</dialog>
+
 <!-- ===== 重新開始 ===== -->
 <dialog id="resetDialog" class="glass-strong">
   <div class="dcard" style="max-width:420px">
@@ -749,7 +764,10 @@ function checkCare(level){
       if (t.pattern && !t.pattern.test(recentReflectionsText(6))) continue;
       return { type:"consequence:"+c.id, level:"deep", text:t.displayText };
     }
-    return { type:"consequence:"+c.id, level:"light", text:"這個限制還在陪著妳，最近感覺怎麼樣？" };
+    var lightText = c.triggeredBy === "track"
+      ? "那個新方向還放在心上，最近感覺怎麼樣？"
+      : "這個選擇還在陪著妳，最近感覺怎麼樣？";
+    return { type:"consequence:"+c.id, level:"light", text:lightText };
   }
 
   // 關心 2：陪妳在這一步走了一段路
@@ -786,7 +804,7 @@ function getCareForToday(){
   return checkCare("light");
 }
 function logCareFire(care){
-  profile.careLog.push({ id: uid(), type:care.type, level:care.level, firedAt:new Date().toISOString(), dismissedAt:null });
+  profile.careLog.push({ id: uid(), type:care.type, level:care.level, text:care.text, firedAt:new Date().toISOString(), dismissedAt:null });
   saveProfile();
 }
 function sameDay(iso, d2){
@@ -796,13 +814,31 @@ function sameDay(iso, d2){
 }
 var activeCare = null;
 function refreshCare(){
-  var care = getCareForToday();
-  if (care){
-    var already = profile.careLog.some(function(c){ return c.type===care.type && c.level===care.level && sameDay(c.firedAt, new Date()); });
-    if (!already) logCareFire(care);
+  /* 今天已經開過口、而且沒被「先不用」的話，重新整理頁面後要繼續陪著——
+     不能開一次口就消失（冷卻期是管「隔幾週再提」，不是管「今天內顯示幾次」）。 */
+  var today = new Date();
+  var todays = profile.careLog.filter(function(c){ return sameDay(c.firedAt, today) && !c.dismissedAt && c.text; });
+  if (todays.length){
+    activeCare = todays[todays.length-1];
+    renderCareUI();
+    return;
   }
+  var care = getCareForToday();
+  if (care) logCareFire(care);
   activeCare = care;
   renderCareUI();
+}
+function dismissActiveCare(){
+  if (!activeCare) return;
+  var today = new Date();
+  for (var i=profile.careLog.length-1; i>=0; i--){
+    var c = profile.careLog[i];
+    if (c.type===activeCare.type && c.level===activeCare.level && sameDay(c.firedAt, today)){
+      c.dismissedAt = new Date().toISOString();
+      break;
+    }
+  }
+  saveProfile();
 }
 function renderCareUI(){
   var line = document.getElementById("careLine");
@@ -813,7 +849,10 @@ function renderCareUI(){
     line.appendChild(document.createTextNode(activeCare.text + " "));
     var btn = document.createElement("button");
     btn.type = "button"; btn.className = "dismiss"; btn.textContent = "先不用";
-    btn.addEventListener("click", function(){ line.hidden = true; });
+    btn.addEventListener("click", function(){
+      dismissActiveCare();
+      line.hidden = true;
+    });
     line.appendChild(btn);
   } else {
     line.hidden = true;
@@ -871,6 +910,7 @@ function setView(name){
   onboardingView.hidden = name !== "onboarding";
   planView.hidden = name !== "plan";
   resetButton.hidden = name === "welcome";
+  document.getElementById("backupButton").hidden = name === "welcome";
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -957,7 +997,8 @@ function readWeeklyHours(){
   var raw = document.getElementById("weeklyHours").value;
   if (raw==="") return "";
   var v = Number(raw);
-  return Number.isFinite(v) && v>=0 ? v : "";
+  if (!Number.isFinite(v) || v < 0) return "";
+  return Math.min(v, 80);  /* 一週最多 80 小時——超過這個數字的輸入是誤打，不是計畫 */
 }
 
 function goNext(){
@@ -1002,9 +1043,16 @@ function renderFocal(minutes){
   var pr = currentPrescription();
   if (!pr){ return; }
   minutes = minutes || profile.lastMinutesChoice || 30;
+  /* 已經存起來的一件事不能因為切換分鐘數被換成另一題——
+     否則會變成「完成了一件其實沒做過的事」。 */
+  var existing = todayFocalItem();
+  if (existing && existing.status === "done" && minutes !== existing.chosenMinutes){
+    minutes = existing.chosenMinutes;
+    showToast("今天的這件事已經存好了；想換節奏，明天再調也可以。");
+  }
   profile.lastMinutesChoice = minutes;
   var item = ensureTodayFocalItem(minutes);
-  if (item.chosenMinutes !== minutes){
+  if (item.status !== "done" && item.chosenMinutes !== minutes){
     var task = tasksForStage(pr.stage, minutes, profile.intake.situationSignal);
     item.title = task[0]; item.why = task[1]; item.chosenMinutes = minutes;
   }
@@ -1081,6 +1129,10 @@ function applyAdjustment(){
   profile.adjustmentLog[profile.adjustmentLog.length-1].resultingPrescriptionId = pr.id;
   // 今天的一件事需要依新處方重排
   profile.focalItems = profile.focalItems.filter(function(f){ return f.date !== todayKey(); });
+  /* 今天已顯示的關心是針對「舊處方」講的——調整後先收起來，避免重播過時的話 */
+  profile.careLog.forEach(function(c){
+    if (!c.dismissedAt && sameDay(c.firedAt, new Date())) c.dismissedAt = new Date().toISOString();
+  });
   refreshCare();
   renderFocal(profile.lastMinutesChoice);
 
@@ -1117,7 +1169,7 @@ async function saveReflection(){
     if (a){ a.status="validated"; a.resolvedNote = document.getElementById("reviewLearning").value.trim(); }
   });
   var conclusionText = document.getElementById("reviewLearning").value.trim();
-  profile.weeklyReflections.push({
+  var entry = {
     profileId:"local", prescriptionId: profile.currentPrescriptionId, weekOf: todayKey(),
     didText: document.getElementById("reviewAction").value.trim(),
     signalText: document.getElementById("reviewSignal").value.trim(),
@@ -1126,7 +1178,14 @@ async function saveReflection(){
     resolvedAssumptionIds: checked,
     askHelp: document.getElementById("reviewHelp").value.trim(),
     savedAt: new Date().toISOString()
-  });
+  };
+  /* 同一天存兩次是「修改」不是「多一筆」——重複紀錄會污染關心引擎的訊號判讀 */
+  var lastRef = profile.weeklyReflections[profile.weeklyReflections.length-1];
+  if (lastRef && lastRef.weekOf === entry.weekOf){
+    profile.weeklyReflections[profile.weeklyReflections.length-1] = entry;
+  } else {
+    profile.weeklyReflections.push(entry);
+  }
   saveProfile();
 
   if (profile.circle.code && document.getElementById("shareToCircle").checked){
@@ -1227,7 +1286,7 @@ async function testCircleConnection(){
   btn.disabled = true;
   out.style.color = "var(--ink-quiet)";
   out.textContent = "測試中……";
-  var testCode = "PING-" + Date.now().toString(36);
+  var testCode = "PING00";  /* 固定測試代碼：所有測試資料集中在同一個假圈子，不會撒滿整張表 */
   var testId = uid();
   try{
     await CircleSync.postItem(testCode, { id:testId, type:"reflection", authorName:"連線測試", text:"這是自動連線測試留下的資料，可以忽略。" });
@@ -1248,7 +1307,7 @@ async function testCircleConnection(){
 }
 
 var circlePollTimer = null;
-async function renderCircleDialog(){
+async function renderCircleDialog(quiet){
   var joined = document.getElementById("circleJoined");
   var setup = document.getElementById("circleSetup");
   if (!profile.circle.code){
@@ -1258,14 +1317,19 @@ async function renderCircleDialog(){
   setup.hidden = true; joined.hidden = false;
   document.getElementById("circleCodeDisplay").textContent = profile.circle.code;
   var wrap = document.getElementById("circleFeed");
-  wrap.textContent = "同步中……";
-  wrap.style.color = "var(--ink-quiet)";
+  if (!quiet){
+    wrap.textContent = "同步中……";
+    wrap.style.color = "var(--ink-quiet)";
+  }
 
   var feed;
   try{
     feed = await CircleSync.getFeed(profile.circle.code);
   }catch(e){
-    wrap.textContent = "圈子暫時連不上，等一下再試——分享的內容不會不見，只是這次沒抓到。";
+    /* 安靜輪詢失敗就保持原畫面，不要每 20 秒閃一次錯誤訊息 */
+    if (!quiet){
+      wrap.textContent = "圈子暫時連不上，等一下再試——分享的內容不會不見，只是這次沒抓到。";
+    }
     return;
   }
   wrap.style.color = "";
@@ -1318,9 +1382,13 @@ async function renderCircleDialog(){
 function startCirclePolling(){
   stopCirclePolling();
   circlePollTimer = window.setInterval(function(){
-    if (document.getElementById("circleDialog").open && profile.circle.code){
-      renderCircleDialog();
-    }
+    if (!document.getElementById("circleDialog").open || !profile.circle.code) return;
+    /* 妳正在打回應的時候，絕對不能重畫列表把字洗掉 */
+    var feedEl = document.getElementById("circleFeed");
+    if (feedEl.contains(document.activeElement)) return;
+    var typing = Array.prototype.some.call(feedEl.querySelectorAll("input"), function(i){ return i.value.trim() !== ""; });
+    if (typing) return;
+    renderCircleDialog(true);
   }, 20000);
 }
 function stopCirclePolling(){
@@ -1333,7 +1401,7 @@ function circleDisplayName(){
 /* ================= AI 三種方式 ================= */
 function buildExternalPrompt(){
   var pr = currentPrescription();
-  var item = todayFocalItem();
+  var item = todayFocalItem() || ensureTodayFocalItem(Number(profile.lastMinutesChoice) || 30);
   return "妳是一位暖心、專業、誠實的社群經營顧問。請尊重我的選擇，不要強迫我採用主流做法，也不要保證流量或收入。\n\n"+
     "【我的情況】\n想做的方向："+profile.intake.ideaText+"\n目前先顧："+STAGE_LABEL[pr.stage]+"\n"+
     "想幫助的人："+profile.audience+"\n"+
@@ -1344,7 +1412,7 @@ function buildExternalPrompt(){
 function prefLabel(v){ return v==="yes"?"可以":v==="no"?"不想":"尚未決定"; }
 function renderMethod(method){
   var out = document.getElementById("methodOutput"); out.hidden = false;
-  var item = todayFocalItem();
+  var item = todayFocalItem() || ensureTodayFocalItem(Number(profile.lastMinutesChoice) || 30);
   if (method==="included"){
     out.innerHTML = "<b>正式版會直接在這裡陪妳完成</b><p style='color:var(--ink-muted);font-size:13px'>付費方案內含 AI 額度，不需要自行申請或貼上金鑰。這份原型目前不會傳送任何資料到 AI 服務。</p>";
     profile.aiMode = "included";
@@ -1398,19 +1466,58 @@ function fallbackCopy(text,msg){
   document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove(); showToast(msg);
 }
 function saveProfile(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }catch(e){} }
+/* 把任何來源（localStorage、備份檔）的資料補齊成完整結構，缺欄位不會炸 */
+function normalizeProfile(parsed){
+  var base = defaultProfile();
+  var p = Object.assign(base, parsed);
+  ["prescriptions","assumptions","adjustmentLog","stageHistory","focalItems","weeklyReflections","careLog"].forEach(function(k){
+    if (!Array.isArray(p[k])) p[k] = [];
+  });
+  p.circle = Object.assign({ code:null, memberCodes:[], displayName:"" }, p.circle || {});
+  p.intake = Object.assign(defaultProfile().intake, p.intake || {});
+  p.constraints = Object.assign(defaultProfile().constraints, p.constraints || {});
+  return p;
+}
 function restoreProfile(){
   try{
     var stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return false;
     var parsed = JSON.parse(stored);
     if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) return false;
-    profile = parsed;
-    profile.careLog = profile.careLog || [];
-    profile.circle = profile.circle || { code:null, memberCodes:[], displayName:"" };
+    profile = normalizeProfile(parsed);
     hydrateForm();
     if (currentPrescription()){ refreshCare(); renderFocal(profile.lastMinutesChoice); setView("plan"); return true; }
     return false;
   }catch(e){ return false; }
+}
+
+/* ================= 備份與還原：紀錄是這個系統最值錢的東西，不能只活在一個瀏覽器裡 ================= */
+function exportBackup(){
+  var stamp = todayKey().replace(/-/g,"");
+  var blob = new Blob([JSON.stringify(profile, null, 2)], { type:"application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "social-mini-backup-" + stamp + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  window.setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  showToast("備份已下載，收在安全的地方。");
+}
+function importBackup(file){
+  var reader = new FileReader();
+  reader.onload = function(){
+    try{
+      var parsed = JSON.parse(reader.result);
+      if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION){
+        showToast("這份備份的版本對不上——確認一下檔案來源？");
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProfile(parsed)));
+      window.location.reload();
+    }catch(e){
+      showToast("讀不懂這個檔案——確認是之前匯出的備份檔。");
+    }
+  };
+  reader.readAsText(file);
 }
 
 /* ================= 主題切換 ================= */
@@ -1476,20 +1583,33 @@ document.getElementById("audienceUnknownButton").addEventListener("click", funct
 
 document.getElementById("startTaskButton").addEventListener("click", function(){ document.getElementById("aiMethodDialog").showModal(); });
 document.getElementById("doneTaskButton").addEventListener("click", function(){
-  var item = todayFocalItem(); if (!item) return;
+  /* 頁面開著跨過午夜時，今天的一件事還沒生成——先重新安排再處理，不能沒反應 */
+  var item = todayFocalItem();
+  if (!item){ renderFocal(profile.lastMinutesChoice); item = todayFocalItem(); if (!item) return; }
   item.status = item.status==="done" ? "open" : "done";
   item.completedAt = item.status==="done" ? new Date().toISOString() : null;
   renderFocal(item.chosenMinutes);
   showToast(item.status==="done" ? "已經存起來了" : "已取消");
 });
 document.getElementById("skipTaskButton").addEventListener("click", function(){
-  var m = profile.lastMinutesChoice===15 ? 30 : 15;
-  renderFocal(m);
-  showToast("已換成另一個更輕的版本；今天不用追趕。");
+  var item = todayFocalItem();
+  if (!item){ renderFocal(profile.lastMinutesChoice); item = todayFocalItem(); }
+  if (item && item.status === "done"){ showToast("今天已經存好了，好好休息也很重要。"); return; }
+  /* 跳過只能往「更輕」走：大於 15 分鐘就換成 15 分鐘版；
+     已經是最輕的 15 分鐘，就真的放下，不硬塞替代品。 */
+  if (Number(profile.lastMinutesChoice) > 15){
+    renderFocal(15);
+    showToast("換成 15 分鐘的輕版本——今天不用追趕。");
+  } else {
+    showToast("先放著也沒關係；明天會重新安排，不會累積。");
+  }
 });
 
 document.getElementById("viewJudgmentButton").addEventListener("click", function(){ renderJudgment(); document.getElementById("judgmentDialog").showModal(); });
-document.getElementById("viewAdjustButton").addEventListener("click", function(){ document.getElementById("adjustDialog").showModal(); });
+document.getElementById("viewAdjustButton").addEventListener("click", function(){
+  document.getElementById("adjustmentResult").hidden = true;  /* 上一次的結果訊息不該掛在新的一次對話開頭 */
+  document.getElementById("adjustDialog").showModal();
+});
 document.getElementById("applyAdjustmentButton").addEventListener("click", applyAdjustment);
 document.getElementById("viewReflectionButton").addEventListener("click", function(){ hydrateReflection(); document.getElementById("reflectionDialog").showModal(); });
 document.getElementById("reflectionForm").addEventListener("submit", function(e){ e.preventDefault(); saveReflection(); });
@@ -1517,6 +1637,7 @@ document.getElementById("joinCircleButton").addEventListener("click", function()
   var code = document.getElementById("joinCodeInput").value.trim().toUpperCase();
   if (!name){ showToast("先留個名字，圈子裡的人才知道是誰。"); return; }
   if (!code){ showToast("輸入朋友給的代碼。"); return; }
+  if (!/^[A-Z0-9]{6}$/.test(code)){ showToast("代碼是 6 個字（朋友畫面上金色那串）——再對一下？"); return; }
   profile.circle.code = code;
   profile.circle.displayName = name;
   saveProfile();
@@ -1533,11 +1654,24 @@ document.getElementById("leaveCircleButton").addEventListener("click", function(
 document.querySelectorAll("[data-method]").forEach(function(b){ b.addEventListener("click", function(){ renderMethod(b.dataset.method); }); });
 
 resetButton.addEventListener("click", function(){ document.getElementById("resetDialog").showModal(); });
+document.getElementById("backupButton").addEventListener("click", function(){ document.getElementById("backupDialog").showModal(); });
+document.getElementById("exportBackupButton").addEventListener("click", exportBackup);
+document.getElementById("importBackupInput").addEventListener("change", function(){
+  if (this.files && this.files[0]) importBackup(this.files[0]);
+  this.value = "";
+});
 document.getElementById("confirmResetButton").addEventListener("click", function(){
   try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
   window.location.reload();
 });
 document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", function(){ b.closest("dialog").close(); }); });
+/* 對話框關閉（含 ESC）時，若 toast 還寄住在裡面，要接回 body——
+   否則下一次顯示前它會困在一個 display:none 的對話框裡 */
+document.querySelectorAll("dialog").forEach(function(d){
+  d.addEventListener("close", function(){
+    if (toast.parentElement === d){ toast.hidden = true; document.body.appendChild(toast); }
+  });
+});
 
 document.querySelectorAll(".themepick button").forEach(function(b){ b.addEventListener("click", function(){ applyTheme(b.dataset.theme); }); });
 
