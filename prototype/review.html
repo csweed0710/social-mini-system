@@ -1095,7 +1095,7 @@ function hydrateReflection(){
   document.getElementById("circleShareRow").hidden = !profile.circle.code;
   document.getElementById("shareToCircle").checked = false;
 }
-function saveReflection(){
+async function saveReflection(){
   var checked = Array.prototype.slice.call(document.querySelectorAll("[data-assumption]:checked")).map(function(cb){return cb.dataset.assumption});
   checked.forEach(function(id){
     var a = profile.assumptions.find(function(x){return x.id===id});
@@ -1118,8 +1118,12 @@ function saveReflection(){
     var type = document.getElementById("shareToCircleType").value;
     var text = type==="reflection" ? conclusionText : (document.getElementById("reviewAction").value.trim() || conclusionText);
     if (text){
-      CircleSync.postItem(profile.circle.code, { id: uid(), type:type, authorName: circleDisplayName(), text:text, at:new Date().toISOString(), comments:[] });
-      showToast("本週復盤已存起來，也分享到圈子了");
+      try{
+        await CircleSync.postItem(profile.circle.code, { id: uid(), type:type, authorName: circleDisplayName(), text:text });
+        showToast("本週復盤已存起來，也分享到圈子了");
+      }catch(e){
+        showToast("本週復盤已存起來，但分享到圈子暫時失敗，可以之後再試");
+      }
     } else {
       showToast("本週復盤已存起來");
     }
@@ -1142,27 +1146,52 @@ function buildShareCard(){
     "不比較誰跑得快，只交換真實經驗。";
 }
 
-/* ================= 陪伴圈：本機模擬版（之後可換 Supabase，介面不變） =================
-   CircleSync 是抽換層——現在用 localStorage 當共用空間（同一台裝置上可以模擬「我」跟
-   「朋友」互看），之後接 Supabase 只需要換掉這個物件內部的實作，呼叫方式不用改。 */
+/* ================= 陪伴圈：真正的跨裝置同步（Supabase REST，不引入 SDK） =================
+   只用 fetch 打 Supabase 自動產生的 REST API（PostgREST），不載入 supabase-js，
+   維持這個檔案「不依賴外部程式庫」的原則。anon/publishable key 依 Supabase 的設計
+   本來就是給前端公開使用的，安全性靠資料庫的 RLS 規則（見 supabase_setup.sql）。 */
+var SUPABASE_URL = "https://hbznfbuztuijwqmpujgi.supabase.co";
+var SUPABASE_KEY = "sb_publishable_rar47K9HnQI_wi77bNyVrA_6v1hkZhW";
+function supaHeaders(extra){
+  var h = { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY };
+  return Object.assign(h, extra || {});
+}
 var CircleSync = {
-  _key: function(code){ return "circle-space:" + code; },
-  getFeed: function(code){
-    try{ return JSON.parse(localStorage.getItem(this._key(code)) || "[]"); }catch(e){ return []; }
+  async getFeed(code){
+    var res = await fetch(SUPABASE_URL + "/rest/v1/circle_items?circle_code=eq." + encodeURIComponent(code) + "&select=*&order=created_at.asc", {
+      headers: supaHeaders()
+    });
+    if (!res.ok) throw new Error("circle-fetch-failed:" + res.status);
+    var items = await res.json();
+    if (!items.length) return [];
+    var ids = items.map(function(i){ return i.id; });
+    var idsFilter = ids.map(function(id){ return encodeURIComponent(id); }).join(",");
+    var cres = await fetch(SUPABASE_URL + "/rest/v1/circle_comments?item_id=in.(" + idsFilter + ")&select=*&order=created_at.asc", {
+      headers: supaHeaders()
+    });
+    var comments = cres.ok ? await cres.json() : [];
+    return items.map(function(i){
+      return {
+        id: i.id, type: i.type, authorName: i.author_name, text: i.text, at: i.created_at,
+        comments: comments.filter(function(c){ return c.item_id === i.id; }).map(function(c){ return { authorName:c.author_name, text:c.text, at:c.created_at }; })
+      };
+    });
   },
-  postItem: function(code, item){
-    var feed = this.getFeed(code);
-    feed.push(item);
-    try{ localStorage.setItem(this._key(code), JSON.stringify(feed)); }catch(e){}
+  async postItem(code, item){
+    var res = await fetch(SUPABASE_URL + "/rest/v1/circle_items", {
+      method: "POST",
+      headers: supaHeaders({ "Content-Type":"application/json", Prefer:"return=minimal" }),
+      body: JSON.stringify({ id:item.id, circle_code:code, type:item.type, author_name:item.authorName, text:item.text })
+    });
+    if (!res.ok) throw new Error("circle-post-failed:" + res.status);
   },
-  postComment: function(code, itemId, comment){
-    var feed = this.getFeed(code);
-    var target = feed.find(function(f){ return f.id === itemId; });
-    if (target){
-      target.comments = target.comments || [];
-      target.comments.push(comment);
-      try{ localStorage.setItem(this._key(code), JSON.stringify(feed)); }catch(e){}
-    }
+  async postComment(code, itemId, comment){
+    var res = await fetch(SUPABASE_URL + "/rest/v1/circle_comments", {
+      method: "POST",
+      headers: supaHeaders({ "Content-Type":"application/json", Prefer:"return=minimal" }),
+      body: JSON.stringify({ id: uid(), item_id:itemId, circle_code:code, author_name:comment.authorName, text:comment.text })
+    });
+    if (!res.ok) throw new Error("circle-comment-failed:" + res.status);
   }
 };
 
@@ -1175,7 +1204,8 @@ function makeCircleCode(){
   return out;
 }
 
-function renderCircleDialog(){
+var circlePollTimer = null;
+async function renderCircleDialog(){
   var joined = document.getElementById("circleJoined");
   var setup = document.getElementById("circleSetup");
   if (!profile.circle.code){
@@ -1184,8 +1214,18 @@ function renderCircleDialog(){
   }
   setup.hidden = true; joined.hidden = false;
   document.getElementById("circleCodeDisplay").textContent = profile.circle.code;
-  var feed = CircleSync.getFeed(profile.circle.code);
   var wrap = document.getElementById("circleFeed");
+  wrap.textContent = "同步中……";
+  wrap.style.color = "var(--ink-quiet)";
+
+  var feed;
+  try{
+    feed = await CircleSync.getFeed(profile.circle.code);
+  }catch(e){
+    wrap.textContent = "圈子暫時連不上，等一下再試——分享的內容不會不見，只是這次沒抓到。";
+    return;
+  }
+  wrap.style.color = "";
   wrap.innerHTML = "";
   if (!feed.length){
     var empty = document.createElement("p");
@@ -1214,17 +1254,34 @@ function renderCircleDialog(){
     input.type = "text"; input.placeholder = "回應一句話……"; input.style.cssText = "flex:1;padding:8px 10px;border-radius:10px";
     var btn = document.createElement("button");
     btn.type = "button"; btn.className = "btn-quiet"; btn.textContent = "送出";
-    btn.addEventListener("click", function(){
+    btn.addEventListener("click", async function(){
       var text = input.value.trim();
       if (!text) return;
-      CircleSync.postComment(profile.circle.code, item.id, { authorName: circleDisplayName(), text:text, at:new Date().toISOString() });
-      input.value = "";
-      renderCircleDialog();
+      btn.disabled = true;
+      try{
+        await CircleSync.postComment(profile.circle.code, item.id, { authorName: circleDisplayName(), text:text, at:new Date().toISOString() });
+        input.value = "";
+        await renderCircleDialog();
+      }catch(e){
+        btn.disabled = false;
+        showToast("回應暫時送不出去，等一下再試一次");
+      }
     });
     replyRow.appendChild(input); replyRow.appendChild(btn);
     row.appendChild(replyRow);
     wrap.appendChild(row);
   });
+}
+function startCirclePolling(){
+  stopCirclePolling();
+  circlePollTimer = window.setInterval(function(){
+    if (document.getElementById("circleDialog").open && profile.circle.code){
+      renderCircleDialog();
+    }
+  }, 20000);
+}
+function stopCirclePolling(){
+  if (circlePollTimer){ window.clearInterval(circlePollTimer); circlePollTimer = null; }
 }
 function circleDisplayName(){
   return profile.circle.displayName || "一位朋友";
@@ -1380,7 +1437,12 @@ document.getElementById("reflectionForm").addEventListener("submit", function(e)
 document.getElementById("copyShareButton").addEventListener("click", function(){ copyText(buildShareCard(), "分享卡已複製"); });
 document.getElementById("nextPreviewLink").addEventListener("click", function(e){ e.preventDefault(); var m = profile.lastMinutesChoice===60?30:60; renderFocal(m); });
 
-document.getElementById("viewCircleButton").addEventListener("click", function(){ renderCircleDialog(); document.getElementById("circleDialog").showModal(); });
+document.getElementById("viewCircleButton").addEventListener("click", function(){
+  renderCircleDialog();
+  document.getElementById("circleDialog").showModal();
+  startCirclePolling();
+});
+document.getElementById("circleDialog").addEventListener("close", stopCirclePolling);
 document.getElementById("createCircleButton").addEventListener("click", function(){
   var name = document.getElementById("circleNameInput").value.trim();
   if (!name){ showToast("先留個名字，圈子裡的人才知道是誰。"); return; }
