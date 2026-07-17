@@ -875,6 +875,17 @@ function setView(name){
 }
 
 function showToast(msg){
+  /* <dialog> 用 showModal() 開啟時會進到瀏覽器的「top layer」，疊在一般頁面
+     內容之上——toast 原本放在 dialog 外面，只要有任何一個對話框開著，
+     toast 實際上會被蓋在對話框下面，看起來就像「按了沒反應」。
+     解法：顯示前，把 toast 移到目前開著的 dialog 裡面（dialog 本身，不是
+     .dcard——.dcard 有 backdrop-filter 會讓 position:fixed 改成相對它自己
+     定位，移進 dialog 本身才能維持原本置中在畫面底部的樣子）。 */
+  var openDialog = document.querySelector("dialog[open]");
+  var targetParent = openDialog || document.body;
+  if (toast.parentElement !== targetParent){
+    targetParent.appendChild(toast);
+  }
   toast.textContent = msg; toast.hidden = false;
   window.clearTimeout(showToast._t);
   showToast._t = window.setTimeout(function(){ toast.hidden = true; }, 2600);
