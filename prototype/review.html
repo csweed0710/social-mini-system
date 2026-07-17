@@ -400,7 +400,7 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
     <div class="extend glass" id="extendBand">
       <span class="lbl">下一步</span>
       <span class="next" id="nextPreview"></span>
-      <a href="#" id="nextPreviewLink">看看 →</a>
+      <a href="#" id="nextPreviewLink">換這件 →</a>
     </div>
 
     <details class="optional" id="optionalWrap">
@@ -1614,7 +1614,17 @@ document.getElementById("applyAdjustmentButton").addEventListener("click", apply
 document.getElementById("viewReflectionButton").addEventListener("click", function(){ hydrateReflection(); document.getElementById("reflectionDialog").showModal(); });
 document.getElementById("reflectionForm").addEventListener("submit", function(e){ e.preventDefault(); saveReflection(); });
 document.getElementById("copyShareButton").addEventListener("click", function(){ copyText(buildShareCard(), "分享卡已複製"); });
-document.getElementById("nextPreviewLink").addEventListener("click", function(e){ e.preventDefault(); var m = profile.lastMinutesChoice===60?30:60; renderFocal(m); });
+document.getElementById("nextPreviewLink").addEventListener("click", function(e){
+  e.preventDefault();
+  /* 換的是上方焦點卡片的內容——使用者可能停在頁面下方，
+     必須把卡片帶回視野並給一句回饋，否則看起來像沒反應 */
+  var item = todayFocalItem();
+  var wasDone = item && item.status === "done";
+  renderFocal(profile.lastMinutesChoice===60 ? 30 : 60);
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelector(".focal").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  if (!wasDone) showToast("換過來了——今天改做這件事也可以。");
+});
 
 document.getElementById("viewCircleButton").addEventListener("click", function(){
   renderCircleDialog();
