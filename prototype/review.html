@@ -1,0 +1,2030 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="每天陪妳做一件對的事，不用清單、不用趕進度。">
+<meta name="theme-color" content="#0A211E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230A211E'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C9A15C'/%3E%3C/svg%3E">
+<title>社群小系統 2.0｜今天的一件事</title>
+<style>
+:root{
+  --teal-950:#0A211E; --teal-800:#123B36;
+  --cream-100:#F5F0E3; --cream-300:#E4DAC0;
+  --gold-400:#C9A15C; --gold-300:#DBBB80;
+  --glass-tint:245,240,227;
+  --glass-border:rgba(var(--glass-tint),.20);
+  --glass-bg:rgba(var(--glass-tint),.07);
+  --glass-bg-strong:rgba(var(--glass-tint),.12);
+  --ground-a:var(--teal-950); --ground-b:var(--teal-800);
+  --ink:var(--cream-100); --ink-muted:#B9C4AE; --ink-quiet:#7E8B83;
+  --accent:var(--gold-400); --ring:rgba(201,161,92,.3);
+  --btn-ink:#1B140A;
+  --risk:#D48CA0; --risk-soft:rgba(212,140,160,.1);
+}
+:root[data-theme="light"]{
+  --ground-a:#F5F0E3; --ground-b:#EDE4CF;
+  --ink:#132923; --ink-muted:#5C6B63; --ink-quiet:#93A199;
+  --glass-tint:15,38,34;
+  --glass-border:rgba(var(--glass-tint),.13); --glass-bg:rgba(255,255,255,.5); --glass-bg-strong:rgba(255,255,255,.7);
+  --accent:#A9793B; --ring:rgba(169,121,59,.25);
+  --btn-ink:#1B140A;
+  --risk:#B4556A; --risk-soft:rgba(180,85,106,.08);
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --ground-a:#F5F0E3; --ground-b:#EDE4CF;
+    --ink:#132923; --ink-muted:#5C6B63; --ink-quiet:#93A199;
+    --glass-tint:15,38,34;
+    --glass-border:rgba(var(--glass-tint),.13); --glass-bg:rgba(255,255,255,.5); --glass-bg-strong:rgba(255,255,255,.7);
+    --accent:#A9793B; --ring:rgba(169,121,59,.25);
+    --risk:#B4556A; --risk-soft:rgba(180,85,106,.08);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(90% 70% at 82% -10%, color-mix(in srgb, var(--gold-400) 10%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--ground-a), var(--ground-b) 70%, var(--ground-a)) fixed;
+  color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.serif{font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;font-weight:700}
+.mono{font-family:ui-monospace,"SF Mono","Roboto Mono",monospace;font-variant-numeric:tabular-nums}
+button,textarea,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ===== glass primitives ===== */
+.glass{
+  background:var(--glass-bg); border:1px solid var(--glass-border);
+  -webkit-backdrop-filter:blur(18px) saturate(150%); backdrop-filter:blur(18px) saturate(150%);
+}
+.glass-strong{
+  background:var(--glass-bg-strong); border:1px solid var(--glass-border);
+  -webkit-backdrop-filter:blur(24px) saturate(170%); backdrop-filter:blur(24px) saturate(170%);
+}
+.btn-primary{
+  position:relative;overflow:hidden;isolation:isolate;
+  appearance:none;border:none;
+  background:linear-gradient(135deg,var(--gold-300),var(--accent));
+  color:var(--btn-ink);font-weight:700;font-size:14.5px;padding:14px 30px;border-radius:14px;
+  box-shadow:0 10px 26px -8px rgba(201,161,92,.5), inset 0 1px 0 rgba(255,255,255,.5);
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.btn-primary::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.5) 46%,transparent 62%);
+  transform:translateX(-130%);transition:transform .5s ease;
+}
+.btn-primary:hover::after{transform:translateX(130%)}
+.btn-primary:active{transform:scale(.96)}
+.btn-ghost{
+  appearance:none;cursor:pointer;background:var(--glass-bg);border:1px solid var(--glass-border);
+  color:var(--ink);font-size:14px;font-weight:600;padding:13px 24px;border-radius:14px;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  transition:background .2s ease,border-color .2s ease;
+}
+.btn-ghost:hover{background:var(--glass-bg-strong);border-color:var(--accent)}
+.btn-quiet{
+  appearance:none;background:transparent;border:none;color:var(--ink-quiet);
+  font-size:13px;padding:10px;text-decoration:underline;text-decoration-color:var(--glass-border);text-underline-offset:4px;
+}
+.btn-quiet:hover{color:var(--ink)}
+.chip{
+  background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--ink-muted);
+  border-radius:999px;padding:9px 18px;font-size:13.5px;cursor:pointer;
+  transition:background .2s ease,color .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.chip[aria-pressed="true"]{
+  background:var(--glass-bg-strong);color:var(--ink);border-color:var(--accent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 0 1px var(--ring);
+}
+.tag{display:inline-block;font-size:11px;color:var(--ink-quiet);border:1px solid var(--glass-border);border-radius:999px;padding:2px 10px}
+
+/* ===== layout ===== */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:720px;margin:0 auto;padding:22px 24px;
+}
+.brand{display:flex;align-items:center;gap:9px;font-weight:900;letter-spacing:.04em;font-size:14.5px}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.themepick{display:flex;gap:6px}
+.themepick button{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:999px;width:32px;height:32px;font-size:13px}
+.themepick button[aria-pressed="true"]{border-color:var(--accent)}
+
+main{max-width:720px;margin:0 auto;padding:0 24px 90px}
+
+/* ===== welcome ===== */
+.welcome{min-height:64vh;display:flex;flex-direction:column;justify-content:center;padding:40px 0}
+.welcome .eyebrow{font-family:"Noto Serif TC",serif;font-style:italic;color:var(--accent);font-size:14px;letter-spacing:.1em;margin:0 0 16px}
+.welcome h1{font-size:clamp(30px,5.5vw,44px);line-height:1.3;margin:0 0 20px;text-wrap:balance}
+.welcome h1 em{color:var(--accent);font-style:normal}
+.welcome p.lede{color:var(--ink-muted);font-size:15.5px;line-height:1.9;max-width:42ch;margin:0 0 30px}
+.welcome .actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* ===== onboarding wizard ===== */
+.wizard{padding:36px 0}
+.wizard .steplabel{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink-quiet);margin:0 0 10px;letter-spacing:.06em}
+.steptrack{height:3px;border-radius:99px;background:var(--glass-border);overflow:hidden;margin:0 0 32px}
+.steptrack i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-300),var(--accent));border-radius:inherit;transition:width .3s ease}
+.qstep{animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.qstep h2{font-family:"Noto Serif TC",serif;font-size:clamp(22px,4vw,28px);margin:0 0 10px;line-height:1.4}
+.qstep .help{color:var(--ink-muted);font-size:14px;margin:0 0 22px}
+textarea,input[type=text],input[type=number],input[type=date]{
+  width:100%;padding:14px 16px;border-radius:14px;font-size:14.5px;line-height:1.7;
+  background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--ink);
+}
+textarea:focus,input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--ring)}
+.rowgap{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.choicecol{display:grid;gap:10px;margin-top:4px}
+.choicecard{
+  display:grid;grid-template-columns:auto 1fr;gap:2px 12px;text-align:left;
+  padding:15px 18px;border-radius:14px;background:var(--glass-bg);border:1px solid var(--glass-border);
+  transition:border-color .2s ease,background .2s ease;
+}
+.choicecard b{grid-row:1/3;align-self:center;color:var(--accent);font-family:ui-monospace,monospace;font-size:12px}
+.choicecard span.t{font-weight:700;font-size:14.5px}
+.choicecard span.d{color:var(--ink-muted);font-size:12.5px}
+.choicecard[aria-pressed="true"]{border-color:var(--accent);background:var(--glass-bg-strong);box-shadow:inset 3px 0 0 var(--accent)}
+.prefrow{display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--glass-border)}
+.prefrow:last-child{border-bottom:none}
+.prefrow .lbl{font-weight:700;font-size:14px}
+.prefrow .sub{color:var(--ink-quiet);font-size:12px;margin-top:2px}
+.lockline{grid-column:1/-1;font-size:11.5px;color:var(--ink-quiet);display:flex;align-items:center;gap:6px}
+.lockline input{accent-color:var(--accent)}
+.wizardnav{display:flex;justify-content:space-between;align-items:center;margin-top:30px}
+.field-note{font-size:12px;color:var(--ink-quiet);margin-top:14px}
+
+/* ===== focal (single-focus daily view) ===== */
+.stage{max-width:640px;margin:0 auto;padding:56px 0 100px}
+.toplabel{text-align:center;font-size:12.5px;letter-spacing:.16em;color:var(--ink-quiet);margin:0 0 30px;text-transform:uppercase}
+.focal{
+  position:relative;border-radius:28px;padding:38px 36px 32px;text-align:center;
+  box-shadow:0 30px 70px -30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.15);
+}
+.focal .eyebrow{font-size:13px;color:var(--ink-quiet);margin:0 0 8px}
+.focal h1{font-size:clamp(22px,4vw,29px);line-height:1.5;margin:0 0 22px;text-wrap:balance}
+.minutes{display:flex;gap:8px;justify-content:center;margin:0 0 26px}
+.why{border-radius:16px;padding:16px 20px;margin:0 0 26px;text-align:left}
+.why b{display:block;font-size:12px;color:var(--accent);letter-spacing:.06em;margin:0 0 6px}
+.why p{margin:0;font-size:14px;line-height:1.75;color:var(--ink-muted)}
+.why .tag{margin-top:8px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 6px}
+.status{margin:14px 0 0;font-size:12.5px;color:var(--ink-quiet)}
+
+.careline{
+  text-align:center;font-size:13px;color:var(--ink-muted);
+  padding:11px 18px;border-radius:14px;margin:0 4px 16px;
+}
+.careline .dismiss{margin-left:10px;background:none;border:none;color:var(--ink-quiet);font-size:12px;cursor:pointer;text-decoration:underline;text-decoration-color:transparent;font-family:inherit}
+.careline .dismiss:hover{text-decoration-color:var(--glass-border)}
+
+.extend{
+  display:flex;align-items:center;gap:14px;margin:22px 4px 0;padding:14px 18px;border-radius:16px;opacity:.9;
+}
+.extend .lbl{font-size:11px;color:var(--ink-quiet);letter-spacing:.06em;white-space:nowrap}
+.extend .next{flex:1;font-size:13px;color:var(--ink-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.extend a,.extend button.linklike{font-size:12.5px;color:var(--accent);text-decoration:none;white-space:nowrap;border:none;background:none;cursor:pointer;font-family:inherit}
+
+.optional{margin:10px 4px 0;padding:12px 18px;font-size:12.5px;color:var(--ink-quiet);border:1px dashed var(--glass-border);border-radius:14px}
+.optional summary{cursor:pointer;color:var(--ink-quiet);list-style:none}
+.optional summary::-webkit-details-marker{display:none}
+.optional summary::before{content:"＋ ";color:var(--accent)}
+.optional[open] summary::before{content:"－ "}
+.optional p{margin:8px 0 0;color:var(--ink-muted);line-height:1.7}
+
+.utility{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:26px 0 0}
+.utility button{background:none;border:none;color:var(--ink-quiet);font-size:12.5px;font-family:inherit;cursor:pointer;text-decoration:underline;text-decoration-color:transparent;transition:color .15s ease,text-decoration-color .15s ease}
+.utility button:hover{color:var(--ink);text-decoration-color:var(--glass-border)}
+
+.note{text-align:center;font-size:11.5px;color:var(--ink-quiet);margin:36px auto 0;max-width:46ch;line-height:1.8}
+
+/* ===== dialogs ===== */
+dialog{border:none;padding:0;background:transparent}
+dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
+.dcard{
+  width:min(calc(100vw - 40px),560px);max-height:calc(100vh - 60px);overflow:auto;
+  border-radius:24px;padding:30px;
+  background:var(--ground-a);border:1px solid var(--glass-border);
+  box-shadow:0 30px 80px rgba(0,0,0,.5);color:var(--ink);
+}
+.dcard h2{font-family:"Noto Serif TC",serif;font-size:22px;margin:0 0 18px}
+.dclose{float:right;width:36px;height:36px;border-radius:50%;background:var(--glass-bg);border:1px solid var(--glass-border);font-size:16px}
+.arow{padding:13px 16px;border-radius:12px;background:var(--glass-bg);border:1px solid var(--glass-border);margin-bottom:10px}
+.arow b{display:block;font-size:12px;color:var(--accent);margin-bottom:3px}
+.arow p{margin:0;font-size:13.5px;color:var(--ink-muted);line-height:1.7}
+.dactions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.formgrid{display:grid;gap:12px}
+.formgrid label{display:grid;gap:5px;font-size:12.5px;color:var(--ink-muted);font-weight:700}
+.methodcard{
+  display:grid;grid-template-columns:auto 1fr;gap:2px 12px;text-align:left;width:100%;
+  padding:15px;border-radius:14px;background:var(--glass-bg);border:1px solid var(--glass-border);margin-bottom:10px;
+}
+.methodcard b{grid-row:1/3;align-self:center;color:var(--accent);font-family:ui-monospace,monospace;font-size:12px}
+.methodcard span.t{font-weight:700;font-size:14px}
+.methodcard span.d{color:var(--ink-quiet);font-size:12px}
+.methodout{margin-top:14px;padding:16px;border-radius:14px;background:var(--glass-bg)}
+.methodout textarea{min-height:120px;margin:10px 0}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:60;
+  max-width:calc(100% - 32px);padding:11px 18px;border-radius:12px;font-size:12.5px;
+  background:var(--glass-bg-strong);border:1px solid var(--glass-border);color:var(--ink);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+}
+@media (max-width:560px){ .prefrow{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="brand"><span class="dot"></span>社群小系統 2.0</span>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="themepick" role="group" aria-label="外觀">
+      <button type="button" data-theme="light" aria-pressed="false" aria-label="淺色">☀</button>
+      <button type="button" data-theme="dark" aria-pressed="false" aria-label="深色">☾</button>
+    </div>
+    <button class="btn-quiet" id="accountButton" type="button">帳號</button>
+    <button class="btn-quiet" id="backupButton" type="button" hidden>備份</button>
+    <button class="btn-quiet" id="resetButton" type="button" hidden>重新開始</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ 開始畫面 ============ -->
+  <section class="welcome" id="welcomeView">
+    <p class="eyebrow">開始之前</p>
+    <h1 class="serif">不用先很厲害。<br><em>今天，我陪妳走一步。</em></h1>
+    <p class="lede">回答幾個問題，我會找出一件今天做得完的事。想法還沒成形也可以開始——沒有答案的地方，我會標成假設，之後隨時能調整。</p>
+    <div class="actions">
+      <button class="btn-primary" id="startButton" type="button">開始</button>
+      <button class="btn-quiet" id="noIdeaButton" type="button">還沒有想法，先陪我找方向</button>
+    </div>
+  </section>
+
+  <!-- ============ 進站評估（少量關鍵問題） ============ -->
+  <section class="wizard" id="onboardingView" hidden>
+    <p class="steplabel"><span id="stepLabel">第 1 步，共 5 步</span><span>可以先跳過、之後再補</span></p>
+    <div class="steptrack"><i id="stepBar"></i></div>
+
+    <form id="onboardingForm" novalidate>
+      <section class="qstep" data-step="1">
+        <h2>妳現在想做什麼？</h2>
+        <p class="help">可以很模糊，也可以是一個還沒有名字的新方向——全新的題目也沒關係，我會直接分析，不勉強套進現成分類。</p>
+        <label class="visually-hidden" for="ideaInput">想法</label>
+        <textarea id="ideaInput" rows="4" placeholder="例如：我想記錄一種新的生活方式，但不確定誰會需要。"></textarea>
+        <div class="rowgap">
+          <button type="button" class="chip" data-idea-mode="clear">已經有明確想法</button>
+          <button type="button" class="chip" data-idea-mode="partial">只有一點輪廓</button>
+          <button type="button" class="chip" data-idea-mode="explore">完全還沒有</button>
+        </div>
+      </section>
+
+      <section class="qstep" data-step="2" hidden>
+        <h2>哪一句最接近現在的狀態？</h2>
+        <p class="help">這只決定從哪裡開始陪妳，不是能力評分。</p>
+        <div class="choicecol" id="situationChoices" role="group" aria-label="目前狀態">
+          <button type="button" class="choicecard" data-value="start"><b>01</b><span class="t">還沒有帳號</span><span class="d">從想法與第一篇內容開始</span></button>
+          <button type="button" class="choicecard" data-value="paused"><b>02</b><span class="t">有帳號，但常常停下來</span><span class="d">先找一個能一直做下去的節奏</span></button>
+          <button type="button" class="choicecard" data-value="publishing"><b>03</b><span class="t">持續在做，但效果還不明顯</span><span class="d">一起看看哪一環卡住</span></button>
+          <button type="button" class="choicecard" data-value="audience"><b>04</b><span class="t">有人在看，還沒有收入</span><span class="d">一起測試合適的方式</span></button>
+          <button type="button" class="choicecard" data-value="earning"><b>05</b><span class="t">已經有收入</span><span class="d">一起看看怎麼讓它更穩定</span></button>
+          <button type="button" class="choicecard" data-value="unknown"><b>？</b><span class="t">還不確定</span><span class="d">交給後面的回答判斷</span></button>
+        </div>
+      </section>
+
+      <section class="qstep" data-step="3" hidden>
+        <h2>現在最想先顧好哪一環？</h2>
+        <p class="help">被看見、理念被理解，都會出現在「有效觸及」或「信任」這兩環裡，不用另外分類。</p>
+        <div class="choicecol" id="bottleneckChoices" role="radiogroup" aria-label="目前的環">
+          <button type="button" class="choicecard" role="radio" data-value="direction"><b>01</b><span class="t">方向</span><span class="d">還不清楚要幫誰、解決什麼</span></button>
+          <button type="button" class="choicecard" role="radio" data-value="reach"><b>02</b><span class="t">有效觸及</span><span class="d">有內容，但對的人還沒看到</span></button>
+          <button type="button" class="choicecard" role="radio" data-value="trust"><b>03</b><span class="t">信任與需求</span><span class="d">有人看，但還沒形成具體需要</span></button>
+          <button type="button" class="choicecard" role="radio" data-value="revenue"><b>04</b><span class="t">收益驗證</span><span class="d">已有需求，想測試合適的方式</span></button>
+          <button type="button" class="choicecard" role="radio" data-value="unknown"><b>？</b><span class="t">還不確定</span><span class="d">先用第一件事幫忙判斷</span></button>
+        </div>
+      </section>
+
+      <section class="qstep" data-step="4" hidden>
+        <h2>接下來，讓我知道妳的限制</h2>
+        <p class="help">每一個答案系統都會配合，不會反覆詢問或勸說。</p>
+
+        <p class="field-note" style="margin-top:0">每天願意投入的時間</p>
+        <div class="rowgap" id="minutesChoices">
+          <button type="button" class="chip" data-value="15">15 分鐘</button>
+          <button type="button" class="chip" data-value="30">30 分鐘</button>
+          <button type="button" class="chip" data-value="60">60 分鐘</button>
+          <button type="button" class="chip" data-value="flex">每天不同</button>
+        </div>
+
+        <p class="field-note">內容節奏</p>
+        <div class="rowgap" id="cadenceChoices">
+          <button type="button" class="chip" data-value="w1">每週 1 支</button>
+          <button type="button" class="chip" data-value="w2">每週 2 支</button>
+          <button type="button" class="chip" data-value="w3">每週 3 支</button>
+          <button type="button" class="chip" data-value="undecided">還沒決定</button>
+        </div>
+
+        <p class="field-note">每週總共能投入幾小時？</p>
+        <input id="weeklyHours" type="number" min="0" max="80" step="0.5" inputmode="decimal" placeholder="例如：4">
+        <p class="field-note" id="routeOutput" style="color:var(--accent)"></p>
+
+        <div class="prefrow">
+          <div><div class="lbl">內容中露臉</div><div class="sub">不露臉時，改用畫面、文字與證據建立信任。</div></div>
+          <div class="rowgap" id="facePref"><button type="button" class="chip" data-value="yes">可以</button><button type="button" class="chip" data-value="no">不想</button><button type="button" class="chip" data-value="undecided">未決定</button></div>
+          <label class="lockline"><input type="checkbox" data-lock="face"> 記住這個選擇，不用再問我</label>
+        </div>
+        <div class="prefrow">
+          <div><div class="lbl">使用自己的聲音</div><div class="sub">不說話時，改用字幕、節奏與視覺敘事。</div></div>
+          <div class="rowgap" id="voicePref"><button type="button" class="chip" data-value="yes">可以</button><button type="button" class="chip" data-value="no">不想</button><button type="button" class="chip" data-value="undecided">未決定</button></div>
+          <label class="lockline"><input type="checkbox" data-lock="voice"> 記住這個選擇，不用再問我</label>
+        </div>
+        <div class="prefrow">
+          <div><div class="lbl">主動聯絡客戶或品牌</div><div class="sub">不主動開發時，改用搜尋、內容入口與被動成交。</div></div>
+          <div class="rowgap" id="outreachPref"><button type="button" class="chip" data-value="yes">可以</button><button type="button" class="chip" data-value="no">不想</button><button type="button" class="chip" data-value="undecided">未決定</button></div>
+          <label class="lockline"><input type="checkbox" data-lock="outreach"> 記住這個選擇，不用再問我</label>
+        </div>
+        <p class="field-note">不能接受的做法（選填）</p>
+        <input id="tabooInput" type="text" maxlength="80" placeholder="例如：不碰爭議話題、不做醫療宣稱">
+      </section>
+
+      <section class="qstep" data-step="5" hidden>
+        <h2>最希望誰因此得到幫助？</h2>
+        <p class="help">描述一種真實的人或情境，不用寫年齡和性別。</p>
+        <label class="visually-hidden" for="audienceInput">想幫助的對象</label>
+        <textarea id="audienceInput" rows="4" placeholder="例如：和我一樣很忙，但仍想好好照顧流浪動物的人。"></textarea>
+        <button class="btn-quiet" id="audienceUnknownButton" type="button" style="padding-left:0">還不知道，先從第一批真實反應中找</button>
+      </section>
+
+      <div class="wizardnav">
+        <button class="btn-quiet" id="backButton" type="button" style="visibility:hidden">← 上一步</button>
+        <button class="btn-primary" id="nextButton" type="button">下一步</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ 今天的一件事（單一焦點） ============ -->
+  <section class="stage" id="planView" hidden>
+    <p class="toplabel">今天</p>
+
+    <p class="careline glass" id="careLine" hidden></p>
+
+    <div class="focal glass-strong">
+      <p class="eyebrow" id="focalEyebrow">為妳準備的一件事</p>
+      <h1 class="serif" id="focalTitle"></h1>
+
+      <div class="minutes" role="group" aria-label="今天可以投入的時間" id="focalMinutes"></div>
+
+      <div class="why glass" id="focalWhyBox">
+        <b>為什麼是這件事</b>
+        <p id="focalWhy"></p>
+        <span class="tag" id="focalTag"></span>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" id="startTaskButton" type="button">開始</button>
+        <button class="btn-ghost" id="doneTaskButton" type="button">存起來，這件事做完了</button>
+        <button class="btn-quiet" id="skipTaskButton" type="button">這次先跳過</button>
+      </div>
+      <p class="status" id="focalStatus"></p>
+    </div>
+
+    <div class="extend glass" id="extendBand">
+      <span class="lbl">下一步</span>
+      <span class="next" id="nextPreview"></span>
+      <a href="#" id="nextPreviewLink">換這件 →</a>
+    </div>
+
+    <details class="optional" id="optionalWrap">
+      <summary>有時間再做</summary>
+      <p id="optionalText"></p>
+    </details>
+
+    <div class="utility">
+      <button type="button" id="viewJudgmentButton">判斷依據</button>
+      <button type="button" id="viewAdjustButton">這個方法不適合我</button>
+      <button type="button" id="viewReflectionButton">本週復盤</button>
+      <button type="button" id="viewCircleButton">陪伴圈</button>
+    </div>
+
+    <p class="note">畫面只留一件事。其他想法都還在，安靜地放在「下一步」，不會用清單或數字提醒妳還剩多少。</p>
+  </section>
+
+</main>
+
+<!-- ===== 判斷依據 ===== -->
+<dialog id="judgmentDialog" class="glass-strong">
+  <div class="dcard">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>目前的判斷與代價</h2>
+    <div id="judgmentBody"></div>
+    <div class="dactions"><button class="btn-ghost" data-close type="button">關閉</button></div>
+  </div>
+</dialog>
+
+<!-- ===== 調整 ===== -->
+<dialog id="adjustDialog" class="glass-strong">
+  <div class="dcard">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>哪裡不合用，直接告訴我</h2>
+    <p style="color:var(--ink-muted);font-size:13.5px;margin-top:0">例如：「每週只做一支、不露臉，也不主動開發。」我會重新算一份新的處方，不是只改一句文案。</p>
+    <textarea id="adjustmentInput" rows="4" placeholder="寫下想改變的事情……"></textarea>
+    <div class="dactions">
+      <button class="btn-primary" id="applyAdjustmentButton" type="button">重新安排</button>
+    </div>
+    <p class="field-note" id="adjustmentResult" hidden></p>
+  </div>
+</dialog>
+
+<!-- ===== 本週復盤 ===== -->
+<dialog id="reflectionDialog" class="glass-strong">
+  <div class="dcard">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>先留下真實結果，再看看學到什麼</h2>
+    <p style="color:var(--ink-muted);font-size:13px;margin-top:0">只跟自己的前後比較；沒有成果也可以記下「這次不成立」。</p>
+    <form class="formgrid" id="reflectionForm">
+      <label>我實際做了<textarea id="reviewAction" rows="2"></textarea></label>
+      <label>觀察到的訊號（事實）<textarea id="reviewSignal" rows="2"></textarea></label>
+      <label>這週的結論（標明哪些是推測）<textarea id="reviewLearning" rows="2"></textarea></label>
+      <label>下週只驗證<textarea id="reviewNext" rows="2"></textarea></label>
+      <div id="assumptionChecklist"></div>
+      <label>想請人幫忙看（選填）<textarea id="reviewHelp" rows="2"></textarea></label>
+      <div id="circleShareRow" hidden style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-muted)">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400"><input type="checkbox" id="shareToCircle" style="accent-color:var(--accent)"> 分享到陪伴圈</label>
+        <select id="shareToCircleType" style="padding:6px 10px;border-radius:10px;font-size:12.5px">
+          <option value="reflection">心得</option>
+          <option value="milestone">成果</option>
+          <option value="stuck">卡點</option>
+        </select>
+      </div>
+      <div class="dactions">
+        <button class="btn-ghost" id="copyShareButton" type="button">複製分享卡</button>
+        <button class="btn-primary" type="submit">存起來</button>
+      </div>
+      <textarea id="shareCardFallback" rows="6" readonly hidden style="margin-top:10px"></textarea>
+      <p class="field-note" id="reviewStatus"></p>
+    </form>
+  </div>
+</dialog>
+
+<!-- ===== 陪伴圈 ===== -->
+<dialog id="circleDialog" class="glass-strong">
+  <div class="dcard">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>陪伴圈</h2>
+    <p style="color:var(--ink-muted);font-size:13px;margin-top:0">只有拿到同一組代碼的人看得到——不是公開廣場，也不比較誰做得多。</p>
+
+    <div id="circleSetup">
+      <div class="formgrid">
+        <label>妳的名字（圈子裡顯示用）<input type="text" id="circleNameInput" maxlength="20" placeholder="例如：阿雅"></label>
+        <div class="dactions" style="justify-content:flex-start">
+          <button class="btn-primary" type="button" id="createCircleButton">建立新的圈子</button>
+        </div>
+        <label>或輸入朋友給的代碼<input type="text" id="joinCodeInput" maxlength="6" placeholder="6 碼代號" style="text-transform:uppercase"></label>
+        <div class="dactions" style="justify-content:flex-start">
+          <button class="btn-ghost" type="button" id="joinCircleButton">加入圈子</button>
+        </div>
+      </div>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--glass-border)">
+        <button class="btn-quiet" type="button" id="testConnectionButton" style="padding-left:0">先測一下連線通不通</button>
+        <p class="field-note" id="testConnectionResult"></p>
+      </div>
+    </div>
+
+    <div id="circleJoined" hidden>
+      <p style="font-size:13px;color:var(--ink-muted)">圈子代碼（傳給想邀請的朋友）</p>
+      <p class="mono" id="circleCodeDisplay" style="font-size:22px;font-weight:700;color:var(--accent);letter-spacing:.1em;margin:0 0 16px"></p>
+      <div id="circleFeed"></div>
+      <div class="dactions">
+        <button class="btn-quiet" type="button" id="leaveCircleButton">離開這個圈子</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== AI 三種方式 ===== -->
+<dialog id="aiMethodDialog" class="glass-strong">
+  <div class="dcard">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>想怎麼處理這件事？</h2>
+    <button type="button" class="methodcard" data-method="included"><b>01</b><span class="t">直接在系統完成</span><span class="d">正式方案內含 AI 額度，最省事（尚未開放）</span></button>
+    <button type="button" class="methodcard" data-method="external"><b>02</b><span class="t">用其他 AI</span><span class="d">複製指令，再把答案貼回來</span></button>
+    <button type="button" class="methodcard" data-method="manual"><b>03</b><span class="t">我想自己做</span><span class="d">提供簡單步驟，不需要 AI</span></button>
+    <div class="methodout" id="methodOutput" hidden></div>
+  </div>
+</dialog>
+
+<!-- ===== 帳號與雲端同步（可選） ===== -->
+<dialog id="accountDialog" class="glass-strong">
+  <div class="dcard" style="max-width:480px">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>帳號</h2>
+
+    <div id="accountLoggedOut">
+      <p style="color:var(--ink-muted);font-size:13.5px;margin-top:0">帳號是<b>可選的</b>——不用帳號，這台裝置上的一切照常運作。建立帳號後，妳的處方與紀錄會存到雲端，換裝置也接得回來，只有登入這個帳號的人看得到。</p>
+      <div class="formgrid">
+        <label>Email<input type="email" id="authEmail" autocomplete="email" placeholder="you@example.com"></label>
+        <label>密碼（至少 6 個字）<input type="password" id="authPassword" autocomplete="current-password" placeholder="••••••"></label>
+        <div class="dactions" style="justify-content:flex-start">
+          <button class="btn-primary" type="button" id="signInButton">登入</button>
+          <button class="btn-ghost" type="button" id="signUpButton">建立帳號</button>
+        </div>
+        <p class="field-note" id="authStatus"></p>
+        <p class="field-note">按「建立帳號」表示妳同意把處方與紀錄存到雲端（<button type="button" class="btn-quiet" id="viewTermsButton" style="padding:0;font-size:inherit">看資料怎麼被使用</button>）。陪伴圈的分享是另一回事——只有妳按「分享」的內容才會給圈子看到。</p>
+      </div>
+    </div>
+
+    <div id="accountLoggedIn" hidden>
+      <p style="font-size:13.5px;color:var(--ink-muted);margin-top:0">已登入：<b id="accountEmail" style="color:var(--ink)"></b></p>
+      <p class="field-note" id="syncStatus"></p>
+      <div class="dactions" style="justify-content:flex-start">
+        <button class="btn-ghost" type="button" id="syncNowButton">立即同步</button>
+        <button class="btn-quiet" type="button" id="signOutButton">登出</button>
+      </div>
+      <p class="field-note" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--glass-border)">登出後這台裝置的紀錄還在，只是不再同步。想把雲端那份整個刪掉：</p>
+      <button class="btn-quiet" type="button" id="deleteCloudButton" style="color:var(--risk)">刪除雲端資料（這台裝置的紀錄會保留）</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 雲端／本機衝突選擇 ===== -->
+<dialog id="conflictDialog" class="glass-strong">
+  <div class="dcard" style="max-width:460px">
+    <h2>兩邊都有紀錄</h2>
+    <p style="color:var(--ink-muted);font-size:13.5px;margin-top:0">這台裝置和雲端各有一份不一樣的紀錄。要用哪一份繼續？被蓋掉的那份不會再找得回來，猶豫的話可以先按右上角備份再決定。</p>
+    <div class="formgrid">
+      <button class="btn-ghost" type="button" id="useLocalButton">用這台裝置的<span style="display:block;font-size:11.5px;color:var(--ink-quiet)" id="localStamp"></span></button>
+      <button class="btn-ghost" type="button" id="useCloudButton">用雲端的<span style="display:block;font-size:11.5px;color:var(--ink-quiet)" id="cloudStamp"></span></button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 資料使用說明（草稿） ===== -->
+<dialog id="termsDialog" class="glass-strong">
+  <div class="dcard" style="max-width:500px">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>資料怎麼被使用</h2>
+    <p class="field-note" style="color:var(--risk)">這是測試期草稿，正式開放前會經過法律確認。</p>
+    <div style="font-size:13.5px;color:var(--ink-muted);line-height:1.9">
+      <p><b style="color:var(--ink)">存什麼：</b>建立帳號後，妳的進站回答、處方、每日紀錄、復盤與關心紀錄會存到雲端資料庫，只有登入這個帳號的人讀得到。</p>
+      <p><b style="color:var(--ink)">不存什麼：</b>沒有按「分享」的內容不會給任何其他人看到；系統不推測、不記錄政治、宗教、健康、性向等敏感身分。</p>
+      <p><b style="color:var(--ink)">陪伴圈：</b>只有妳勾選「分享到陪伴圈」的那則內容會被圈子成員看到，其餘一律私密。</p>
+      <p><b style="color:var(--ink)">刪除權：</b>「刪除雲端資料」立即生效；「匯出備份」隨時可以把完整資料帶走。</p>
+      <p><b style="color:var(--ink)">不做的事：</b>原始資料不用於模型訓練；不因為妳不常登入而催促；不做排名。</p>
+    </div>
+  </div>
+</dialog>
+
+<!-- ===== 備份與還原 ===== -->
+<dialog id="backupDialog" class="glass-strong">
+  <div class="dcard" style="max-width:460px">
+    <button class="dclose" data-close type="button" aria-label="關閉">×</button>
+    <h2>備份與還原</h2>
+    <p style="color:var(--ink-muted);font-size:13.5px;margin-top:0">所有紀錄都存在這台裝置的瀏覽器裡。換裝置、清瀏覽器資料之前，先匯出一份存好——這些紀錄是累積起來最值錢的東西。</p>
+    <div class="dactions" style="justify-content:flex-start">
+      <button class="btn-primary" type="button" id="exportBackupButton">匯出備份</button>
+      <label class="btn-ghost" style="cursor:pointer">匯入備份<input type="file" id="importBackupInput" accept=".json,application/json" hidden></label>
+    </div>
+    <p class="field-note">匯入會蓋掉目前這台裝置上的紀錄，換成備份檔裡的內容。</p>
+  </div>
+</dialog>
+
+<!-- ===== 重新開始 ===== -->
+<dialog id="resetDialog" class="glass-strong">
+  <div class="dcard" style="max-width:420px">
+    <h2>要清除這份原型資料嗎？</h2>
+    <p style="color:var(--ink-muted);font-size:13.5px">只會清除這台裝置的原型設定，不影響正式系統。</p>
+    <div class="dactions">
+      <button class="btn-ghost" data-close type="button">先不要</button>
+      <button class="btn-primary" id="confirmResetButton" type="button">清除並重新開始</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function(){
+"use strict";
+
+var STORAGE_KEY = "social-mini-v2-single";
+var SCHEMA_VERSION = 2;
+var TOTAL_STEPS = 5;
+var currentStep = 1;
+var profile = defaultProfile();
+
+/* ================= 資料模型（v2） ================= */
+function defaultProfile(){
+  return {
+    schemaVersion: SCHEMA_VERSION,
+    aiMode: "external",
+    intake: { ideaText:"", ideaMode:"", situationSignal:"", resourcesText:"", innovationNote:"", answeredAt:"" },
+    constraints: {
+      face:{value:"undecided",locked:false},
+      voice:{value:"undecided",locked:false},
+      outreach:{value:"undecided",locked:false},
+      cadence:"undecided",
+      weeklyHours:"",
+      dailyMinutesCap:30,
+      hardLimits:[]
+    },
+    audience:"",
+    currentPrescriptionId:null,
+    prescriptions:[],
+    assumptions:[],
+    adjustmentLog:[],
+    stageHistory:[],
+    focalItems:[],
+    weeklyReflections:[],
+    lastMinutesChoice:30,
+    careLog:[],
+    circle:{ code:null, memberCodes:[], displayName:"" }
+  };
+}
+
+/* ---- 關心節奏表：輕觸／深談兩層，依類型決定，不是全站同一個數字（週） ---- */
+var CARE_RHYTHM_CONSTRAINT = {
+  cadence:{ light:2, deep:6 },
+  face:{ light:3, deep:8 },
+  voice:{ light:3, deep:8 },
+  outreach:{ light:4, deep:10 },
+  track:{ light:3, deep:8 },
+  weeklyHours:{ light:3, deep:8 }
+};
+var CARE_RHYTHM_STAGE = {
+  direction:{ light:2, deep:4 },
+  reach:{ light:1, deep:3 },
+  trust:{ light:2, deep:4 },
+  revenue:{ light:2, deep:6 },
+  unknown:{ light:2, deep:4 }
+};
+var CARE_RHYTHM_ASSUMPTION = {
+  track:{ light:2, deep:8 },
+  revenueOutlook:{ light:2, deep:6 },
+  audience:{ light:2, deep:5 }
+};
+function weeksSince(iso){
+  if (!iso) return Infinity;
+  return (Date.now() - new Date(iso).getTime()) / (7*24*60*60*1000);
+}
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+/* ---- 判斷引擎：路線換算 ---- */
+function routeFromHours(hours){
+  if (hours === "" || hours === null || hours === undefined || !Number.isFinite(Number(hours))){
+    return { key:"unassigned", name:"路線待確認", note:"先用今天的安排開始，不做速度比較" };
+  }
+  var v = Number(hours);
+  if (v <= 1) return { key:"walk", name:"步行路線", note:"每週 1 小時以下" };
+  if (v <= 4) return { key:"bus", name:"公車路線", note:"每週 2–4 小時" };
+  if (v <= 8) return { key:"rail", name:"高鐵路線", note:"每週 5–8 小時" };
+  return { key:"flight", name:"機票路線", note:"每週 9 小時以上" };
+}
+
+/* ---- 判斷引擎：內容形式建議 ---- */
+function describeFormat(constraints){
+  var face = constraints.face.value, voice = constraints.voice.value;
+  if (face === "no" && voice === "no") return "圖文、照片紀錄、螢幕示範或純文字敘事";
+  if (face === "no") return "旁白、螢幕示範、照片紀錄或固定角色";
+  if (voice === "no") return "露臉搭配字幕、動作示範或圖文";
+  return "妳願意長期使用的內容形式";
+}
+
+var STAGE_LABEL = { direction:"方向", reach:"有效觸及", trust:"信任與需求", revenue:"收益驗證", unknown:"還在確認目前位置" };
+
+/* ---- 判斷引擎：代價說明（規則庫，不需要 AI） ---- */
+var RECALIBRATE_PATTERNS = {
+  cadence:/樣本|方向不明/,
+  face:/信任|案例|證據/,
+  voice:/字幕|敘事/,
+  outreach:/詢問|私訊|留言問|主動問/,
+  weeklyHours:/測試|節奏/,
+  track:/反應|回饋|留言/
+};
+function buildConsequences(p, prescription){
+  var out = [];
+  function add(confidence, text, triggeredBy, recalibrateWhen, isAssumptionBased){
+    var rhythm = CARE_RHYTHM_CONSTRAINT[triggeredBy];
+    var trigger = null;
+    if (recalibrateWhen && rhythm){
+      trigger = {
+        displayText: recalibrateWhen,
+        watchField:"signalText",
+        pattern: RECALIBRATE_PATTERNS[triggeredBy] || null,
+        windowWeeks: rhythm.deep,
+        lightWeeks: rhythm.light,
+        deepWeeks: rhythm.deep
+      };
+    }
+    out.push({ id: uid(), confidence:confidence, text:text, triggeredBy:triggeredBy, recalibrateTrigger:trigger, isAssumptionBased: Boolean(isAssumptionBased) });
+  }
+  if (p.constraints.cadence === "w1"){
+    add("likely","每週一支能降低壓力，但累積樣本、找出有效內容的速度會比較慢——前六週只有六個樣本可以看。","cadence","如果六週後還看不出方向，可以考慮把節奏拉到每週兩支");
+  }
+  if (p.constraints.face.value === "no"){
+    add("uncertain","不露臉仍能經營；信任會更依靠一致的紀錄、案例、文字觀點或可驗證成果。","face");
+  }
+  if (p.constraints.voice.value === "no"){
+    add("likely","不使用聲音會少一種情感線索，畫面、字幕與敘事順序需要更清楚。","voice");
+  }
+  if (p.constraints.outreach.value === "no"){
+    add("known","不主動開發時，收入會更依賴自然搜尋、平台推薦與受眾主動詢問——驗證時間可能拉長。","outreach","妳說過不想主動開發，但最近好像常聽到有人主動問——要不要一起看看，這個限制還適合現在的妳嗎？");
+  }
+  var route = routeFromHours(p.constraints.weeklyHours);
+  if ((route.key === "walk" || route.key === "bus") && prescription.stage === "revenue"){
+    add("uncertain","目前是"+route.name+"，收益驗證這一環通常需要更多測試次數——先把期待放在「有沒有人問」，不是「有沒有成交」。","weeklyHours","時間投入拉長之後可以重新評估收益驗證的節奏");
+  }
+  if (prescription.track.kind === "inferred"){
+    add("uncertain","「"+prescription.track.name+"」目前沒有內建的市場資料，受眾規模與付費意願都還是假設，需要靠實際發布來驗證。","track","累積至少 10 篇內容的真實反應後，重新校準這個假設",true);
+  }
+  if (!out.length){
+    add("known","目前的選擇沒有明顯衝突。先用少量內容取得真實反應，再決定要不要加速。","none");
+  }
+  return out;
+}
+
+/* ---- 判斷引擎：產生 / 重新產生一份處方（版本化） ---- */
+function generatePrescription(p, stageOverride){
+  var stage = stageOverride || p.intake.bottleneck || "unknown";
+  var trackName = (p.intake.ideaText || "").trim();
+  var track = trackName
+    ? { kind:"inferred", name: trackName.length > 24 ? trackName.slice(0,24)+"…" : trackName, sourceNote:"由使用者原話推導，尚無內建市場資料" }
+    : { kind:"inferred", name:"還在形成中的新方向", sourceNote:"" };
+
+  var route = routeFromHours(p.constraints.weeklyHours);
+  var prev = p.prescriptions[p.prescriptions.length-1];
+  var version = prev ? prev.version+1 : 1;
+
+  var prescription = {
+    id: uid(), version:version, createdAt:new Date().toISOString(),
+    track: track, stage: stage, format: describeFormat(p.constraints),
+    route: route,
+    revenueOutlook: { assumption:true, range:null, basis:"樣本還不夠，先看訊號不看數字" },
+    consequenceIds: []
+  };
+  var consequences = buildConsequences(p, prescription);
+  prescription.consequenceIds = consequences.map(function(c){return c.id});
+  prescription._consequences = consequences; // 內嵌保存，原型不用另開集合
+
+  if (prev){ prev.supersededBy = prescription.id; }
+  p.prescriptions.push(prescription);
+  p.currentPrescriptionId = prescription.id;
+
+  if (!prev || prev.stage !== stage){
+    p.stageHistory.push({ from: prev?prev.stage:null, to:stage, signal:"進站評估或調整後重新判斷", at:new Date().toISOString() });
+  }
+
+  // 全新賽道 → 建立假設
+  if (track.kind === "inferred" && trackName){
+    var exists = p.assumptions.some(function(a){ return a.relatedTo === "track" && a.status === "open"; });
+    if (!exists){
+      p.assumptions.push({ id: uid(), text:"「"+track.name+"」的受眾規模與付費意願目前是假設，還沒有市場資料佐證。", relatedTo:"track", status:"open", createdAt:new Date().toISOString(), resolvedNote:"" });
+    }
+  }
+  return prescription;
+}
+
+function currentPrescription(){
+  return profile.prescriptions.find(function(x){ return x.id === profile.currentPrescriptionId; });
+}
+function currentConsequences(){
+  var pr = currentPrescription();
+  return pr ? pr._consequences || [] : [];
+}
+
+/* ================= 關心引擎：輕觸／深談兩層，語氣像朋友，不是系統報告狀態 ================= */
+function lastCareFire(type, level){
+  var hits = profile.careLog.filter(function(c){ return c.type===type && c.level===level; });
+  return hits.length ? hits[hits.length-1] : null;
+}
+function recentReflectionsText(n){
+  return profile.weeklyReflections.slice(-n).map(function(r){ return (r.signalText||"")+" "+(r.conclusionText||""); }).join(" ");
+}
+function checkCare(level){
+  var pr = currentPrescription();
+  if (!pr) return null;
+
+  // 關心 1：訊號在變（優先序最高）
+  for (var i=0;i<currentConsequences().length;i++){
+    var c = currentConsequences()[i];
+    var t = c.recalibrateTrigger;
+    if (!t) continue;
+    var weeks = level==="deep" ? t.deepWeeks : t.lightWeeks;
+    var last = lastCareFire("consequence:"+c.id, level);
+    if (last && weeksSince(last.firedAt) < weeks) continue;
+    if (weeksSince(pr.createdAt) < weeks) continue;
+    if (level==="deep"){
+      if (t.pattern && !t.pattern.test(recentReflectionsText(6))) continue;
+      return { type:"consequence:"+c.id, level:"deep", text:t.displayText };
+    }
+    var lightText = c.triggeredBy === "track"
+      ? "那個新方向還放在心上，最近感覺怎麼樣？"
+      : "這個選擇還在陪著妳，最近感覺怎麼樣？";
+    return { type:"consequence:"+c.id, level:"light", text:lightText };
+  }
+
+  // 關心 2：陪妳在這一步走了一段路
+  var stageRhythm = CARE_RHYTHM_STAGE[pr.stage] || CARE_RHYTHM_STAGE.unknown;
+  var weeksOnStage = weeksSince(pr.createdAt);
+  var need = level==="deep" ? stageRhythm.deep : stageRhythm.light;
+  if (weeksOnStage >= need){
+    var lastStage = lastCareFire("stage:"+pr.stage, level);
+    if (!lastStage || weeksSince(lastStage.firedAt) >= need){
+      return level==="deep"
+        ? { type:"stage:"+pr.stage, level:"deep", text:"我們在『"+STAGE_LABEL[pr.stage]+"』這裡陪妳走了一段時間了——要不要一起回頭看看，現在的狀況怎麼樣？" }
+        : { type:"stage:"+pr.stage, level:"light", text:"還在『"+STAGE_LABEL[pr.stage]+"』這裡陪著妳呢。" };
+    }
+  }
+
+  // 關心 3：還記得這個嗎
+  var openAssumptions = profile.assumptions.filter(function(a){ return a.status==="open"; });
+  for (var j=0;j<openAssumptions.length;j++){
+    var a = openAssumptions[j];
+    var arhythm = CARE_RHYTHM_ASSUMPTION[a.relatedTo] || CARE_RHYTHM_ASSUMPTION.track;
+    var aneed = level==="deep" ? arhythm.deep : arhythm.light;
+    if (weeksSince(a.createdAt) < aneed) continue;
+    var lastA = lastCareFire("assumption:"+a.id, level);
+    if (lastA && weeksSince(lastA.firedAt) < aneed) continue;
+    return level==="deep"
+      ? { type:"assumption:"+a.id, level:"deep", text:"還記得這個嗎：『"+a.text+"』——最近有沒有觀察到什麼？" }
+      : { type:"assumption:"+a.id, level:"light", text:"那個假設還放在心上：『"+a.text+"』。" };
+  }
+  return null;
+}
+function getCareForToday(){
+  var deep = checkCare("deep");
+  if (deep) return deep;
+  return checkCare("light");
+}
+function logCareFire(care){
+  profile.careLog.push({ id: uid(), type:care.type, level:care.level, text:care.text, firedAt:new Date().toISOString(), dismissedAt:null });
+  saveProfile();
+}
+function sameDay(iso, d2){
+  if (!iso) return false;
+  var d1 = new Date(iso);
+  return d1.getFullYear()===d2.getFullYear() && d1.getMonth()===d2.getMonth() && d1.getDate()===d2.getDate();
+}
+var activeCare = null;
+function refreshCare(){
+  /* 今天已經開過口、而且沒被「先不用」的話，重新整理頁面後要繼續陪著——
+     不能開一次口就消失（冷卻期是管「隔幾週再提」，不是管「今天內顯示幾次」）。 */
+  var today = new Date();
+  var todays = profile.careLog.filter(function(c){ return sameDay(c.firedAt, today) && !c.dismissedAt && c.text; });
+  if (todays.length){
+    activeCare = todays[todays.length-1];
+    renderCareUI();
+    return;
+  }
+  var care = getCareForToday();
+  if (care) logCareFire(care);
+  activeCare = care;
+  renderCareUI();
+}
+function dismissActiveCare(){
+  if (!activeCare) return;
+  var today = new Date();
+  for (var i=profile.careLog.length-1; i>=0; i--){
+    var c = profile.careLog[i];
+    if (c.type===activeCare.type && c.level===activeCare.level && sameDay(c.firedAt, today)){
+      c.dismissedAt = new Date().toISOString();
+      break;
+    }
+  }
+  saveProfile();
+}
+function renderCareUI(){
+  var line = document.getElementById("careLine");
+  if (!line) return;
+  if (activeCare && activeCare.level==="deep"){
+    line.hidden = false;
+    line.textContent = "";
+    line.appendChild(document.createTextNode(activeCare.text + " "));
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "dismiss"; btn.textContent = "先不用";
+    btn.addEventListener("click", function(){
+      dismissActiveCare();
+      line.hidden = true;
+    });
+    line.appendChild(btn);
+  } else {
+    line.hidden = true;
+  }
+}
+
+/* ---- 今天的一件事：題庫（沿用既有內容，改掛在 stage 上） ---- */
+var TASK_BANK = {
+  direction:{
+    15:["寫下一個最想驗證的問題","用一句話寫：我想知道哪一種人，會在什麼情境需要這個方向。","先縮小未知，不急著完成完整定位。"],
+    30:["整理三個真實使用情境","不要先分類賽道。寫出三種人真正遇到問題的時刻，再選一個最想理解的情境。","方向應該從真實情境長出來，不是從內建分類挑答案。"],
+    60:["完成第一個方向假設","寫出「我想幫誰、在什麼情境、用什麼形式、先驗證什麼」，整理成一份可發布草稿。","第一版方向是待驗證假設，不是永久定位。"]
+  },
+  paused:{
+    15:["找出上次停下來的原因","只寫一個最主要原因：太花時間、沒方向、沒回應，或做法不適合。","先移除中斷原因，比再排一份高強度計畫重要。"],
+    30:["設計最低可持續版本","把原本的做法縮小一半，保留最重要的部分，寫出下次能完成的版本。","能穩定完成的小版本，才有資格逐步加量。"],
+    60:["重做一份不容易中斷的流程","回看最近一次內容，拆成選題、製作、發布三段，各找一個可以省力的地方。","系統會配合妳的生活，不是要求妳追趕進度。"]
+  },
+  reach:{
+    15:["找出一個受眾真的會用的問句","從搜尋、留言或日常對話選一句原話，作為下一則內容的題目。","有效觸及先從對方會辨認的問題開始，不追求空泛曝光。"],
+    30:["比較三個觸及線索","比較最近內容的題目、開場與來源；沒有內容時，就比較三個受眾常用問句。只選一個差異繼續測。","一次只改一個變因，才知道什麼讓對的人停下來。"],
+    60:["完成一個有效觸及實驗","用受眾原話做開場，完成一則內容草稿，並先寫下要觀察的唯一訊號。","發布不是完成；能否接觸到相關的人，才是這一輪要看的結果。"]
+  },
+  trust:{
+    15:["補上一個能被驗證的證據","替目前內容加入一項案例、過程、前後差異或資料來源，不用增加更多觀點。","信任不是語氣更有自信，而是對方有東西可以判斷。"],
+    30:["整理三個需求訊號","從留言、私訊、提問或日常對話中，分開記錄事實與推測；資料不足就設計一個明確提問。","有人看不等於有人需要，先找對方願意投入時間或資訊的訊號。"],
+    60:["完成一份信任素材","選一個真實問題，整理處理過程、限制、證據與下一步，做成案例、示範或問答草稿。","讓人理解妳怎麼判斷，比單純宣稱專業更能驗證信任。"]
+  },
+  revenue:{
+    15:["寫下一個最低成本收益假設","用一句話寫：誰可能為哪個具體結果付費，以及目前有什麼證據。沒有證據就標成推測。","先看需求與交換，不用先做完整商品。"],
+    30:["設計一個不違反選擇的需求測試","從候補名單、內容回覆、預約入口或小型服務選一種；不主動開發時，改用公開入口等待真實行動。","限制不會被取消，但會影響取得付費證據的速度。"],
+    60:["完成第一個收益實驗草稿","寫清楚對象、問題、最小交付、價格假設、成本上限，以及繼續、調整或停止的條件。","沒有成交也是資料；先避免在需求未知時投入大量製作。"]
+  },
+  unknown:{
+    15:["記下目前最想釐清的一件事","只寫一個問題，不需要先知道答案。","先找到真正的未知，才知道從哪裡開始陪妳。"],
+    30:["整理已經擁有的三種素材","列出三件能分享的經驗、能力、故事或資源。","適合的方向通常從現有資源與願意長期做的事交會而來。"],
+    60:["完成三個方向的輕量探索","各寫一個可能的受眾、內容與收入想法，不急著選唯一答案。","先比較三條小路，比一開始逼自己選終身方向更實際。"]
+  }
+};
+function tasksForStage(stage, minutes, situationSignal){
+  var key = situationSignal === "paused" ? "paused" : (stage || "unknown");
+  var bank = TASK_BANK[key] || TASK_BANK.unknown;
+  return bank[minutes] || bank[30];
+}
+
+/* ================= 畫面切換 ================= */
+var welcomeView = document.getElementById("welcomeView");
+var onboardingView = document.getElementById("onboardingView");
+var planView = document.getElementById("planView");
+var resetButton = document.getElementById("resetButton");
+var toast = document.getElementById("toast");
+
+function setView(name){
+  welcomeView.hidden = name !== "welcome";
+  onboardingView.hidden = name !== "onboarding";
+  planView.hidden = name !== "plan";
+  resetButton.hidden = name === "welcome";
+  document.getElementById("backupButton").hidden = name === "welcome";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showToast(msg){
+  /* <dialog> 用 showModal() 開啟時會進到瀏覽器的「top layer」，疊在一般頁面
+     內容之上——toast 原本放在 dialog 外面，只要有任何一個對話框開著，
+     toast 實際上會被蓋在對話框下面，看起來就像「按了沒反應」。
+     解法：顯示前，把 toast 移到目前開著的 dialog 裡面（dialog 本身，不是
+     .dcard——.dcard 有 backdrop-filter 會讓 position:fixed 改成相對它自己
+     定位，移進 dialog 本身才能維持原本置中在畫面底部的樣子）。 */
+  var openDialog = document.querySelector("dialog[open]");
+  var targetParent = openDialog || document.body;
+  if (toast.parentElement !== targetParent){
+    targetParent.appendChild(toast);
+  }
+  toast.textContent = msg; toast.hidden = false;
+  window.clearTimeout(showToast._t);
+  showToast._t = window.setTimeout(function(){ toast.hidden = true; }, 2600);
+}
+
+/* ================= 進站評估 ================= */
+function beginOnboarding(noIdea){
+  setView("onboarding"); currentStep = 1;
+  if (noIdea){
+    profile.intake.ideaMode = "explore";
+    document.getElementById("ideaInput").value = "我還沒有明確想法，希望先找到適合自己的方向。";
+    profile.intake.ideaText = document.getElementById("ideaInput").value;
+  }
+  hydrateForm(); showStep();
+}
+
+function hydrateForm(){
+  document.getElementById("ideaInput").value = profile.intake.ideaText || "";
+  document.getElementById("audienceInput").value = profile.audience || "";
+  document.getElementById("weeklyHours").value = profile.constraints.weeklyHours === "" ? "" : profile.constraints.weeklyHours;
+  document.getElementById("tabooInput").value = (profile.constraints.hardLimits||[]).join("、");
+  setPressed("situationChoices", profile.intake.situationSignal);
+  setPressed("bottleneckChoices", profile.intake.bottleneck);
+  setPressed("minutesChoices", String(profile.constraints.dailyMinutesCap));
+  setPressed("cadenceChoices", profile.constraints.cadence);
+  setPressed("facePref", profile.constraints.face.value);
+  setPressed("voicePref", profile.constraints.voice.value);
+  setPressed("outreachPref", profile.constraints.outreach.value);
+  document.querySelectorAll("[data-idea-mode]").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.ideaMode===profile.intake.ideaMode?"true":"false"); });
+  document.querySelectorAll("[data-lock]").forEach(function(cb){ cb.checked = Boolean(profile.constraints[cb.dataset.lock].locked); });
+  updateRouteOutput();
+}
+function setPressed(containerId, value){
+  var c = document.getElementById(containerId); if (!c) return;
+  c.querySelectorAll("button[data-value]").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.value===value?"true":"false"); });
+}
+function updateRouteOutput(){
+  var route = routeFromHours(profile.constraints.weeklyHours);
+  document.getElementById("routeOutput").textContent = route.name + " · " + route.note;
+}
+
+function showStep(){
+  document.querySelectorAll(".qstep").forEach(function(s){ s.hidden = Number(s.dataset.step) !== currentStep; });
+  document.getElementById("stepLabel").textContent = "第 " + currentStep + " 步，共 " + TOTAL_STEPS + " 步";
+  document.getElementById("stepBar").style.width = (currentStep/TOTAL_STEPS*100) + "%";
+  document.getElementById("backButton").style.visibility = currentStep===1 ? "hidden" : "visible";
+  document.getElementById("nextButton").textContent = currentStep===TOTAL_STEPS ? "整理我的第一步" : "下一步";
+}
+
+function validateStep(){
+  if (currentStep===1){
+    profile.intake.ideaText = document.getElementById("ideaInput").value.trim();
+    return Boolean(profile.intake.ideaText || profile.intake.ideaMode === "explore");
+  }
+  if (currentStep===2) return Boolean(profile.intake.situationSignal);
+  if (currentStep===3) return Boolean(profile.intake.bottleneck);
+  if (currentStep===4){
+    profile.constraints.weeklyHours = readWeeklyHours();
+    profile.constraints.hardLimits = document.getElementById("tabooInput").value.split(/[、,]/).map(function(s){return s.trim()}).filter(Boolean);
+    return Boolean(profile.constraints.dailyMinutesCap && profile.constraints.cadence);
+  }
+  if (currentStep===5){
+    profile.audience = document.getElementById("audienceInput").value.trim();
+    return Boolean(profile.audience);
+  }
+  return true;
+}
+function readWeeklyHours(){
+  var raw = document.getElementById("weeklyHours").value;
+  if (raw==="") return "";
+  var v = Number(raw);
+  if (!Number.isFinite(v) || v < 0) return "";
+  return Math.min(v, 80);  /* 一週最多 80 小時——超過這個數字的輸入是誤打，不是計畫 */
+}
+
+function goNext(){
+  if (!validateStep()){ showToast("這題可以很簡單；選一個最接近的答案就好。"); return; }
+  if (currentStep < TOTAL_STEPS){ currentStep++; showStep(); return; }
+  profile.intake.answeredAt = new Date().toISOString();
+  generatePrescription(profile, profile.intake.bottleneck);
+  refreshCare();
+  renderFocal();
+  saveProfile();
+  setView("plan");
+}
+
+/* ================= 今天的一件事：渲染 ================= */
+function todayKey(){
+  var d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function todayFocalItem(){
+  var t = todayKey();
+  return profile.focalItems.find(function(f){ return f.date===t; });
+}
+function ensureTodayFocalItem(minutes){
+  var existing = todayFocalItem();
+  if (existing) return existing;
+  var pr = currentPrescription();
+  var task = tasksForStage(pr.stage, minutes, profile.intake.situationSignal);
+  var item = {
+    id: uid(), profileId:"local", prescriptionId: pr.id, date: todayKey(),
+    title: task[0], why: task[1], minutesVariants: {15:null,30:null,60:null},
+    chosenMinutes: minutes, status:"open", completedAt:null,
+    optional:"如果今天還有餘力，再把成果整理成可以和朋友分享的版本；不做也不影響下一步。",
+    externalPrompt:"", externalAnswer:""
+  };
+  profile.focalItems.push(item);
+  return item;
+}
+function confidenceTagLabel(c){
+  return { known:"可驗證", likely:"通用經驗", uncertain:"推測" }[c] || "推測";
+}
+function renderFocal(minutes){
+  var pr = currentPrescription();
+  if (!pr){ return; }
+  minutes = minutes || profile.lastMinutesChoice || 30;
+  /* 已經存起來的一件事不能因為切換分鐘數被換成另一題——
+     否則會變成「完成了一件其實沒做過的事」。 */
+  var existing = todayFocalItem();
+  if (existing && existing.status === "done" && minutes !== existing.chosenMinutes){
+    minutes = existing.chosenMinutes;
+    showToast("今天的這件事已經存好了；想換節奏，明天再調也可以。");
+  }
+  profile.lastMinutesChoice = minutes;
+  var item = ensureTodayFocalItem(minutes);
+  if (item.status !== "done" && item.chosenMinutes !== minutes){
+    var task = tasksForStage(pr.stage, minutes, profile.intake.situationSignal);
+    item.title = task[0]; item.why = task[1]; item.chosenMinutes = minutes;
+  }
+  document.getElementById("focalEyebrow").textContent = "妳正在「"+STAGE_LABEL[pr.stage]+"」這一環";
+  document.getElementById("focalTitle").textContent = item.title;
+  document.getElementById("focalWhy").textContent = item.why;
+
+  var cons = currentConsequences().filter(function(c){ return c.triggeredBy !== "none"; })[0] || currentConsequences()[0];
+  document.getElementById("focalTag").textContent = cons ? confidenceTagLabel(cons.confidence) : "通用經驗";
+
+  var mwrap = document.getElementById("focalMinutes"); mwrap.innerHTML = "";
+  [15,30,60].forEach(function(m){
+    var b = document.createElement("button");
+    b.type="button"; b.className="chip"; b.textContent = m+" 分鐘";
+    b.setAttribute("aria-pressed", m===minutes ? "true":"false");
+    b.addEventListener("click", function(){ renderFocal(m); });
+    mwrap.appendChild(b);
+  });
+
+  var doneBtn = document.getElementById("doneTaskButton");
+  var statusEl = document.getElementById("focalStatus");
+  doneBtn.textContent = item.status==="done" ? "已經存起來了 ✓" : "存起來，這件事做完了";
+  var normalStatus = item.status==="done"
+    ? "已經記下了。明天會重新安排，不會累積。"
+    : "還沒開始也沒關係；明天會依當下狀況重新安排。";
+  statusEl.textContent = (activeCare && activeCare.level==="light") ? activeCare.text : normalStatus;
+
+  document.getElementById("optionalText").textContent = item.optional;
+  var nextTask = tasksForStage(pr.stage, minutes===60?30:60, profile.intake.situationSignal);
+  document.getElementById("nextPreview").textContent = nextTask[0];
+
+  saveProfile();
+}
+
+/* ================= 判斷依據對話框 ================= */
+function renderJudgment(){
+  var pr = currentPrescription();
+  var body = document.getElementById("judgmentBody");
+  var html = "";
+  html += "<div class='arow'><b>目前理解</b><p>"+esc(profile.intake.ideaText || "還在形成中")+"</p></div>";
+  html += "<div class='arow'><b>建議形式</b><p>"+esc(pr.format)+"</p></div>";
+  html += "<div class='arow'><b>目前先顧</b><p>"+esc(STAGE_LABEL[pr.stage])+"——這會決定今天安排的事與觀察的訊號。</p></div>";
+  html += "<div class='arow'><b>投入路線</b><p>"+esc(pr.route.name+" · "+pr.route.note)+"</p></div>";
+  currentConsequences().forEach(function(c){
+    html += "<div class='arow'><b>"+esc(confidenceTagLabel(c.confidence))+"</b><p>"+esc(c.text)+(c.recalibrateTrigger?"<br><span style='color:var(--ink-quiet);font-size:12px'>"+esc(c.recalibrateTrigger.displayText)+"</span>":"")+"</p></div>";
+  });
+  var openAssumptions = profile.assumptions.filter(function(a){return a.status==="open"});
+  if (openAssumptions.length){
+    html += "<div class='arow'><b>目前的假設</b><p>"+openAssumptions.map(function(a){return esc(a.text)}).join("<br>")+"</p></div>";
+  }
+  body.innerHTML = html;
+}
+
+/* ================= 調整（重算整份處方） ================= */
+function applyAdjustment(){
+  var text = document.getElementById("adjustmentInput").value.trim();
+  if (!text){ showToast("先寫下一件想改變的事情。"); return; }
+  var recognized = [];
+  function lock(key){ profile.constraints[key].locked = true; }
+  if (/不露臉|不要露臉/.test(text)){ profile.constraints.face.value="no"; lock("face"); recognized.push("不露臉"); }
+  if (/可以露臉|願意露臉/.test(text)){ profile.constraints.face.value="yes"; recognized.push("可以露臉"); }
+  if (/不說話|不用聲音|不要聲音/.test(text)){ profile.constraints.voice.value="no"; lock("voice"); recognized.push("不使用聲音"); }
+  if (/可以說話|使用聲音|願意說話/.test(text)){ profile.constraints.voice.value="yes"; recognized.push("可以使用聲音"); }
+  if (/不主動開發|不要開發|不聯絡品牌/.test(text)){ profile.constraints.outreach.value="no"; lock("outreach"); recognized.push("不主動開發"); }
+  if (/每週\s*(只)?\s*(做|發)?\s*一|一週\s*(只)?\s*(做|發)?\s*一/.test(text)){ profile.constraints.cadence="w1"; recognized.push("每週一支"); }
+  var wm = text.match(/每週\s*(\d+(?:\.\d+)?)\s*(?:個)?小時/);
+  if (wm){ profile.constraints.weeklyHours = Number(wm[1]); recognized.push("每週"+wm[1]+"小時"); }
+  var stageMap = [["方向|定位|不知道做什麼","direction","先處理方向"],["觸及|沒人看|看見","reach","先處理有效觸及"],["信任|需求","trust","先處理信任與需求"],["收益|收入|成交|付費","revenue","先處理收益驗證"]];
+  var newStage = null;
+  stageMap.forEach(function(row){ if (new RegExp(row[0]).test(text)){ newStage = row[1]; recognized.push(row[2]); } });
+
+  profile.adjustmentLog.push({ id: uid(), text:text, recognizedChanges:recognized, resultingPrescriptionId:null, appliedAt:new Date().toISOString() });
+  var pr = generatePrescription(profile, newStage || profile.intake.bottleneck);
+  profile.adjustmentLog[profile.adjustmentLog.length-1].resultingPrescriptionId = pr.id;
+  // 今天的一件事需要依新處方重排
+  profile.focalItems = profile.focalItems.filter(function(f){ return f.date !== todayKey(); });
+  /* 今天已顯示的關心是針對「舊處方」講的——調整後先收起來，避免重播過時的話 */
+  profile.careLog.forEach(function(c){
+    if (!c.dismissedAt && sameDay(c.firedAt, new Date())) c.dismissedAt = new Date().toISOString();
+  });
+  refreshCare();
+  renderFocal(profile.lastMinutesChoice);
+
+  var resultEl = document.getElementById("adjustmentResult");
+  resultEl.hidden = false;
+  resultEl.textContent = recognized.length
+    ? "已記下「"+recognized.join("、")+"」，並重新整理今天的安排。"
+    : "已保留這項調整。原型目前無法完整理解所有描述，正式版會交由方案內 AI 分析，再由妳確認後更新。";
+  document.getElementById("adjustmentInput").value = "";
+  saveProfile();
+}
+
+/* ================= 復盤 ================= */
+function hydrateReflection(){
+  var last = profile.weeklyReflections[profile.weeklyReflections.length-1] || {};
+  document.getElementById("reviewAction").value = last.didText || "";
+  document.getElementById("reviewSignal").value = last.signalText || "";
+  document.getElementById("reviewLearning").value = last.conclusionText || "";
+  document.getElementById("reviewNext").value = last.nextFocus || "";
+  document.getElementById("reviewHelp").value = last.askHelp || "";
+  document.getElementById("reviewStatus").textContent = last.savedAt ? "已存起來。分享前仍可修改。" : "復盤只存在這台裝置；夥伴只會看到妳主動分享的內容。";
+  var wrap = document.getElementById("assumptionChecklist");
+  var open = profile.assumptions.filter(function(a){return a.status==="open"});
+  wrap.innerHTML = open.length ? "<label style='font-weight:700'>這些假設，這週有驗證到嗎？（選填）</label>" + open.map(function(a){
+    return "<label style='display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;color:var(--ink-muted)'><input type='checkbox' data-assumption='"+a.id+"' style='margin-top:4px;accent-color:var(--accent)'> "+esc(a.text)+"</label>";
+  }).join("") : "";
+  document.getElementById("circleShareRow").hidden = !profile.circle.code;
+  document.getElementById("shareToCircle").checked = false;
+}
+async function saveReflection(){
+  var checked = Array.prototype.slice.call(document.querySelectorAll("[data-assumption]:checked")).map(function(cb){return cb.dataset.assumption});
+  checked.forEach(function(id){
+    var a = profile.assumptions.find(function(x){return x.id===id});
+    if (a){ a.status="validated"; a.resolvedNote = document.getElementById("reviewLearning").value.trim(); }
+  });
+  var conclusionText = document.getElementById("reviewLearning").value.trim();
+  var entry = {
+    profileId:"local", prescriptionId: profile.currentPrescriptionId, weekOf: todayKey(),
+    didText: document.getElementById("reviewAction").value.trim(),
+    signalText: document.getElementById("reviewSignal").value.trim(),
+    conclusionText: conclusionText,
+    nextFocus: document.getElementById("reviewNext").value.trim(),
+    resolvedAssumptionIds: checked,
+    askHelp: document.getElementById("reviewHelp").value.trim(),
+    savedAt: new Date().toISOString()
+  };
+  /* 同一天存兩次是「修改」不是「多一筆」——重複紀錄會污染關心引擎的訊號判讀 */
+  var lastRef = profile.weeklyReflections[profile.weeklyReflections.length-1];
+  if (lastRef && lastRef.weekOf === entry.weekOf){
+    profile.weeklyReflections[profile.weeklyReflections.length-1] = entry;
+  } else {
+    profile.weeklyReflections.push(entry);
+  }
+  saveProfile();
+
+  if (profile.circle.code && document.getElementById("shareToCircle").checked){
+    var type = document.getElementById("shareToCircleType").value;
+    var text = type==="reflection" ? conclusionText : (document.getElementById("reviewAction").value.trim() || conclusionText);
+    if (text){
+      try{
+        await CircleSync.postItem(profile.circle.code, { id: uid(), type:type, authorName: circleDisplayName(), text:text });
+        showToast("本週復盤已存起來，也分享到圈子了");
+      }catch(e){
+        showToast("本週復盤已存起來，但分享到圈子暫時失敗，可以之後再試");
+      }
+    } else {
+      showToast("本週復盤已存起來");
+    }
+  } else {
+    showToast("本週復盤已存起來");
+  }
+  hydrateReflection();
+}
+function buildShareCard(){
+  var pr = currentPrescription();
+  var last = profile.weeklyReflections[profile.weeklyReflections.length-1] || {};
+  return "【本週經營分享】\n"+
+    "我的方向："+(profile.intake.ideaText || "還在探索中")+"\n"+
+    "目前先顧："+STAGE_LABEL[pr.stage]+"\n"+
+    "投入路線："+pr.route.name+"\n"+
+    "我實際做了："+(last.didText||"＿＿")+"\n"+
+    "觀察到的訊號："+(last.signalText||"＿＿")+"\n"+
+    "這週的結論："+(last.conclusionText||"＿＿")+"\n"+
+    "下週只驗證："+(last.nextFocus||"＿＿")+"\n\n"+
+    "不比較誰跑得快，只交換真實經驗。";
+}
+
+/* ================= 陪伴圈：真正的跨裝置同步（Supabase REST，不引入 SDK） =================
+   只用 fetch 打 Supabase 自動產生的 REST API（PostgREST），不載入 supabase-js，
+   維持這個檔案「不依賴外部程式庫」的原則。anon/publishable key 依 Supabase 的設計
+   本來就是給前端公開使用的，安全性靠資料庫的 RLS 規則（見 supabase_setup.sql）。 */
+var SUPABASE_URL = "https://hbznfbuztuijwqmpujgi.supabase.co";
+var SUPABASE_KEY = "sb_publishable_rar47K9HnQI_wi77bNyVrA_6v1hkZhW";
+function supaHeaders(extra){
+  var h = { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY };
+  return Object.assign(h, extra || {});
+}
+var CircleSync = {
+  async getFeed(code){
+    var res = await fetch(SUPABASE_URL + "/rest/v1/circle_items?circle_code=eq." + encodeURIComponent(code) + "&select=*&order=created_at.asc", {
+      headers: supaHeaders()
+    });
+    if (!res.ok) throw new Error("circle-fetch-failed:" + res.status);
+    var items = await res.json();
+    if (!items.length) return [];
+    var ids = items.map(function(i){ return i.id; });
+    var idsFilter = ids.map(function(id){ return encodeURIComponent(id); }).join(",");
+    var cres = await fetch(SUPABASE_URL + "/rest/v1/circle_comments?item_id=in.(" + idsFilter + ")&select=*&order=created_at.asc", {
+      headers: supaHeaders()
+    });
+    var comments = cres.ok ? await cres.json() : [];
+    return items.map(function(i){
+      return {
+        id: i.id, type: i.type, authorName: i.author_name, text: i.text, at: i.created_at,
+        comments: comments.filter(function(c){ return c.item_id === i.id; }).map(function(c){ return { authorName:c.author_name, text:c.text, at:c.created_at }; })
+      };
+    });
+  },
+  async postItem(code, item){
+    var res = await fetch(SUPABASE_URL + "/rest/v1/circle_items", {
+      method: "POST",
+      headers: supaHeaders({ "Content-Type":"application/json", Prefer:"return=minimal" }),
+      body: JSON.stringify({ id:item.id, circle_code:code, type:item.type, author_name:item.authorName, text:item.text })
+    });
+    if (!res.ok) throw new Error("circle-post-failed:" + res.status);
+  },
+  async postComment(code, itemId, comment){
+    var res = await fetch(SUPABASE_URL + "/rest/v1/circle_comments", {
+      method: "POST",
+      headers: supaHeaders({ "Content-Type":"application/json", Prefer:"return=minimal" }),
+      body: JSON.stringify({ id: uid(), item_id:itemId, circle_code:code, author_name:comment.authorName, text:comment.text })
+    });
+    if (!res.ok) throw new Error("circle-comment-failed:" + res.status);
+  }
+};
+
+var SHARE_TYPE_LABEL = { reflection:"心得", milestone:"成果", stuck:"卡點" };
+
+function makeCircleCode(){
+  var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  var out = "";
+  for (var i=0;i<6;i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+
+/* 一鍵連線測試：自己發一筆、自己讀回來，不用開兩個分頁、不用找朋友配合。
+   用一組專屬代碼，不會出現在任何真正的圈子裡。 */
+async function testCircleConnection(){
+  var out = document.getElementById("testConnectionResult");
+  var btn = document.getElementById("testConnectionButton");
+  btn.disabled = true;
+  out.style.color = "var(--ink-quiet)";
+  out.textContent = "測試中……";
+  var testCode = "PING00";  /* 固定測試代碼：所有測試資料集中在同一個假圈子，不會撒滿整張表 */
+  var testId = uid();
+  try{
+    await CircleSync.postItem(testCode, { id:testId, type:"reflection", authorName:"連線測試", text:"這是自動連線測試留下的資料，可以忽略。" });
+    var feed = await CircleSync.getFeed(testCode);
+    var found = feed.some(function(i){ return i.id === testId; });
+    if (found){
+      out.style.color = "var(--accent)";
+      out.textContent = "✓ 連線正常，可以放心用陪伴圈了。";
+    } else {
+      out.style.color = "var(--risk)";
+      out.textContent = "寫進去了，但讀不回來——可能是 circle_items 的讀取權限（RLS policy）沒設對，检查 supabase_setup.sql 有沒有整段執行成功。";
+    }
+  }catch(e){
+    out.style.color = "var(--risk)";
+    out.textContent = "連不上：" + e.message + "——常見原因：SQL 還沒執行、URL 或 key 貼錯、或這個網路環境擋住了 Supabase。";
+  }
+  btn.disabled = false;
+}
+
+var circlePollTimer = null;
+async function renderCircleDialog(quiet){
+  var joined = document.getElementById("circleJoined");
+  var setup = document.getElementById("circleSetup");
+  if (!profile.circle.code){
+    setup.hidden = false; joined.hidden = true;
+    return;
+  }
+  setup.hidden = true; joined.hidden = false;
+  document.getElementById("circleCodeDisplay").textContent = profile.circle.code;
+  var wrap = document.getElementById("circleFeed");
+  if (!quiet){
+    wrap.textContent = "同步中……";
+    wrap.style.color = "var(--ink-quiet)";
+  }
+
+  var feed;
+  try{
+    feed = await CircleSync.getFeed(profile.circle.code);
+  }catch(e){
+    /* 安靜輪詢失敗就保持原畫面，不要每 20 秒閃一次錯誤訊息 */
+    if (!quiet){
+      wrap.textContent = "圈子暫時連不上，等一下再試——分享的內容不會不見，只是這次沒抓到。";
+    }
+    return;
+  }
+  wrap.style.color = "";
+  wrap.innerHTML = "";
+  if (!feed.length){
+    var empty = document.createElement("p");
+    empty.style.cssText = "color:var(--ink-quiet);font-size:13px";
+    empty.textContent = "圈子裡還沒有人分享——把代碼給朋友，等她也加入這個圈子。";
+    wrap.appendChild(empty);
+    return;
+  }
+  feed.slice().reverse().forEach(function(item){
+    var row = document.createElement("div");
+    row.className = "arow";
+    var head = document.createElement("b");
+    head.textContent = item.authorName + " · " + SHARE_TYPE_LABEL[item.type];
+    var body = document.createElement("p");
+    body.textContent = item.text;
+    row.appendChild(head); row.appendChild(body);
+    (item.comments||[]).forEach(function(c){
+      var cp = document.createElement("p");
+      cp.style.cssText = "margin:6px 0 0;padding-left:12px;border-left:2px solid var(--glass-border);color:var(--ink-muted);font-size:12.5px";
+      cp.textContent = c.authorName + "：" + c.text;
+      row.appendChild(cp);
+    });
+    var replyRow = document.createElement("div");
+    replyRow.style.cssText = "display:flex;gap:8px;margin-top:8px";
+    var input = document.createElement("input");
+    input.type = "text"; input.placeholder = "回應一句話……"; input.style.cssText = "flex:1;padding:8px 10px;border-radius:10px";
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "btn-quiet"; btn.textContent = "送出";
+    btn.addEventListener("click", async function(){
+      var text = input.value.trim();
+      if (!text) return;
+      btn.disabled = true;
+      try{
+        await CircleSync.postComment(profile.circle.code, item.id, { authorName: circleDisplayName(), text:text, at:new Date().toISOString() });
+        input.value = "";
+        await renderCircleDialog();
+      }catch(e){
+        btn.disabled = false;
+        showToast("回應暫時送不出去，等一下再試一次");
+      }
+    });
+    replyRow.appendChild(input); replyRow.appendChild(btn);
+    row.appendChild(replyRow);
+    wrap.appendChild(row);
+  });
+}
+function startCirclePolling(){
+  stopCirclePolling();
+  circlePollTimer = window.setInterval(function(){
+    if (!document.getElementById("circleDialog").open || !profile.circle.code) return;
+    /* 妳正在打回應的時候，絕對不能重畫列表把字洗掉 */
+    var feedEl = document.getElementById("circleFeed");
+    if (feedEl.contains(document.activeElement)) return;
+    var typing = Array.prototype.some.call(feedEl.querySelectorAll("input"), function(i){ return i.value.trim() !== ""; });
+    if (typing) return;
+    renderCircleDialog(true);
+  }, 20000);
+}
+function stopCirclePolling(){
+  if (circlePollTimer){ window.clearInterval(circlePollTimer); circlePollTimer = null; }
+}
+function circleDisplayName(){
+  return profile.circle.displayName || "一位朋友";
+}
+
+/* ================= 帳號與雲端同步（可選——不用帳號，本機一切照常） =================
+   直接打 Supabase Auth（GoTrue）與 PostgREST 的 REST API，不引入 supabase-js，
+   維持單檔、零依賴。anon key 本來就是設計給前端用的；每人資料的隔離靠
+   user_profiles 的 RLS（auth.uid() = user_id），不是靠把 key 藏起來。 */
+var AUTH_KEY = "social-mini-v2-auth";
+var auth = null;            // { access_token, refresh_token, expires_at(秒), user:{id,email} }
+var lastSyncAt = null;      // ISO 字串
+var cloudState = "idle";    // idle | syncing | synced | offline | error
+function loadAuth(){ try{ auth = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); }catch(e){ auth = null; } }
+function persistAuth(){ try{ if (auth) localStorage.setItem(AUTH_KEY, JSON.stringify(auth)); else localStorage.removeItem(AUTH_KEY); }catch(e){} }
+
+function authErrText(raw){
+  var s = String(raw || "");
+  if (/invalid.*credential|invalid_grant|Invalid login/i.test(s)) return "帳號或密碼不對——再試一次？";
+  if (/already.*registered|already.*exists/i.test(s)) return "這個 email 已經有帳號了——直接按「登入」試試。";
+  if (/at least|password.*short|weak/i.test(s)) return "密碼至少要 6 個字。";
+  if (/rate limit|too many/i.test(s)) return "試太多次了，休息一下再試。";
+  if (/confirm/i.test(s)) return "這個帳號還沒點過確認信——收一下信箱？";
+  return "雲端暫時連不上，這台裝置的紀錄不受影響，等一下再試。";
+}
+
+async function authRequest(path, body){
+  var res = await fetch(SUPABASE_URL + path, {
+    method: "POST",
+    headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  var data = null;
+  try{ data = await res.json(); }catch(e){}
+  if (!res.ok){
+    var msg = data && (data.error_description || data.msg || data.error) || ("HTTP " + res.status);
+    throw new Error(msg);
+  }
+  return data;
+}
+function adoptSession(data){
+  auth = {
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+    expires_at: data.expires_at || Math.floor(Date.now()/1000) + (data.expires_in || 3600),
+    user: { id: data.user.id, email: data.user.email }
+  };
+  persistAuth();
+}
+async function ensureFreshToken(){
+  if (!auth) throw new Error("not-signed-in");
+  if (Math.floor(Date.now()/1000) < auth.expires_at - 60) return;
+  var data = await authRequest("/auth/v1/token?grant_type=refresh_token", { refresh_token: auth.refresh_token });
+  adoptSession(data);
+}
+async function apiSignUp(email, password){
+  var data = await authRequest("/auth/v1/signup", { email: email, password: password });
+  if (data && data.access_token){ adoptSession(data); return { session: true }; }
+  return { session: false };  // 需要先收確認信
+}
+async function apiSignIn(email, password){
+  var data = await authRequest("/auth/v1/token?grant_type=password", { email: email, password: password });
+  adoptSession(data);
+}
+function signOutLocal(){
+  auth = null; persistAuth(); lastSyncAt = null; cloudState = "idle";
+  updateAccountUI();
+}
+
+/* ---- 雲端 profile：整份 JSON 一列，last-write-wins ---- */
+async function cloudHeaders(extra){
+  await ensureFreshToken();
+  return Object.assign({ apikey: SUPABASE_KEY, Authorization: "Bearer " + auth.access_token }, extra || {});
+}
+async function pullCloudProfile(){
+  var res = await fetch(SUPABASE_URL + "/rest/v1/user_profiles?select=data,updated_at&user_id=eq." + auth.user.id, {
+    headers: await cloudHeaders()
+  });
+  if (!res.ok) throw new Error("pull-failed:" + res.status);
+  var rows = await res.json();
+  return rows.length ? rows[0] : null;
+}
+async function pushCloudProfile(){
+  cloudState = "syncing"; updateAccountUI();
+  var res = await fetch(SUPABASE_URL + "/rest/v1/user_profiles", {
+    method: "POST",
+    headers: await cloudHeaders({ "Content-Type":"application/json", Prefer:"resolution=merge-duplicates,return=minimal" }),
+    body: JSON.stringify([{ user_id: auth.user.id, data: profile, updated_at: new Date().toISOString() }])
+  });
+  if (!res.ok){ cloudState = "error"; updateAccountUI(); throw new Error("push-failed:" + res.status); }
+  lastSyncAt = new Date().toISOString();
+  cloudState = "synced"; updateAccountUI();
+}
+async function deleteCloudProfile(){
+  var res = await fetch(SUPABASE_URL + "/rest/v1/user_profiles?user_id=eq." + auth.user.id, {
+    method: "DELETE",
+    headers: await cloudHeaders()
+  });
+  if (!res.ok) throw new Error("delete-failed:" + res.status);
+}
+
+var cloudPushTimer = null;
+function scheduleCloudPush(){
+  if (!auth) return;
+  window.clearTimeout(cloudPushTimer);
+  cloudPushTimer = window.setTimeout(function(){
+    pushCloudProfile().catch(function(){ cloudState = "offline"; updateAccountUI(); });
+  }, 2500);
+}
+
+/* ---- 登入後的三岔路：只有雲端、只有本機、兩邊都有 ---- */
+var pendingRemote = null;
+async function afterLogin(){
+  var remote = null;
+  try{ remote = await pullCloudProfile(); }catch(e){ /* 拉不到就先當作沒有，稍後推本機上去 */ }
+  var hasLocal = profile.prescriptions.length > 0;
+  if (remote && hasLocal && JSON.stringify(remote.data) !== JSON.stringify(profile)){
+    pendingRemote = remote;
+    document.getElementById("localStamp").textContent = "最後使用：" + (profile.intake.answeredAt ? profile.intake.answeredAt.slice(0,10) : "不明");
+    document.getElementById("cloudStamp").textContent = "最後同步：" + (remote.updated_at ? remote.updated_at.slice(0,10) : "不明");
+    document.getElementById("conflictDialog").showModal();
+    return;
+  }
+  if (remote){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProfile(remote.data)));
+    window.location.reload();
+    return;
+  }
+  try{ await pushCloudProfile(); }catch(e){}
+  updateAccountUI();
+}
+
+function updateAccountUI(){
+  var loggedOut = document.getElementById("accountLoggedOut");
+  var loggedIn = document.getElementById("accountLoggedIn");
+  if (!loggedOut) return;
+  loggedOut.hidden = Boolean(auth);
+  loggedIn.hidden = !auth;
+  if (auth){
+    document.getElementById("accountEmail").textContent = auth.user.email;
+    var s = document.getElementById("syncStatus");
+    if (cloudState === "syncing") s.textContent = "同步中……";
+    else if (cloudState === "synced" && lastSyncAt) s.textContent = "已同步（" + lastSyncAt.slice(11,16) + "）——之後每次儲存都會自動跟上。";
+    else if (cloudState === "offline" || cloudState === "error") s.textContent = "雲端暫時連不上；紀錄安全地留在這台裝置，連上後會自動補同步。";
+    else s.textContent = "已登入——每次儲存會自動同步到雲端。";
+  }
+  document.getElementById("accountButton").textContent = auth ? "帳號 ✓" : "帳號";
+}
+
+/* ================= AI 三種方式 ================= */
+function buildExternalPrompt(){
+  var pr = currentPrescription();
+  var item = todayFocalItem() || ensureTodayFocalItem(Number(profile.lastMinutesChoice) || 30);
+  return "妳是一位暖心、專業、誠實的社群經營顧問。請尊重我的選擇，不要強迫我採用主流做法，也不要保證流量或收入。\n\n"+
+    "【我的情況】\n想做的方向："+profile.intake.ideaText+"\n目前先顧："+STAGE_LABEL[pr.stage]+"\n"+
+    "想幫助的人："+profile.audience+"\n"+
+    "露臉："+prefLabel(profile.constraints.face.value)+"；聲音："+prefLabel(profile.constraints.voice.value)+"；主動開發："+prefLabel(profile.constraints.outreach.value)+"\n\n"+
+    "【今天的一件事】\n"+item.title+"："+item.why+"\n\n"+
+    "請只協助我完成這一件事。若資料不足，最多問我 3 個關鍵問題。把推測標成推測；若我的選擇可能使時間拉長或難以產生收入，請清楚但不責備地說明。最後給我一份可以在 "+item.chosenMinutes+" 分鐘內完成的結果。";
+}
+function prefLabel(v){ return v==="yes"?"可以":v==="no"?"不想":"尚未決定"; }
+function renderMethod(method){
+  var out = document.getElementById("methodOutput"); out.hidden = false;
+  var item = todayFocalItem() || ensureTodayFocalItem(Number(profile.lastMinutesChoice) || 30);
+  if (method==="included"){
+    out.innerHTML = "<b>正式版會直接在這裡陪妳完成</b><p style='color:var(--ink-muted);font-size:13px'>付費方案內含 AI 額度，不需要自行申請或貼上金鑰。這份原型目前不會傳送任何資料到 AI 服務。</p>";
+    profile.aiMode = "included";
+  } else if (method==="external"){
+    out.innerHTML = "<b>複製到任何外部免費 AI</b><textarea id='externalPromptArea' readonly></textarea>"+
+      "<div class='rowgap'><button class='btn-ghost' type='button' id='copyPromptButton'>複製指令</button></div>"+
+      "<label style='display:block;margin-top:10px;font-size:12.5px;color:var(--ink-muted)'>把 AI 回答貼回來</label>"+
+      "<textarea id='externalAnswerArea' rows='5' placeholder='貼上答案後，原型會保留下來。'></textarea>"+
+      "<div class='rowgap'><button class='btn-primary' type='button' id='saveExternalAnswerButton'>存起來</button></div>"+
+      "<div id='externalNextStep' hidden style='margin-top:14px;padding-top:14px;border-top:1px solid var(--glass-border)'>"+
+      "<p style='margin:0 0 10px;font-size:13px;color:var(--ink-muted)'>答案存起來了。接下來可以回到「今天的一件事」，看要不要標記完成——存了答案不代表一定要馬上標完成，妳決定。</p>"+
+      "<button class='btn-primary' type='button' id='backToFocalButton'>回到今天的一件事</button>"+
+      "</div>";
+    document.getElementById("externalPromptArea").value = buildExternalPrompt();
+    document.getElementById("externalAnswerArea").value = item.externalAnswer || "";
+    if (item.externalAnswer){ document.getElementById("externalNextStep").hidden = false; }
+    document.getElementById("copyPromptButton").addEventListener("click", function(){
+      copyText(buildExternalPrompt(), "指令已複製", document.getElementById("externalPromptArea"));
+    });
+    document.getElementById("saveExternalAnswerButton").addEventListener("click", function(){
+      item.externalPrompt = buildExternalPrompt();
+      item.externalAnswer = document.getElementById("externalAnswerArea").value.trim();
+      saveProfile();
+      showToast("已存起來，原型不會自動當成正確答案");
+      document.getElementById("externalNextStep").hidden = !item.externalAnswer;
+    });
+    document.getElementById("backToFocalButton").addEventListener("click", function(){
+      document.getElementById("aiMethodDialog").close();
+    });
+    profile.aiMode = "external";
+  } else {
+    out.innerHTML = "<b>不用 AI 也能完成</b><p style='color:var(--ink-muted);font-size:13px'>"+esc(item.why)+"</p><ol style='color:var(--ink-muted);font-size:13px;padding-left:18px'><li>先寫出最直覺的版本。</li><li>刪掉不是今天必要的部分。</li><li>完成後記下一個意外發現或卡點。</li></ol>"+
+      "<div style='margin-top:14px;padding-top:14px;border-top:1px solid var(--glass-border)'>"+
+      "<button class='btn-primary' type='button' id='backToFocalButtonManual'>回到今天的一件事</button>"+
+      "</div>";
+    document.getElementById("backToFocalButtonManual").addEventListener("click", function(){
+      document.getElementById("aiMethodDialog").close();
+    });
+    profile.aiMode = "manual";
+  }
+  saveProfile();
+}
+
+/* ================= 小工具 ================= */
+function esc(v){ return String(v||"").replace(/[&<>'"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]; }); }
+/* sourceEl（選填）：畫面上已經顯示同樣文字的 textarea——自動複製失敗時，
+   直接把它選起來，使用者不用另外找文字在哪裡，一個 Ctrl+C／長按就好。
+   之前的版本不管 execCommand 有沒有真的成功都說「已複製」——在有些沙盒環境
+   （例如這個 Artifact 預覽本身）剪貼簿權限會被整個擋掉，兩種方法都會失敗，
+   卻還顯示複製成功，等於說謊。 */
+function copyText(text, msg, sourceEl){
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(
+      function(){ showToast(msg); },
+      function(){ fallbackCopy(text, msg, sourceEl); }
+    );
+  } else {
+    fallbackCopy(text, msg, sourceEl);
+  }
+}
+function fallbackCopy(text, msg, sourceEl){
+  var ok = false;
+  var a = document.createElement("textarea");
+  a.value = text; a.style.position = "fixed"; a.style.opacity = "0";
+  document.body.appendChild(a); a.select();
+  try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+  a.remove();
+  if (ok){ showToast(msg); return; }
+  /* 兩種方法都失敗——老實說，並讓使用者一步就能手動複製 */
+  if (sourceEl){
+    sourceEl.hidden = false;
+    sourceEl.focus(); sourceEl.select();
+    showToast("這個環境不給自動複製——文字已經幫妳選起來了，按 Ctrl+C（手機長按）複製。");
+  } else {
+    showToast("自動複製沒有成功，麻煩手動選取文字後複製。");
+  }
+}
+function saveProfile(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }catch(e){}
+  scheduleCloudPush();  /* 有登入才會真的推；沒登入時什麼都不做 */
+}
+/* 把任何來源（localStorage、備份檔）的資料補齊成完整結構，缺欄位不會炸 */
+function normalizeProfile(parsed){
+  var base = defaultProfile();
+  var p = Object.assign(base, parsed);
+  ["prescriptions","assumptions","adjustmentLog","stageHistory","focalItems","weeklyReflections","careLog"].forEach(function(k){
+    if (!Array.isArray(p[k])) p[k] = [];
+  });
+  p.circle = Object.assign({ code:null, memberCodes:[], displayName:"" }, p.circle || {});
+  p.intake = Object.assign(defaultProfile().intake, p.intake || {});
+  p.constraints = Object.assign(defaultProfile().constraints, p.constraints || {});
+  return p;
+}
+function restoreProfile(){
+  try{
+    var stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return false;
+    var parsed = JSON.parse(stored);
+    if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION) return false;
+    profile = normalizeProfile(parsed);
+    hydrateForm();
+    if (currentPrescription()){ refreshCare(); renderFocal(profile.lastMinutesChoice); setView("plan"); return true; }
+    return false;
+  }catch(e){ return false; }
+}
+
+/* ================= 備份與還原：紀錄是這個系統最值錢的東西，不能只活在一個瀏覽器裡 ================= */
+function exportBackup(){
+  var stamp = todayKey().replace(/-/g,"");
+  var blob = new Blob([JSON.stringify(profile, null, 2)], { type:"application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "social-mini-backup-" + stamp + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  window.setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  showToast("備份已下載，收在安全的地方。");
+}
+function importBackup(file){
+  var reader = new FileReader();
+  reader.onload = function(){
+    try{
+      var parsed = JSON.parse(reader.result);
+      if (!parsed || parsed.schemaVersion !== SCHEMA_VERSION){
+        showToast("這份備份的版本對不上——確認一下檔案來源？");
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProfile(parsed)));
+      window.location.reload();
+    }catch(e){
+      showToast("讀不懂這個檔案——確認是之前匯出的備份檔。");
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ================= 主題切換 ================= */
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  document.querySelectorAll(".themepick button").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.theme===t?"true":"false"); });
+  try{ localStorage.setItem("social-mini-theme", t); }catch(e){}
+}
+
+/* ================= 事件綁定 ================= */
+document.getElementById("startButton").addEventListener("click", function(){ beginOnboarding(false); });
+document.getElementById("noIdeaButton").addEventListener("click", function(){ beginOnboarding(true); });
+document.getElementById("nextButton").addEventListener("click", goNext);
+document.getElementById("backButton").addEventListener("click", function(){ if (currentStep>1){ currentStep--; showStep(); } });
+onboardingForm_bind();
+function onboardingForm_bind(){
+  document.getElementById("onboardingForm").addEventListener("submit", function(e){ e.preventDefault(); goNext(); });
+}
+
+document.querySelectorAll("[data-idea-mode]").forEach(function(b){
+  b.addEventListener("click", function(){
+    profile.intake.ideaMode = b.dataset.ideaMode;
+    document.querySelectorAll("[data-idea-mode]").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+    if (profile.intake.ideaMode==="explore" && !document.getElementById("ideaInput").value.trim()){
+      document.getElementById("ideaInput").value = "我還沒有明確想法，希望先找到適合自己的方向。";
+    }
+  });
+});
+document.getElementById("situationChoices").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-value]"); if (!b) return;
+  profile.intake.situationSignal = b.dataset.value;
+  setPressed("situationChoices", b.dataset.value);
+});
+document.getElementById("bottleneckChoices").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-value]"); if (!b) return;
+  profile.intake.bottleneck = b.dataset.value;
+  setPressed("bottleneckChoices", b.dataset.value);
+});
+document.getElementById("minutesChoices").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-value]"); if (!b) return;
+  profile.constraints.dailyMinutesCap = b.dataset.value==="flex" ? "flex" : Number(b.dataset.value);
+  setPressed("minutesChoices", b.dataset.value);
+});
+document.getElementById("cadenceChoices").addEventListener("click", function(e){
+  var b = e.target.closest("button[data-value]"); if (!b) return;
+  profile.constraints.cadence = b.dataset.value;
+  setPressed("cadenceChoices", b.dataset.value);
+});
+document.getElementById("weeklyHours").addEventListener("input", function(){ profile.constraints.weeklyHours = readWeeklyHours(); updateRouteOutput(); });
+[["facePref","face"],["voicePref","voice"],["outreachPref","outreach"]].forEach(function(pair){
+  document.getElementById(pair[0]).addEventListener("click", function(e){
+    var b = e.target.closest("button[data-value]"); if (!b) return;
+    profile.constraints[pair[1]].value = b.dataset.value;
+    setPressed(pair[0], b.dataset.value);
+  });
+});
+document.querySelectorAll("[data-lock]").forEach(function(cb){
+  cb.addEventListener("change", function(){ profile.constraints[cb.dataset.lock].locked = cb.checked; });
+});
+document.getElementById("audienceUnknownButton").addEventListener("click", function(){
+  document.getElementById("audienceInput").value = "目前還不知道，先從第一批真實反應中找。";
+});
+
+document.getElementById("startTaskButton").addEventListener("click", function(){ document.getElementById("aiMethodDialog").showModal(); });
+document.getElementById("doneTaskButton").addEventListener("click", function(){
+  /* 頁面開著跨過午夜時，今天的一件事還沒生成——先重新安排再處理，不能沒反應 */
+  var item = todayFocalItem();
+  if (!item){ renderFocal(profile.lastMinutesChoice); item = todayFocalItem(); if (!item) return; }
+  item.status = item.status==="done" ? "open" : "done";
+  item.completedAt = item.status==="done" ? new Date().toISOString() : null;
+  renderFocal(item.chosenMinutes);
+  showToast(item.status==="done" ? "已經存起來了" : "已取消");
+});
+document.getElementById("skipTaskButton").addEventListener("click", function(){
+  var item = todayFocalItem();
+  if (!item){ renderFocal(profile.lastMinutesChoice); item = todayFocalItem(); }
+  if (item && item.status === "done"){ showToast("今天已經存好了，好好休息也很重要。"); return; }
+  /* 跳過只能往「更輕」走：大於 15 分鐘就換成 15 分鐘版；
+     已經是最輕的 15 分鐘，就真的放下，不硬塞替代品。 */
+  if (Number(profile.lastMinutesChoice) > 15){
+    renderFocal(15);
+    showToast("換成 15 分鐘的輕版本——今天不用追趕。");
+  } else {
+    showToast("先放著也沒關係；明天會重新安排，不會累積。");
+  }
+});
+
+document.getElementById("viewJudgmentButton").addEventListener("click", function(){ renderJudgment(); document.getElementById("judgmentDialog").showModal(); });
+document.getElementById("viewAdjustButton").addEventListener("click", function(){
+  document.getElementById("adjustmentResult").hidden = true;  /* 上一次的結果訊息不該掛在新的一次對話開頭 */
+  document.getElementById("adjustDialog").showModal();
+});
+document.getElementById("applyAdjustmentButton").addEventListener("click", applyAdjustment);
+document.getElementById("viewReflectionButton").addEventListener("click", function(){ hydrateReflection(); document.getElementById("reflectionDialog").showModal(); });
+document.getElementById("reflectionForm").addEventListener("submit", function(e){ e.preventDefault(); saveReflection(); });
+document.getElementById("copyShareButton").addEventListener("click", function(){
+  var card = buildShareCard();
+  var fallbackArea = document.getElementById("shareCardFallback");
+  fallbackArea.value = card;
+  copyText(card, "分享卡已複製", fallbackArea);
+});
+document.getElementById("nextPreviewLink").addEventListener("click", function(e){
+  e.preventDefault();
+  /* 換的是上方焦點卡片的內容——使用者可能停在頁面下方，
+     必須把卡片帶回視野並給一句回饋，否則看起來像沒反應 */
+  var item = todayFocalItem();
+  var wasDone = item && item.status === "done";
+  renderFocal(profile.lastMinutesChoice===60 ? 30 : 60);
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelector(".focal").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  if (!wasDone) showToast("換過來了——今天改做這件事也可以。");
+});
+
+document.getElementById("viewCircleButton").addEventListener("click", function(){
+  renderCircleDialog();
+  document.getElementById("circleDialog").showModal();
+  startCirclePolling();
+});
+document.getElementById("circleDialog").addEventListener("close", stopCirclePolling);
+document.getElementById("testConnectionButton").addEventListener("click", testCircleConnection);
+document.getElementById("createCircleButton").addEventListener("click", function(){
+  var name = document.getElementById("circleNameInput").value.trim();
+  if (!name){ showToast("先留個名字，圈子裡的人才知道是誰。"); return; }
+  profile.circle.code = makeCircleCode();
+  profile.circle.displayName = name;
+  saveProfile();
+  renderCircleDialog();
+  showToast("圈子建立好了，把代碼給朋友吧");
+});
+document.getElementById("joinCircleButton").addEventListener("click", function(){
+  var name = document.getElementById("circleNameInput").value.trim();
+  var code = document.getElementById("joinCodeInput").value.trim().toUpperCase();
+  if (!name){ showToast("先留個名字，圈子裡的人才知道是誰。"); return; }
+  if (!code){ showToast("輸入朋友給的代碼。"); return; }
+  if (!/^[A-Z0-9]{6}$/.test(code)){ showToast("代碼是 6 個字（朋友畫面上金色那串）——再對一下？"); return; }
+  profile.circle.code = code;
+  profile.circle.displayName = name;
+  saveProfile();
+  renderCircleDialog();
+  showToast("已加入圈子");
+});
+document.getElementById("leaveCircleButton").addEventListener("click", function(){
+  profile.circle = { code:null, memberCodes:[], displayName:"" };
+  saveProfile();
+  renderCircleDialog();
+  showToast("已離開圈子；之前分享的內容還在圈子裡，不會被收回");
+});
+
+document.querySelectorAll("[data-method]").forEach(function(b){ b.addEventListener("click", function(){ renderMethod(b.dataset.method); }); });
+
+resetButton.addEventListener("click", function(){ document.getElementById("resetDialog").showModal(); });
+document.getElementById("backupButton").addEventListener("click", function(){ document.getElementById("backupDialog").showModal(); });
+
+/* ---- 帳號 ---- */
+document.getElementById("accountButton").addEventListener("click", function(){
+  updateAccountUI();
+  document.getElementById("authStatus").textContent = "";
+  document.getElementById("accountDialog").showModal();
+});
+document.getElementById("viewTermsButton").addEventListener("click", function(){ document.getElementById("termsDialog").showModal(); });
+function readAuthInputs(){
+  var email = document.getElementById("authEmail").value.trim();
+  var pw = document.getElementById("authPassword").value;
+  var status = document.getElementById("authStatus");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ status.textContent = "Email 看起來不太對——再確認一下？"; return null; }
+  if (pw.length < 6){ status.textContent = "密碼至少要 6 個字。"; return null; }
+  return { email: email, pw: pw };
+}
+document.getElementById("signInButton").addEventListener("click", async function(){
+  var input = readAuthInputs(); if (!input) return;
+  var status = document.getElementById("authStatus");
+  var btn = this; btn.disabled = true;
+  status.textContent = "登入中……";
+  try{
+    await apiSignIn(input.email, input.pw);
+    status.textContent = "";
+    updateAccountUI();
+    await afterLogin();
+  }catch(e){ status.textContent = authErrText(e.message); }
+  btn.disabled = false;
+});
+document.getElementById("signUpButton").addEventListener("click", async function(){
+  var input = readAuthInputs(); if (!input) return;
+  var status = document.getElementById("authStatus");
+  var btn = this; btn.disabled = true;
+  status.textContent = "建立中……";
+  try{
+    var result = await apiSignUp(input.email, input.pw);
+    if (result.session){
+      status.textContent = "";
+      updateAccountUI();
+      await afterLogin();
+    } else {
+      status.textContent = "確認信已寄到 " + input.email + "——點過信裡的連結後，回來按「登入」。";
+    }
+  }catch(e){ status.textContent = authErrText(e.message); }
+  btn.disabled = false;
+});
+document.getElementById("signOutButton").addEventListener("click", function(){
+  signOutLocal();
+  showToast("已登出；這台裝置的紀錄都還在。");
+});
+document.getElementById("syncNowButton").addEventListener("click", function(){
+  pushCloudProfile().then(function(){ showToast("同步好了。"); }).catch(function(){ showToast("雲端暫時連不上，等一下會自動再試。"); });
+});
+document.getElementById("deleteCloudButton").addEventListener("click", async function(){
+  var btn = this;
+  if (btn.dataset.confirming !== "1"){
+    btn.dataset.confirming = "1";
+    btn.textContent = "再按一次，確定刪除雲端那份";
+    window.setTimeout(function(){ btn.dataset.confirming = ""; btn.textContent = "刪除雲端資料（這台裝置的紀錄會保留）"; }, 6000);
+    return;
+  }
+  try{
+    await deleteCloudProfile();
+    signOutLocal();
+    showToast("雲端資料已刪除；這台裝置的紀錄完整保留。");
+  }catch(e){ showToast("刪除沒有成功——雲端暫時連不上，等一下再試。"); }
+  btn.dataset.confirming = ""; btn.textContent = "刪除雲端資料（這台裝置的紀錄會保留）";
+});
+document.getElementById("useLocalButton").addEventListener("click", async function(){
+  pendingRemote = null;  /* 先清再關——close 事件的守門邏輯以此判斷「有沒有做出選擇」 */
+  document.getElementById("conflictDialog").close();
+  try{ await pushCloudProfile(); showToast("以這台裝置的紀錄為準，雲端已更新。"); }
+  catch(e){ showToast("雲端暫時連不上，等下次儲存時會自動再試。"); }
+});
+document.getElementById("useCloudButton").addEventListener("click", function(){
+  if (!pendingRemote) return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProfile(pendingRemote.data)));
+  window.location.reload();
+});
+/* 按 ESC 逃出衝突選擇＝沒有選——那就先登出，兩份紀錄都原封不動，
+   絕不能讓「沒選」默默變成「本機蓋掉雲端」 */
+document.getElementById("conflictDialog").addEventListener("close", function(){
+  if (pendingRemote){
+    pendingRemote = null;
+    signOutLocal();
+    showToast("先登出了——兩份紀錄都原封不動，想好要用哪份再登入。");
+  }
+});
+document.getElementById("exportBackupButton").addEventListener("click", exportBackup);
+document.getElementById("importBackupInput").addEventListener("change", function(){
+  if (this.files && this.files[0]) importBackup(this.files[0]);
+  this.value = "";
+});
+document.getElementById("confirmResetButton").addEventListener("click", function(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  window.location.reload();
+});
+document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", function(){ b.closest("dialog").close(); }); });
+/* 對話框關閉（含 ESC）時，若 toast 還寄住在裡面，要接回 body——
+   否則下一次顯示前它會困在一個 display:none 的對話框裡 */
+document.querySelectorAll("dialog").forEach(function(d){
+  d.addEventListener("close", function(){
+    if (toast.parentElement === d){ toast.hidden = true; document.body.appendChild(toast); }
+  });
+});
+
+document.querySelectorAll(".themepick button").forEach(function(b){ b.addEventListener("click", function(){ applyTheme(b.dataset.theme); }); });
+
+/* ================= 啟動 ================= */
+(function init(){
+  try{
+    var savedTheme = localStorage.getItem("social-mini-theme");
+    if (savedTheme) applyTheme(savedTheme);
+  }catch(e){}
+  loadAuth();
+  updateAccountUI();
+  if (!restoreProfile()) setView("welcome");
+})();
+
+}());
+</script>
+</body>
+</html>
