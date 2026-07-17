@@ -1353,18 +1353,34 @@ function renderMethod(method){
       "<div class='rowgap'><button class='btn-ghost' type='button' id='copyPromptButton'>複製指令</button></div>"+
       "<label style='display:block;margin-top:10px;font-size:12.5px;color:var(--ink-muted)'>把 AI 回答貼回來</label>"+
       "<textarea id='externalAnswerArea' rows='5' placeholder='貼上答案後，原型會保留下來。'></textarea>"+
-      "<div class='rowgap'><button class='btn-primary' type='button' id='saveExternalAnswerButton'>存起來</button></div>";
+      "<div class='rowgap'><button class='btn-primary' type='button' id='saveExternalAnswerButton'>存起來</button></div>"+
+      "<div id='externalNextStep' hidden style='margin-top:14px;padding-top:14px;border-top:1px solid var(--glass-border)'>"+
+      "<p style='margin:0 0 10px;font-size:13px;color:var(--ink-muted)'>答案存起來了。接下來可以回到「今天的一件事」，看要不要標記完成——存了答案不代表一定要馬上標完成，妳決定。</p>"+
+      "<button class='btn-primary' type='button' id='backToFocalButton'>回到今天的一件事</button>"+
+      "</div>";
     document.getElementById("externalPromptArea").value = buildExternalPrompt();
     document.getElementById("externalAnswerArea").value = item.externalAnswer || "";
+    if (item.externalAnswer){ document.getElementById("externalNextStep").hidden = false; }
     document.getElementById("copyPromptButton").addEventListener("click", function(){ copyText(buildExternalPrompt(), "指令已複製"); });
     document.getElementById("saveExternalAnswerButton").addEventListener("click", function(){
       item.externalPrompt = buildExternalPrompt();
       item.externalAnswer = document.getElementById("externalAnswerArea").value.trim();
-      saveProfile(); showToast("已存起來，原型不會自動當成正確答案");
+      saveProfile();
+      showToast("已存起來，原型不會自動當成正確答案");
+      document.getElementById("externalNextStep").hidden = !item.externalAnswer;
+    });
+    document.getElementById("backToFocalButton").addEventListener("click", function(){
+      document.getElementById("aiMethodDialog").close();
     });
     profile.aiMode = "external";
   } else {
-    out.innerHTML = "<b>不用 AI 也能完成</b><p style='color:var(--ink-muted);font-size:13px'>"+esc(item.why)+"</p><ol style='color:var(--ink-muted);font-size:13px;padding-left:18px'><li>先寫出最直覺的版本。</li><li>刪掉不是今天必要的部分。</li><li>完成後記下一個意外發現或卡點。</li></ol>";
+    out.innerHTML = "<b>不用 AI 也能完成</b><p style='color:var(--ink-muted);font-size:13px'>"+esc(item.why)+"</p><ol style='color:var(--ink-muted);font-size:13px;padding-left:18px'><li>先寫出最直覺的版本。</li><li>刪掉不是今天必要的部分。</li><li>完成後記下一個意外發現或卡點。</li></ol>"+
+      "<div style='margin-top:14px;padding-top:14px;border-top:1px solid var(--glass-border)'>"+
+      "<button class='btn-primary' type='button' id='backToFocalButtonManual'>回到今天的一件事</button>"+
+      "</div>";
+    document.getElementById("backToFocalButtonManual").addEventListener("click", function(){
+      document.getElementById("aiMethodDialog").close();
+    });
     profile.aiMode = "manual";
   }
   saveProfile();
