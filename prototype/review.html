@@ -470,6 +470,7 @@ dialog::backdrop{background:rgba(4,12,11,.6);backdrop-filter:blur(3px)}
         <button class="btn-ghost" id="copyShareButton" type="button">複製分享卡</button>
         <button class="btn-primary" type="submit">存起來</button>
       </div>
+      <textarea id="shareCardFallback" rows="6" readonly hidden style="margin-top:10px"></textarea>
       <p class="field-note" id="reviewStatus"></p>
     </form>
   </div>
@@ -1635,7 +1636,9 @@ function renderMethod(method){
     document.getElementById("externalPromptArea").value = buildExternalPrompt();
     document.getElementById("externalAnswerArea").value = item.externalAnswer || "";
     if (item.externalAnswer){ document.getElementById("externalNextStep").hidden = false; }
-    document.getElementById("copyPromptButton").addEventListener("click", function(){ copyText(buildExternalPrompt(), "指令已複製"); });
+    document.getElementById("copyPromptButton").addEventListener("click", function(){
+      copyText(buildExternalPrompt(), "指令已複製", document.getElementById("externalPromptArea"));
+    });
     document.getElementById("saveExternalAnswerButton").addEventListener("click", function(){
       item.externalPrompt = buildExternalPrompt();
       item.externalAnswer = document.getElementById("externalAnswerArea").value.trim();
@@ -1662,14 +1665,37 @@ function renderMethod(method){
 
 /* ================= 小工具 ================= */
 function esc(v){ return String(v||"").replace(/[&<>'"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]; }); }
-function copyText(text, msg){
+/* sourceEl（選填）：畫面上已經顯示同樣文字的 textarea——自動複製失敗時，
+   直接把它選起來，使用者不用另外找文字在哪裡，一個 Ctrl+C／長按就好。
+   之前的版本不管 execCommand 有沒有真的成功都說「已複製」——在有些沙盒環境
+   （例如這個 Artifact 預覽本身）剪貼簿權限會被整個擋掉，兩種方法都會失敗，
+   卻還顯示複製成功，等於說謊。 */
+function copyText(text, msg, sourceEl){
   if (navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(function(){ showToast(msg); }, function(){ fallbackCopy(text,msg); });
-  } else fallbackCopy(text,msg);
+    navigator.clipboard.writeText(text).then(
+      function(){ showToast(msg); },
+      function(){ fallbackCopy(text, msg, sourceEl); }
+    );
+  } else {
+    fallbackCopy(text, msg, sourceEl);
+  }
 }
-function fallbackCopy(text,msg){
-  var a = document.createElement("textarea"); a.value=text; a.style.position="fixed"; a.style.opacity="0";
-  document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove(); showToast(msg);
+function fallbackCopy(text, msg, sourceEl){
+  var ok = false;
+  var a = document.createElement("textarea");
+  a.value = text; a.style.position = "fixed"; a.style.opacity = "0";
+  document.body.appendChild(a); a.select();
+  try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+  a.remove();
+  if (ok){ showToast(msg); return; }
+  /* 兩種方法都失敗——老實說，並讓使用者一步就能手動複製 */
+  if (sourceEl){
+    sourceEl.hidden = false;
+    sourceEl.focus(); sourceEl.select();
+    showToast("這個環境不給自動複製——文字已經幫妳選起來了，按 Ctrl+C（手機長按）複製。");
+  } else {
+    showToast("自動複製沒有成功，麻煩手動選取文字後複製。");
+  }
 }
 function saveProfile(){
   try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }catch(e){}
@@ -1822,7 +1848,12 @@ document.getElementById("viewAdjustButton").addEventListener("click", function()
 document.getElementById("applyAdjustmentButton").addEventListener("click", applyAdjustment);
 document.getElementById("viewReflectionButton").addEventListener("click", function(){ hydrateReflection(); document.getElementById("reflectionDialog").showModal(); });
 document.getElementById("reflectionForm").addEventListener("submit", function(e){ e.preventDefault(); saveReflection(); });
-document.getElementById("copyShareButton").addEventListener("click", function(){ copyText(buildShareCard(), "分享卡已複製"); });
+document.getElementById("copyShareButton").addEventListener("click", function(){
+  var card = buildShareCard();
+  var fallbackArea = document.getElementById("shareCardFallback");
+  fallbackArea.value = card;
+  copyText(card, "分享卡已複製", fallbackArea);
+});
 document.getElementById("nextPreviewLink").addEventListener("click", function(e){
   e.preventDefault();
   /* 換的是上方焦點卡片的內容——使用者可能停在頁面下方，
